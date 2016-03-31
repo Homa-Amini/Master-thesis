@@ -996,7 +996,7 @@ Continues the process to find the pattern.Updating indexes is the crucial part o
 
 \begin{figure}[H]
 \centering
-\includegraphics[width=12cm]{pictures/bar_1.png}
+\includegraphics[width=12cm]{bar_1.png}
 \caption{Backward search for pattern "bar" in string S using first and last column of BWT matrix. Updating indexes iteratively.}
 \label{backwardSearch}
 \end{figure}
@@ -1083,7 +1083,7 @@ The Wavelet tree is constructed recursively as follow:
 Wavelet tree for the string "Rhabarberbarbara" would look like this:
 \begin{figure}[H]
 \centering
-\includegraphics[width=9cm]{pictures/wavelet.png}
+\includegraphics[width=9cm]{wavelet.png}
 %\includegraphics[width=0.75\textwidth, inner]{wavelet.png}
 \caption{Wavelet tree for string "Rhabarberbarbara"}
 \label{fig:barbWavlet}
@@ -1143,10 +1143,7 @@ Each aligner is expected to align a set of reads while sometimes it does not hap
 \textbf{Usecase:}
 \\
 For example calculating Hamming distance between modern human genome and Neandertal genome .  
-Calculating Hamming distance between two strings is the process of detecting the number of 
-positions where the corresponding characters are different. In other words, it highlights 
-the similarities and differences and helps us to learn about evolution. The alignment is 
-the first step in this process which is very important to be done accurately.
+Calculating Hamming distance between two strings is the process of detecting the number of positions where the corresponding characters are different. In other words, it highlights the similarities and differences and helps us to learn about evolution. The alignment is the first step in this process which is very important to be done accurately.
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%5
 \subsection{Index Data Structure}
@@ -1163,7 +1160,7 @@ An overview of R-Candy's data structure is presented in Figure \ref{DSOverview}\
 
 \begin{figure}[H]
 \centering
-\includegraphics[width=4.75cm]{pictures/DSOverview2.png}
+\includegraphics[width=4.75cm]{DSOverview2.png}
 \caption{Overview of R-Candy's data structure }
 \label{DSOverview}
 \end{figure}
@@ -1209,7 +1206,7 @@ Construction of a Wavelet-Tree for $ S_{BWT} $ of string 'barbara':
 
 \begin{figure}[H]
 \centering
-\includegraphics[width=4.75cm]{pictures/WavletBarbara.png}
+\includegraphics[width=4.75cm]{WavletBarbara.png}
 \caption{Wavelet tree for "Rhabarberbarbara" string }
 \label{Wavlet-barbara}
 \end{figure}
@@ -1241,7 +1238,7 @@ tree for the alphabet of  "Rhabarberbarbara" string.
 
 \begin{figure}[H]
 \centering
-\includegraphics[width=7cm]{pictures/rank1.png}
+\includegraphics[width=7cm]{rank1.png}
 \caption{The rank(7,a) over Wavelet tree for "Rhabarberbarbara" string }
 \label{rank1}
 \end{figure}
@@ -1366,7 +1363,7 @@ another non-empty sequence (reference)$r\in (r_{1}..r_{n})$:\\\\
 
 \begin{figure}[H]
 \centering
-\includegraphics[width=15cm]{pictures/A_HS.png}
+\includegraphics[width=15cm]{A_HS.png}
 %\caption{ROC curve for simulated reads with deamination damage aligned to the simulated genome
  %        with deamination parameters.}
 \label{formula}
@@ -1438,15 +1435,6 @@ Alignment scores are simply the sum of the natural logarithms of the
 entries in that matrix for every aligned base, plus a penalty for
 insertions and deletions.  We use linear gap costs with a cost of $G$
 per inserted or deleted base, where $G$ is a free parameter again.
-
-
-
-
-
-
-
-
-
 
 
 
@@ -1819,7 +1807,7 @@ The microbial reads simulation process starts
 the reads which is the substitution of C base by T based on deamination parameters to simulate the ancient microbial sequences.
 
 
- \item Third,  introducing sequencing machines errors 
+ \item Third, introducing sequencing machines errors 
  to the read simulation.
 
 \end{itemize}
@@ -1876,19 +1864,29 @@ divided by the total number of simulated microbial reads.
 \end{itemize}
 
 
-The mapping sensitivity is divided into two parts, correct(true positives) and incorrect (false positives)  alignments.
+The mapping sensitivity is divided into two parts, correct(true positives) and incorrect (false positives) alignments.
 
 There are different ways of calculating the incorrect alignments. For simulated reads,
- the percentage of reads mapped to the incorrect location (aligned to a position differ than the original position in the genome where the read was originally extracted from) which is a common definition of error used in many studies \cite{ErrorDef}. 
+the percentage of reads mapped to the incorrect location (aligned to a position differ than the original position in the genome where the read was originally extracted from) which is a common definition of error used in many studies \cite{ErrorDef}. 
 
 But, this na\"{\i}ve definition of the correctness of an alignment has some problems. For example after applying sequencing error and deamination damage on the reads, the read does not exactly match the original genomic position. And it would be a problem when the aligner chooses the location for a read with no or fewer mismatches over the original location. In this case, the result will be poorly judged as an incorrect mapping despite the more accurate matching position has been chosen. 
 The problem has been managed using mapping quality/alignment score information. Such that a correct alignment of a read is defined as being to its original genomic location and having the alignment score/mapping quality fewer/greater than a certain threshold. 
 
 
 
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-\subsection{Evaluation on Simulated Genome}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\subsection{Specificity and Sensitivity}
 
+
+The sensitivity reported is the number of correctly mapped simulated
+endogenous reads divided by the total number of simulated endogenous reads.\\ 
+The fall-out is the number of aligned simulated microbial reads 
+divided by the total number of simulated microbial reads.
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\subsection{Evaluation on Simulated Genome}
 
 To simulate a genome we used human reference (as a training dataset) and first-order Markov chain as a training model. 
 
@@ -1899,63 +1897,51 @@ Knowing the true alignment of the reads, we evaluated the alignment accuracy.\\
 %Generated data are in different lengths 25, 30, 35 and 40 with a set of errors, (divergence, deamination, and sequencing error). \\
 %Knowing true coordinates of simulated read, I align them with two aligners (R-Candy and BWA) and evaluate their outputs.
 
-
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-\subsection{Specificity and Sensitivity}
-
-
-The sensitivity reported is the number of correctly mapped simulated
-endogenous reads divided by the total number of simulated endogenous reads.\\ 
-The fall down is the number of aligned simulated microbial reads 
-divided by the total number of simulated microbial reads.
-
-
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 
 \subsubsection{Evaluation Scenarios}
 
+
 \emph{Post-mortem} damage (deamination) is a specific characteristic of ancient DNA that none of existing aligners for short
-reads is taken into account except R-Candy.\\
+reads are taken into account except R-Candy.\\
 
-To show the impact of  deamination on alignment, I divided my evaluation  into four parts:
-
+To show the impact of deamination on alignment, I divided my evaluation into four parts:
 
 \begin{enumerate}
  
  \item First simulated reads with deamination damage and align them back to the simulated genome with R-Candy providing it the actual damage
 parameters ( $ \sigma $, $ \sigma\prime$, $\delta$,  and $\lambda$) and BWA with default parameters (there are 
-no damage parameters in BWA) and also BWA with ancient parameters (-n 0.01 as number of mismatches and 
--o 2 as number of  gap opens).
+no damage parameters in BWA) and also BWA with ancient parameters (-n 0.01 as the number of mismatches and 
+-o 2 as the number of  gaps open).
 
- \item Second using the same datasets but align it to R-Candy with no damage parameters.
+ \item Second using the same datasets but align it to R-Candy with no damage parameters like modern data.
  
- \item Third, simulated reads with no deamination damage and align them to the simulated genome using R-Candy and BWA. 
+ \item Third, simulated reads with no deamination damage and align them to the simulated genome with R-Candy's default parameters and with actual parameters which are zero number for deamination parameters and also BWA with default and ancient parameters . 
 
 \end{enumerate}
 
 \begin{figure}[H]
 \centering
-\includegraphics[width=12cm]{pictures/DS1-A.png}
-\caption{ROC curve for simulated reads with deamination damage aligned to the simulated genome
-         with deamination parameters.}
+\includegraphics[width=12cm]{DS1-A.png}
+\caption{ROC curve for simulated reads with deamination damage and sequencing error by ART, aligned to the simulated genome
+         with true deamination parameters.}
 \label{DS1}
 \end{figure}
 
 
 \begin{figure}[H]
 \centering
-\includegraphics[width=12cm]{pictures/DS2-A.png}
-\caption{ROC curve for simulated reads with deamination damage aligned to the simulated genome
+\includegraphics[width=12cm]{DS2-A.png}
+\caption{ROC curve for simulated reads with deamination damage and sequencing error for Illumina platform provided by ART aligned to the simulated genome
          with no deamination parameters.}
 \label{DS2}
 \end{figure}
 
 \begin{figure}[H]
 \centering
-\includegraphics[width=12cm]{pictures/DS3-A.png}
-\caption{ROC curve for simulated reads with no deamination damage aligned to the simulated genome.}
+\includegraphics[width=12cm]{DS3-A.png}
+\caption{ROC curve for simulated reads with sequencing error for Illumina platform provided by ART and no deamination damage aligned to the simulated genome.}
 \label{DS3}
 \end{figure}
 
@@ -1994,7 +1980,7 @@ parameters ( no deamination parameters in BWA) and also BWA with ancient paramet
 
 \begin{figure}[H]
 \centering
-\includegraphics[width=12cm]{pictures/DS4.png}
+\includegraphics[width=12cm]{DS4.png}
 \caption{ROC curve for simulated reads with deamination damage aligned to the human genome
          with deamination parameters.}
 \label{DS4}
@@ -2003,7 +1989,7 @@ parameters ( no deamination parameters in BWA) and also BWA with ancient paramet
 
 \begin{figure}[H]
 \centering
-\includegraphics[width=12cm]{pictures/DS5.png}
+\includegraphics[width=12cm]{DS5.png}
 \caption{ROC curve for simulated reads with deamination damage aligned to the human genome
          with no deamination parameters.}
 \label{DS5}
@@ -2011,7 +1997,7 @@ parameters ( no deamination parameters in BWA) and also BWA with ancient paramet
 
 \begin{figure}[H]
 \centering
-\includegraphics[width=12cm]{pictures/DS6.png}
+\includegraphics[width=12cm]{DS6.png}
 \caption{ROC curve for simulated reads with no deamination damage aligned to the human genome.}
 \label{DS6}
 \end{figure}
@@ -2052,10 +2038,10 @@ memory usage on multi-core computers.\\\\
 We did not test R-Candy on real data because we do not know the ground truth
 to help us on evaluating our software.\\
 \begin{table}[H]
-  \begin{tabular}{ |  p{2cm} | p{2cm} | p{3cm} | p{3cm} | }
+  \begin{tabular}{ |  p{2cm} | p{2cm} | p{3cm} | p{3cm} | p{3cm} |}
     \hline
   	\textbf{Type} & \textbf{Read length } &\textbf{Running time(s) } 
-  	&\textbf{Speed \hspace{35pt}(no. of reads/s)} \\ \hline
+  	&\textbf{Speed \hspace{35pt}(no. of reads/s)} & \textbf{Speed \hspace{35pt}(no. of reads/s)}\\ \hline
   	  
  	  Genomic    & 25  & 74435.126s  & 0.134 \\ \hline
       Genomic    & 30  & 131637.035s & 0.075 \\ \hline
@@ -2136,9 +2122,9 @@ BWT: Burrows-Wheeler transform;
 FM: full-text minute-space;
 A: Adenine;
 C: Cytosine;
-T:Thymine;
-G:Guanine;
-PacBio: ;
+T: Thymine;
+G: Guanine;
+PacBio: Pacific Bioscience;
 SA: suffix array;
 LF: last to first;
 DFS: depth first search;
