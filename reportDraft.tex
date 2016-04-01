@@ -29,7 +29,7 @@
 \usepackage{float}
 \usepackage{caption}
 \usepackage[square,sort,comma,numbers]{natbib}
-%\usepackage{minted}
+\usepackage[super,negative]{nth}
 
                   
 \usetikzlibrary{arrows, automata}
@@ -1441,47 +1441,61 @@ per inserted or deleted base, where $G$ is a free parameter again.
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \section{Test Data}
 
-In the past few years, the development of new DNA sequencing technologies made it possible to get DNA from ancient organisms.
-The analysis of such a data regularly by aligning it to the genome of closely related modern species is a big challenge in human evolution studies.
-A number of alignment software are developed to map such a dataset where simulated data is essential to guide the new software development and evaluating their performance.
+%In the past few years, the development of new DNA sequencing technologies made it possible to get DNA from ancient organisms.
+%The analysis of such a data regularly by aligning it to the genome of closely related modern species is a big challenge in human evolution studies.
+A number of alignment software are developed to map such a dataset where 
+simulated data is essential to guide the new software development and 
+evaluating their performance.
 
-Therefore, simulating data that captures the most crucial characteristics of real data is the key point in evaluation of the new software.\\
+Therefore, simulating data that captures the most crucial characteristics 
+of real data is the key point in evaluation of the new software.\\
 
-I developed a genome and NGS read simulation program to evaluate the performance of R-Candy.
+To satisfy this, I developed a genome and NGS read simulation program to evaluate 
+the performance of R-Candy in different cases.
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \subsection{Genome Simulation}
 
-Generally, every genome consists of some repeated DNA sequences which make the alignment of short reads from these repetitive parts very difficult due to finding the true alignment between the same repeated sequences.
+Generally, every genome consists of some repeated stretch of sequences which make 
+the alignment of short reads from these repetitive parts very difficult due to 
+finding the true alignment between the same repeated sequences.
 
-In order to make the software evaluation more informative, we decided to first test the aligner with a simulated genome that has no repeated sequences and check its accuracy and performance where we know the true alignment of each read.
+In order to make the software evaluation more informative, we decided to first 
+test the aligner with a simulated genome that has no short repeated sequences 
+and check its accuracy and performance where we know the true alignment of each 
+read.
 
-I used a probabilistic model called \emph{Markov Chain} model to 
-simulate a genome by generating nucleotides (A, C, G, T bases) in a way that  keeps the base composition of the real reference genome but not generates repeats.
+In this thesis I used a probabilistic model called \emph{Markov Chain} model 
+\footnote{More specifically \nth{1} Order Markov Chain as my future state only 
+depends on my current state} to simulate a genome by generating stretch of 
+nucleotides (A, C, G, T bases) in a way that  keeps the base composition of the 
+real reference genome but not generates repeats.
 
 
-\subsubsection{First Order Markov Chain}
+\subsubsection{\nth{1} Order Markov Chain}
 A Markov chain graphically can be drawn as a collection of states, 
 each corresponds to a particular nucleotide (A, C, G, T) with arrows
-between them like the following graph. 
-The conversion probability of each state to the other state is 
-associated with each arrow in the graph. 
+between them like the following (Figure \ref{MC}). 
+%The conversion probability of each state to the other state is 
+%associated with each arrow in the graph. 
 \\\\ 
 Having a set of states,  $ S= \{ A, C,  G, T \}$  and probability
 parameter  associated with arrows in the figure which determines the
-probability of transferring from one state to the next state.
+probability of transferring from one state to the next state (Transition)
+or staying on the same state (Emission).
 
-\begin{center}
- \begin{tikzpicture}[->,>=stealth',shorten >=1pt,auto,node distance=2.8cm,
+\begin{figure}
+ \begin{center}
+  \begin{tikzpicture}[->,>=stealth',shorten >=1pt,auto,node distance=2.8cm,
                     semithick,bend angle=5]
-  \tikzstyle{every state}=[fill=white,draw=black,text=black]
+   \tikzstyle{every state}=[fill=white,draw=black,text=black]
 
-  \node[state]         (A)              {$A$};
-  \node[state]         (T) [right of=A] {$T$};
-  \node[state]         (C) [below of=A] {$C$};
-  \node[state]         (G) [below of=T] {$G$};
+   \node[state]         (A)              {$A$};
+   \node[state]         (T) [right of=A] {$T$};
+   \node[state]         (C) [below of=A] {$C$};
+   \node[state]         (G) [below of=T] {$G$};
   
-  \path (A) edge [bend left]  node {\tiny 0.26} (T)
+   \path (A) edge [bend left]  node {\tiny 0.26} (T)
   			edge [loop above] node {\tiny 0.33} (A)
             edge [bend left]  node {\tiny 0.17} (C)
             edge [bend left]  node {\tiny 0.24} (G)
@@ -1497,8 +1511,11 @@ probability of transferring from one state to the next state.
        	    edge [bend left]  node {\tiny 0.21} (C)
         	edge [bend left]  node {\tiny 0.29} (A)
             edge [bend left]  node {\tiny 0.25} (T);
- \end{tikzpicture}
-\end{center}
+  \end{tikzpicture}
+  \caption{Trained \nth{1} order markov chain based on human reference genome}
+  \label{MC}
+ \end{center}
+\end{figure}
 
 
 %\begin{center}[H]
@@ -1532,12 +1549,12 @@ probability of transferring from one state to the next state.
 
 
 
-These probabilities are called \emph{transition probabilities}, which are 
-calculated by counting the number of transitions between states ($ A \rightarrow A, 
-A\rightarrow C, A \rightarrow T, A \rightarrow G, C \rightarrow C,$ ...)
-in the reference genome for our simulation; see the Table
-\ref{transition-table}.
-And then create a \emph{Transition Matrix} by calculating the frequency of seeing each transition,
+As mentioned above these probabilities are called \emph{transition or emission 
+probabilities}, which are calculated by counting the number of state given its 
+previous state ($ A \rightarrow A, A\rightarrow C, A \rightarrow T, A \rightarrow 
+G, C \rightarrow C,$ ...) in the genome of interest; see the Table \ref{transition-table}
+(Filled with human reference genome bases consistency).And then create a 
+\emph{Transition Matrix} by calculating the frequency of seeing each transition,
 as shown in Figure \ref{transition-matrix}.\\
 
 \begin{table}[h]
@@ -1581,15 +1598,15 @@ T =
  \label{transition-matrix}
 \end{figure}
 
-Besides specifying the transition probabilities, 
-the probability of starting state( state \emph{S} in the graph) is required. 
-All four state are equally probable to get started.
-And no specific probability for an end state defined as E 
-because the sequence can end anywhere.
+Besides specifying the transition probabilities, the probability of starting 
+state( state \emph{S} in the graph) is required. In our case as we don't have
+special interest on starting from particular state all four state are equally 
+probable to get started. And no specific probability for an end state defined as 
+E because the sequence can end anywhere (Figure \ref{MC_SE}).
 
 
-
-\begin{center}
+\begin{figure}
+ \begin{center}
  \begin{tikzpicture}[->,>=stealth',shorten >=1pt,auto,node distance=2.8cm,
                     semithick,bend angle=5]
   \tikzstyle{every state}=[fill=white,draw=gray,text=gray]
@@ -1629,24 +1646,26 @@ because the sequence can end anywhere.
             ;
 ;
  \end{tikzpicture}
-\end{center}
+ \caption{Trained \nth{1} Order Markov-Chain based on human reference genome with start and end state}
+ \label{MC_SE}
+ \end{center}
+\end{figure}
 
 
-The simulation program asks for the length of the genome and then the Markov chain model 
-starts randomly from one the states 
-then moves to a new state based on
-probabilities in Transition matrix  
-and ends when the simulation is reached the given
-genome length which could equally be at any state. \\\\
+The simulation program asks for the length of the genome and then the Markov chain 
+model starts randomly from one of the states and continuously walk between states 
+based on their probabilities on transition matrix till the number of visited stateds 
+is reached the given genome length which could equally be at any state. \\\\
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \subsection{Read Simulation}
 
-The second part of my test data preparation was simulating 
-ancient DNA reads sequenced by Illumina machine.
+The second part of my test data preparation is about simulating ancient DNA reads 
+sequenced by Illumina machine.
 
-Read sequences with \emph{post-mortem }damage \cite{damagepattern}
-the specific characteristics of ancient DNA, and sequencing errors \cite{phred1} of Illumina platform plus additional a substitution for divergence/mutation.
+Read has been sequenced with \emph{post-mortem }damage \cite{damagepattern} (the 
+specific characteristics of ancient DNA), and sequencing errors \cite{phred1} (from
+Illumina platform) plus additionally substitution for divergence/mutation.
 
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
