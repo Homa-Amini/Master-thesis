@@ -1919,7 +1919,7 @@ with $ \sigma = 0.9$, $ \sigma\prime = 0.93 $, $\delta = 0.02 $,  and $\lambda =
   \item Reference genome:  align to a simulated genome based
  on the human genome.
 
-  \item Aligners: R-Candy with damage parameters. \\
+  \item Aligners: R-Candy with damage parameters and alignments score 20. \\
 BWA with default parameters (there are no damage parameters in BWA)
 and its modified version for ancient data with the number of mismatches ( 0.01 ) and the number of gaps open ( 2 ).
 
@@ -1927,18 +1927,18 @@ and its modified version for ancient data with the number of mismatches ( 0.01 )
 
 \begin{figure}[H]
 \centering
-\includegraphics[width=12cm]{pictures/ROC_DS1_ART.pdf}
-\caption{ROC curve for simulated reads with deamination damage and sequencing error by ART, aligned to the simulated genome
-         with true deamination parameters.}
-\label{DS1}
-\end{figure}
-
-\begin{figure}[H]
-\centering
 \includegraphics[width=12cm]{pictures/ROC_DS1_emp.pdf}
 \caption{ROC curve for simulated reads with deamination damage and sequencing error by empirical quality distribution data, aligned to the simulated genome
          with true deamination parameters.}
 \label{DS1_emp}
+\end{figure}
+
+\begin{figure}[H]
+\centering
+\includegraphics[width=12cm]{pictures/bROC_DS1_ART.pdf}
+\caption{ROC curve for simulated reads with deamination damage and sequencing error by ART, aligned to the simulated genome
+         with true deamination parameters.}
+\label{DS1}
 \end{figure}
 % \item Second using the same datasets but align it to R-Candy with no damage parameters like modern data.
  
