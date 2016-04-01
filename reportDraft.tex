@@ -1906,28 +1906,47 @@ Knowing the true alignment of the reads, we evaluated the alignment accuracy.\\
 \emph{Post-mortem} damage (deamination) is a specific characteristic of ancient DNA that none of existing aligners for short
 reads are taken into account except R-Candy.\\
 
-To show the impact of deamination on alignment, I divided my evaluation into four parts:
+To show the impact of deamination on alignment, I divided my evaluation into six parts:
 
 \begin{enumerate}
  
- \item First simulated reads with deamination damage and align them back to the simulated genome with R-Candy providing it the actual damage
-parameters ( $ \sigma $, $ \sigma\prime$, $\delta$,  and $\lambda$) and BWA with default parameters (there are 
-no damage parameters in BWA) and also BWA with ancient parameters (-n 0.01 as the number of mismatches and 
--o 2 as the number of  gaps open).
-
- \item Second using the same datasets but align it to R-Candy with no damage parameters like modern data.
+ \item
  
- \item Third, simulated reads with no deamination damage and align them to the simulated genome with R-Candy's default parameters and with actual parameters which are zero number for deamination parameters and also BWA with default and ancient parameters . 
+  \begin{itemize}
+   \item Data: simulated reads with deamination damage
+with $ \sigma = 0.9$, $ \sigma\prime = 0.93 $, $\delta = 0.02 $,  and $\lambda = 0.3 $ parameters for Philip Johnson deamination model and extra substitutions due to different divergence rate(see Section 4.2.1) and sequencing error using empirical quality distribution data and also sequencing error provided by ART for Illumina platform.
 
-\end{enumerate}
+  \item Reference genome:  align to a simulated genome based
+ on the human genome.
+
+  \item Aligners: R-Candy with damage parameters. \\
+BWA with default parameters (there are no damage parameters in BWA)
+and its modified version for ancient data with the number of mismatches ( 0.01 ) and the number of gaps open ( 2 ).
+
+  \end{itemize}
 
 \begin{figure}[H]
 \centering
-\includegraphics[width=12cm]{pictures/DS1-A.png}
+\includegraphics[width=12cm]{pictures/ROC_DS1_ART.pdf}
 \caption{ROC curve for simulated reads with deamination damage and sequencing error by ART, aligned to the simulated genome
          with true deamination parameters.}
 \label{DS1}
 \end{figure}
+
+\begin{figure}[H]
+\centering
+\includegraphics[width=12cm]{pictures/ROC_DS1_emp.pdf}
+\caption{ROC curve for simulated reads with deamination damage and sequencing error by empirical quality distribution data, aligned to the simulated genome
+         with true deamination parameters.}
+\label{DS1_emp}
+\end{figure}
+% \item Second using the same datasets but align it to R-Candy with no damage parameters like modern data.
+ 
+% \item Third, simulated reads with no deamination damage and align them to the simulated genome with R-Candy's default parameters and with actual parameters which are zero number for deamination parameters and also BWA with default and ancient parameters . 
+
+\end{enumerate}
+
+
 
 
 \begin{figure}[H]
