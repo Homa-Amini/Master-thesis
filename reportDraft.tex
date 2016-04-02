@@ -1844,7 +1844,8 @@ short sequences (30-50 bps) of ancient DNA based on BWT of the reference genome 
 It performs semi-global alignment for single end reads, supports pair-end aligning, 
 generates alignment score and produces multiple hits if required.
 
-The R-Candy's output is a BAM file. It is the binary version of a SAM file in order to compress data reasonably well.  A SAM file (Sam Alignment/Map format) is a tab-delimited text file that contains sequence alignment data.   
+The R-Candy's output is a BAM file. It is the binary version of a SAM file in order to compress data reasonably well. 
+A SAM file (Sam Alignment/Map format) is a tab-delimited text file that contains sequence alignment data.   
 More information about these formats is available on the SAM Tools website: http://samtools.sourceforge.net.
 
 %R-Candy's documentation and source code are freely available at (https://github.com/udo-stenzel/r-candy.git).
@@ -1967,13 +1968,13 @@ As the result shows, R-Candy archives the highest rate of sensitivity in all fou
 
 Length 25 is a very challenging length for aligners, where any small change in the read bases could make a perfect match in another part of the reference genome and recognizing the true genomic position very hard. 
 
-In the case of deaminated reads with only sequencing error, no extra substitution (the plot with zero mismatches), the sensitivity rate for R-Candy is 99% compare to BWA with ancient data parameters 97% and BWA with default parameters 94%. 
+In the case of deaminated reads with only sequencing error, no extra substitution (the plot with zero mismatches), the sensitivity rate for R-Candy is 99\% compare to BWA with ancient data parameters 97\% and BWA with default parameters 94\%. 
 Introducing extra mismatches to the reads, we see sensitivity decreasing for both aligners as expected.
 
 As is expected, increasing the number of  mismatches per read, the sensitivity of alignment decrease but we don't see a big difference in false positive rates.
 
 R-Candy yields the highest sensitivity rates on the reads of the length of 30 as well. 
-98%, 94% and 88% are the true positive rates of alignment for R-Candy, BWA with ancient data parameters and BWA with default parameters respectively for the simulated reads with one mismatch. 
+98\%, 94\% and 88\% are the true positive rates of alignment for R-Candy, BWA with ancient data parameters and BWA with default parameters respectively for the simulated reads with one mismatch. 
 
 The huge decrease in false positive rates between reads of length 25 and 30 shows even five bases difference can make a huge difference in the number of non-endogenous reads be accepted or rejected by an aligner.
 
@@ -1984,8 +1985,38 @@ BWA behaves differently when it's aligning with its default parameters than with
 For all lengths and number of mismatches, the latter yields a higher rate of sensitivity while aligning a high number of microbial reads.
 
 
+ \item
+  \begin{itemize}
+   \item \textbf{Data:} the same dataset as scenario number 1.
+   
+   \item \textbf{Reference genome:} align to a simulated genome based
+ on the human genome.
 
-% \item Second using the same datasets but align it to R-Candy with no damage parameters like modern data.
+    \item \textbf{Aligners:} R-Candy with damage parameters equal to zero and alignments score 20. \\
+BWA with default parameters and its modified version for ancient data with the number of mismatches ( 0.01 ) and the number of gap opens ( 2 ).
+  
+  \end{itemize}
+ 
+The motivation behind this test is to see the behavior of aligners
+where we have ancient data and treat them like modern data.
+
+
+\begin{figure}[H]
+\centering
+\includegraphics[width=12cm]{pictures/bROC_DS2_emp.pdf}
+\caption{ROC curve for simulated reads with deamination damage and sequencing error by empirical quality distribution data, aligned to the simulated genome
+         with true deamination parameters.}
+\label{DS2_emp}
+\end{figure}
+
+\begin{figure}[H]
+\centering
+\includegraphics[width=12cm]{pictures/bROC_DS2_ART.pdf}
+\caption{ROC curve for simulated reads with deamination damage and sequencing error for Illumina platform provided by ART aligned to the simulated genome
+         with no deamination parameters.}
+\label{DS2_ART}
+\end{figure}
+
  
 % \item Third, simulated reads with no deamination damage and align them to the simulated genome with R-Candy's default parameters and with actual parameters which are zero number for deamination parameters and also BWA with default and ancient parameters . 
 
@@ -1994,13 +2025,6 @@ For all lengths and number of mismatches, the latter yields a higher rate of sen
 
 
 
-\begin{figure}[H]
-\centering
-\includegraphics[width=12cm]{pictures/DS2-A.png}
-\caption{ROC curve for simulated reads with deamination damage and sequencing error for Illumina platform provided by ART aligned to the simulated genome
-         with no deamination parameters.}
-\label{DS2}
-\end{figure}
 
 \begin{figure}[H]
 \centering
