@@ -1993,14 +1993,13 @@ DNA that none of existing aligners for short reads are taken into account except
 
 To show the impact of deamination on alignment, I divided my evaluation into six parts:
 \begin{enumerate}
-\item Deaminated sequence and aligned with ancient parameter
-\item Deainatied sequence, aligned without ancient parameter
-\item ......
-\item ......
-\item ......
-\item ......
-\item ......
-\item ......
+\item Deaminated sequences extracted from a simulated genome and aligned with ancient parameters.
+\item Deaminated sequences extracted from a simulated genome and aligned without ancient parameters.
+\item Non-deaminated sequences extracted from a simulated genome and aligned with default (non-ancient) parameters.
+\item Deaminated sequence extracted from the human genome and aligned with ancient parameters.
+\item Deaminated sequence extracted from the human genome and aligned without ancient parameters.
+%\item ......
+
 \end{enumerate}
 
 \subsection{Scenario 1 }
@@ -2010,12 +2009,12 @@ $ \sigma\prime = 0.93 $, $\delta = 0.02 $,  and $\lambda = 0.3 $ as parameters f
 deamination model and extra substitutions due to different divergence rate( Range 
 (0..6) for number of mismatches see Section 4.2.1) and sequencing error using 
 empirical quality distribution data and also sequencing error provided by ART 
-for Illumina platform infunction of length 25, 30, 35, 40.
+for Illumina platform in function of length 25, 30, 35, 40.
   \item \textbf{Reference genome:}  Read are aligned to a simulated genome (length 1 gb).
   \item \textbf{Aligners:} R-Candy with damage parameters and maximum alignments score 20. \\
 BWA with default parameters (there are no damage parameters in BWA) and its 
 modified parameter version for ancient data ( Number of mismatches ( -n 0.01 ) 
-and the number of gap openning ( -o 2))
+and the number of gap opening ( -o 2))
 
   \end{itemize}
 
@@ -2038,16 +2037,16 @@ deamination parameters.}
 \end{figure}
 
 
-The ROC curve shows R-Candy accuracy under different alignment-score cuttoff.
+The ROC curve shows R-Candy accuracy under different alignment-score cutoff.
 In the case of multiple best hits reported by R-Candy, just one hit has been 
 chosen \footnote{Completely arbitrarily} to do a fair comparison 
 between R-Candy and BWA which reports one best hit per each read.
-As the result shows, R-Candy achives the highest rate of sensitivity
+As the result shows, R-Candy achieves the highest rate of sensitivity
 in all four given lengths.
 
 Reads in length 25 are a very challenging for aligners, where any small change 
 in the read bases could make a perfect match in another part of the reference 
-genome. This behaviour leads to recognizing the true genomic position very hard. 
+genome. This behavior leads to recognizing the true genomic position very hard. 
 
 In the case of deaminated reads with only sequencing error, no extra substitution 
 (the plot with zero mismatches), the sensitivity rate for R-Candy is 99\% compare 
@@ -2086,8 +2085,10 @@ microbial reads.
    \item \textbf{Reference genome:} align to a simulated genome based
  on the human genome.
 
-    \item \textbf{Aligners:} R-Candy with damage parameters equal to zero and alignments score 20. \\
-BWA with default parameters and its modified version for ancient data with the number of mismatches ( 0.01 ) and the number of gap opens ( 2 ).
+    \item \textbf{Aligners:} R-Candy with damage parameters equal to zero and 
+    alignments score 20. \\
+BWA with default parameters and its modified version for ancient data with the 
+number of mismatches ( 0.01 ) and the number of gap opens ( 2 ).
   
   \end{itemize}
  
@@ -2098,7 +2099,8 @@ where we have ancient data and treat them like modern data.
 \begin{figure}[H]
 \centering
 \includegraphics[width=12cm]{pictures/bROC_DS2_emp.pdf}
-\caption{ROC curve for simulated reads with deamination damage and sequencing error by empirical quality distribution data, aligned to the simulated genome
+\caption{ROC curve for simulated reads with deamination damage and sequencing error 
+by empirical quality distribution data, aligned to the simulated genome
          with true deamination parameters.}
 \label{DS2_emp}
 \end{figure}
@@ -2106,7 +2108,8 @@ where we have ancient data and treat them like modern data.
 \begin{figure}[H]
 \centering
 \includegraphics[width=12cm]{pictures/bROC_DS2_ART.pdf}
-\caption{ROC curve for simulated reads with deamination damage and sequencing error for Illumina platform provided by ART aligned to the simulated genome
+\caption{ROC curve for simulated reads with deamination damage and sequencing error 
+for Illumina platform provided by ART aligned to the simulated genome
          with no deamination parameters.}
 \label{DS2_ART}
 \end{figure}
@@ -2139,7 +2142,8 @@ The goal is to see, the performance of R-Candy for non-damaged data.
 \begin{figure}[H]
 \centering
 \includegraphics[width=12cm]{pictures/bROC_DS3_emp.pdf}
-\caption{ROC curve for simulated reads with no deamination damage and sequencing error by empirical quality distribution data, aligned to the simulated genome
+\caption{ROC curve for simulated reads with no deamination damage and sequencing 
+error by empirical quality distribution data, aligned to the simulated genome
          with default parameters.}
 \label{DS3_emp}
 \end{figure}
@@ -2147,7 +2151,8 @@ The goal is to see, the performance of R-Candy for non-damaged data.
 \begin{figure}[H]
 \centering
 \includegraphics[width=12cm]{pictures/bROC_DS3_ART.pdf}
-\caption{ROC curve for simulated reads with no deamination damage and sequencing error for Illumina platform provided by ART aligned to the simulated genome
+\caption{ROC curve for simulated reads with no deamination damage and sequencing 
+error for Illumina platform provided by ART aligned to the simulated genome
          with no deamination (default parameters).}
 \label{DS3_ART}
 \end{figure}
@@ -2174,7 +2179,8 @@ a real genome like repetitive parts in the genome string which makes the alignme
 \begin{figure}[H]
 \centering
 \includegraphics[width=12cm]{pictures/bROC_DS4_emp.pdf}
-\caption{ROC curve for simulated reads with deamination damage and sequencing error by empirical quality distribution data, aligned to the human genome
+\caption{ROC curve for simulated reads with deamination damage and sequencing error 
+by empirical quality distribution data, aligned to the human genome
          with deamination parameters.}
 \label{DS4_emp}
 \end{figure}
@@ -2182,7 +2188,8 @@ a real genome like repetitive parts in the genome string which makes the alignme
 \begin{figure}[H]
 \centering
 \includegraphics[width=12cm]{pictures/bROC_DS4_ART.pdf}
-\caption{ROC curve for simulated reads with deamination damage and sequencing error simulated by ART aligned to the human genome
+\caption{ROC curve for simulated reads with deamination damage and sequencing error 
+simulated by ART aligned to the human genome
          with damage parameters.}
 \label{DS4_ART}
 \end{figure}
@@ -2209,7 +2216,8 @@ The affect of aligning  damaged data with no damage information to a real genome
 %\begin{figure}[H]
 %\centering
 %\includegraphics[width=12cm]{pictures/bROC_DS4_emp.pdf}
-%\caption{ROC curve for simulated reads with deamination damage and sequencing error by empirical quality distribution data, aligned to the human genome
+%\caption{ROC curve for simulated reads with deamination damage and sequencing error by 
+%empirical quality distribution data, aligned to the human genome
 %         with deamination parameters.}
 %\label{DS4_emp}
 %\end{figure}
@@ -2235,14 +2243,63 @@ The affect of aligning  damaged data with no damage information to a real genome
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \section{Performance}
 
-To evaluate R-Candy's speed, we used two test set, first simulated endogenous 
-and microbial reads align to a simulated genome and second simulated endogenous
+To evaluate R-Candy's speed, we used two test sets, first simulated genomic 
+and microbial reads align to a simulated genome and second simulated genomic
 and microbial reads align to a real genome.\\
 
-Tables  \ref{speed-SG} and \ref{speed-RG} show the running time of R-Candy on
-a single CPU for the first and second test sets respectively.
-Notice that the time required for building the R-Candy's index structure is 
-not included in the reported running time.\\
+Tables  \ref{speed-SG} and \ref{speed-RG} show the speed of 
+the two aligners used in this evaluation
+R-Candy and BWA on a single CPU.
+Notice that the time required for building the genome index is 
+not included in the reported time.\\
+
+
+
+
+\begin{table}[H]
+  \begin{tabular}{ |  p{2cm} | p{2cm} | p{3cm} | p{3cm} | }
+    \hline
+  	\textbf{Type} & \textbf{Read length }&\textbf{Speed BWA \hspace{35pt}(no. of reads/s) } 	 
+  	%&\textbf{Speed R-Candy (AS=12, N=1)\hspace{35pt}(no. of reads/s)} 
+  	& \textbf{Speed R-Candy AS=20, N=64\hspace{35pt}(no. of reads/s)}\\ \hline
+  	  
+ 	  Genomic    & 25  & 0.0192 &   0.123 \\ \hline
+      Genomic    & 30  & 0.0182 &   0.007 \\ \hline
+      Genomic    & 35  & 0.0177 &   0.047 \\ \hline
+ 	  Genomic	 & 40  & 0.0180 &   0.045 \\ \hline
+ 	  Microbial  & 25  & 0.0629 &   0.540 \\ \hline
+      Microbial  & 30  & 0.0619 &   0.319 \\ \hline
+ 	  Microbial  & 35  & 0.0615 &   0.289 \\ \hline
+ 	  Microbial  & 40  & 0.0616 &   0.299 \\ \hline
+ 	  
+   \end{tabular}
+\caption{The alignment speed for reads aligned to the human reference genome.BWA with default parameters.N = output up to number number of hits per read }
+\label{speed-RG}
+\end{table}
+
+
+
+\begin{table}[h]
+  \begin{tabular}{ |  p{2cm} | p{2cm} | p{3cm} | p{3cm} | }
+    \hline
+  	\textbf{Type} & \textbf{Read length }&\textbf{Speed BWA \hspace{35pt}(no. of reads/s) } 	 
+  	%&\textbf{Speed R-Candy (AS=12, N=1)\hspace{35pt}(no. of reads/s)} 
+  	& \textbf{Speed R-Candy AS=20, N=64\hspace{35pt}(no. of reads/s)}\\ \hline
+  
+      Genomic   & 25  & 0.0255  &  0.134 \\ \hline 
+      Genomic   & 30  & 0.0248  &  0.066 \\ \hline 
+ 	  Genomic	& 35  & 0.0237  &  0.066 \\ \hline 
+ 	  Genomic	& 40  & 0.0244  &  0.059 \\ \hline 
+ 	  Microbial & 25  & 0.083   &  0.637 \\ \hline 
+      Microbial & 30  & 0.0815  &  0.494 \\ \hline 
+ 	  Microbial & 35  & 0.0810  &  0.477 \\ \hline 
+ 	  Microbial & 40  & 0.0811  &  0.450 \\ \hline 
+ 	  
+   \end{tabular}
+\caption{The alignment speed for reads aligned to the simulated genome.}
+\label{speed-SG}
+\end{table}
+
 
 
 As the results  show  the R-Candy's speed is affected by the read length on both cases.
@@ -2254,73 +2311,24 @@ On memory, R-Candy uses 2.5G for single-end mapping.\\
 
 The current version of R-Candy does not support multi-threading to reduce the 
 memory usage on multi-core computers.\\\\
-We did not test R-Candy on real data because we do not know the ground truth
-to help us on evaluating our software.\\
-
-
-\begin{table}[H]
-  \begin{tabular}{ |  p{2cm} | p{2cm} | p{3cm} | p{3cm} | p{3cm} |}
-    \hline
-  	\textbf{Type} & \textbf{Read length } &\textbf{Running time(s) } 
-  	&\textbf{Speed \hspace{35pt}(no. of reads/s)} & \textbf{Speed \hspace{35pt}(no. of reads/s)}\\ \hline
-  	  
- 	  Genomic    & 25  & 74435.126s  & 0.134 \\ \hline
-      Genomic    & 30  & 131637.035s & 0.075 \\ \hline
- 	  Genomic	 & 35  & 150527.237s & 0.066 \\ \hline
- 	  Genomic	 & 40  & 166909.584s & 0.059 \\ \hline
- 	  Microbial  & 25  & 15676.300s  & 0.637 \\ \hline
-      Microbial  & 30  & 20203.191s  & 0.494 \\ \hline
- 	  Microbial  & 35  & 20932.235s  & 0.477 \\ \hline
- 	  Microbial  & 40  & 22181.249s  & 0.450 \\ \hline
- 	  
-   \end{tabular}
-\caption{The R-Candy alignment speed for bacterial reads aligned to the human reference genome}
-\label{speed-SG}
-\end{table}
-
-
-
-\begin{table}[h]
-  \begin{tabular}{ |  p{2cm} | p{2cm} | p{3cm} | p{3cm} | }
-    \hline
-  	\textbf{Type} & \textbf{Read length } &\textbf{Running time(s) } &\textbf
-     {Speed\hspace{35pt}(no. of reads/s)} \\ \hline 
-  
-      Genomic   & 25  & 80816.842s   & 0.123 \\ \hline
-      Genomic   & 30  & 1377473.004s & 0.007 \\ \hline
- 	  Genomic	& 35  & 209116.332s  & 0.047 \\ \hline
- 	  Genomic	& 40  & 219178.156s  & 0.045 \\ \hline
- 	  Microbial & 25  & 18490.615s   & 0.540 \\ \hline
-      Microbial & 30  & 31276.839s   & 0.319 \\ \hline
- 	  Microbial & 35  & 34546.643s   & 0.289 \\ \hline
- 	  Microbial & 40  & 33363.229s   & 0.299 \\ \hline
- 	  
-   \end{tabular}
-\caption{The R-Candy alignment speed for simulated reads aligned to the human reference genome}
-\label{speed-RG}
-\end{table}
-
 
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 \section{Conclusions}
-The aim of this thesis ....
+%We did not test R-Candy on real data because we do not know the ground truth
+%to help us on evaluating our software.\\
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \section{Future Work}
 Some bullet point regards the future
 \begin{enumerate}
-\item Use dynamic programming (DP) for alignment algorithm and implement it in 
-the way that instead of filling \emph{score matrix} in a rectangular stick with 
-some diagonals if we know that we will have more match/mismatch instead of INDELs.
-\item using seed strategy which needs to sub-divide the alignment and start from 
-different places which we need a \emph{Bidirectional Wavelet Tree}\cite{bidirectional} 
-for that.
-\item Start aligning from the middle of the reads (because that is the best part 
-that we have in ancient DNA) in one direction and then the other direction (again 
-we need a Bidirectional Wavelet Tree to turn around)
-\item ...... Ask Janet and Udo ........
+
+\item On the alignment algorithm:
+using dynamic programming (DP) for alignment algorithm 
+and  seed strategy and also support multi-threading.
+
+\item On evaluation: finding the best alignment score for different read lengths.
 \end{enumerate}
 
 
@@ -2328,38 +2336,36 @@ we need a Bidirectional Wavelet Tree to turn around)
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \section{Availability}
 
-R-Candy's documentation and source code are freely available at:\\
+R-Candy's documentation and source code are freely available at\\
  (https://github.com/udo-stenzel/r-candy.git).
-\\
-
-Genome/read simulation program written in C++ is freely available at\\ 
+\\\\
+Genome/read simulation program written in C++ is freely available at
 (https://github.com/Homa1127/simulateGenome.git).
-
-
-The hash program for analysing  R-Candy's output written in C++, available at: \\
+\\\\
+The hash program for analysing  R-Candy's output written in C++, available at
 https://github.com/Homa1127/rcandyHash.git
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 \section{Abbreviations}
 
-DNA: deoxyribonucleic acid;
-bp: base pair;
-NGS: next generation sequencing technologies;
-BWT: Burrows-Wheeler transform;
-FM: full-text minute-space;
-A: Adenine;
-C: Cytosine;
-T: Thymine;
-G: Guanine;
-PacBio: Pacific Bioscience;
-SA: suffix array;
-LF: last to first;
-DFS: depth first search;
-DP: dynamic programming;
-BAM: Binary Alignment/Map;
-CDF: cumulative distribution function.
-PCR: Polymerase Chain Reaction.
+\textbf{DNA}: deoxyribonucleic acid;
+\textbf{bp}: base pair;
+\textbf{NGS}: next generation sequencing technologies;
+\textbf{BWT}: Burrows-Wheeler transform;
+\textbf{FM}: full-text minute-space;
+\textbf{A}: Adenine;
+\textbf{C}: Cytosine;
+\textbf{T}: Thymine;
+\textbf{G}: Guanine;
+\textbf{PacBio}: Pacific Bioscience;
+\textbf{SA}: suffix array;
+\textbf{LF}: last to first;
+\textbf{DFS}: depth first search;
+\textbf{DP}: dynamic programming;
+\textbf{BAM}: Binary Alignment/Map;
+\textbf{CDF}: cumulative distribution function.
+\textbf{PCR}: Polymerase Chain Reaction.
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 
