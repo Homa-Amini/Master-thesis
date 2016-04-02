@@ -628,8 +628,10 @@ The most important default parameters of the two considered aligners in this the
 BWA does not include \emph{post-mortem} damage at its alignment process.
 
  
- \item \emph{Divergence rate:} which is defined as one-third of the expected divergence rate between the reads and reference genome.  R-Candy's default divergence rate is 0.005,  assuming aligning a human genome to a chimpanzee genome.\\\
- Not available for BWA.
+ \item \emph{Divergence rate:} which is defined as one-third of the expected 
+divergence rate between the reads and reference genome.  R-Candy's default 
+divergence rate is 0.005,  assuming aligning a human genome to a chimpanzee 
+genome.\\Not available for BWA.
   
  %\item \emph{INDEL rate:}???
   
@@ -1671,32 +1673,42 @@ Illumina platform) plus additionally substitution for divergence/mutation.
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \subsubsection{Divergence}
 
-By definition \quotes{ divergence is the separation
+By definition \emph{\quotes{ divergence is the separation
 of a population's gene pool from the gene pools of other populations 
-due to mutation, genetic drift, and selection \cite{divergence2}.}\\
+due to mutation, genetic drift, and selection \cite{divergence2}.}}\\
 
-Introducing divergence property which also is used in R-Candy's mapping strategy to my simulation is next step in my simulation process. 
+Introducing divergence property which also is used in R-Candy's mapping strategy 
+is on top of simulated reads before any other source of substitution in my workflow. 
 
-To understand how much divergence impedes mapping, 
-I simulated reads with a small number (0..6) of differences to the reference genome.
-And ran R-Candy with a default value for different datasets of reads with a different number of divergence substitution rates to evaluate the accurate of its alignment while aligning reads to close or far genomes.
+To understand how much divergence impedes mapping, I simulated reads with (0..N) 
+number of absolute mismatches \footnote {These fix number of differences depends 
+on the length of the read are representing different divergence rate. As an example 
+2 mismatches on the sequence length 25 and 40 are showing the divergance rate of 8\% 
+and 5\% respectively} to the reference genome.
+And ran R-Candy with a default value for different datasets of reads with a 
+different number of divergence substitution rates to evaluate the accurate of its 
+alignment while aligning reads to close or far genomes.
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \subsubsection{Deamination}
 
-A high nucleotide misincorporation rate of  deamination of cytosine(C) to uracil, code as thymine(T) are the unique characteristics of ancient DNA as the result of \emph{post-mortem} DNA damage\cite{mapdamage2}\cite{damagepattern}.\\ 
+A high nucleotide misincorporation rate of  deamination of cytosine(C) to uracil, 
+code as thymine(T) are the unique characteristics of ancient DNA as the result 
+of \emph{post-mortem} DNA damage\cite{mapdamage2}\cite{damagepattern}.\\ 
 
 Observation in the recently introduced single-stranded library preparation protocol
-has shown a significant increase in C to T substitution rates at the read terminals\cite{mapdamage2}.\\
+has shown a significant increase in C to T substitution rates at the read terminals
+\cite{mapdamage2}.\\
 
-A model developed by Philip Jonson \cite{mapdamage2} is used
-to simulate \emph{post-mortem} deamination as the followings:
+A computational model developed by Philip Jonson \cite{mapdamage2} is used to model
+\emph{post-mortem} deamination behaviour as the followings:
 
 For single stranded library preparation,
-let $\sigma$ and $\sigma\prime $ be deamination rate in the 5' and 3' overhangs respectively and $\lambda$ be overhang length parameter. 
+let $\sigma$ and $\sigma\prime $ be deamination rate in the 5' and 3' overhangs 
+respectively and $\lambda$ be overhang length parameter. 
 
-Let  $\delta$ and $l$ be the
-deamination rate at the middle(non-overhang) parts and the length of the read being aligned.\\
+Let  $\delta$ and $l$ be the deamination rate at the middle(non-overhang) parts 
+and the length of the read being aligned.\\
 
 The DNA damage transition matrix is defined as:
 
@@ -1708,41 +1720,45 @@ $$ P_{dam} =
   0 & 0 & 0 & 1 
  \end{pmatrix}$$
  
-
-The probability of damage for each base is defined  
-as\cite{mapdamage2}:\\
+Which columns and rows representing substitution rate between bases in reference 
+and read respectivly.\\
+The probability of damage for each base is defined as\cite{mapdamage2}:\\
 %Where the base-specific damage probabilities are defined as\cite{mapdamage2}:\\
 $$ p_{ct}(\sigma, \delta, \lambda, i) = ( \lambda_{i} \sigma + \delta(1 - \lambda_{i})) $$
  
-It uses a geometric distribution to calculate the length of the overhang at both ends of a sequence based on certain deamination parameters.
- 
+It uses a geometric distribution to calculate the length of the overhang at both 
+ends of a sequence based on certain deamination parameters.
 
-The probability of being in overhang is provided by the user as the success fraction in the geometric cumulative distribution function (CDF).
+The probability of being in overhang is provided by the user as the \emph{success 
+fraction} in the geometric cumulative distribution function (CDF).
 
-
-We assume the probability of each base being in overhang is independent than the other bases.\\
+Also for the simplicity we assume the probability of each base being in overhang 
+and has the chance to be damaged is independent of the other bases. In other 
+words, deaminating of one base has no influence on the other bases.\\
 
 $$Pr( X=k ) = 1 - (1 - p)^{k}$$
 $$ k = 1, 2, 3, ... $$
 
 
-The simulation program first calculates the overhang length given the user-specified success fraction value.
-
-
-And then uses the user-specified substitution ratio numbers,
- $ \sigma $ and $\sigma\prime $, for substitution of 
- the $ C \rightarrow T $ 
-in overhangs which usually is higher than the deamination substitution ratio, $delta$, in non-overhang parts of aDNA reads.
+The simulation program first calculates the overhang length given the user-specified 
+success fraction value.And then uses the user-specified substitution ratio numbers,
+ $ \sigma $ and $\sigma\prime $, for substitution of the $ C \rightarrow T $ in 
+overhangs which usually is higher than the deamination substitution ratio, $delta$, 
+in non-overhang parts of aDNA reads.
 
  
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% 
 \subsubsection{Sequencing Error}
  
 
-A sequencing error is an incorrect identification of a nucleotide base resulting to an inaccurate read. 
-due to the error in the base calling of the sequencing machines, there is no precise DNA sequencing. \\
-A quality score indicating the confidence of correctly seeing a base is assigned to each base of a read sequence.\\
-Different sequencing methods have different quality score leading to variable sequencing error. These errors become visible when aligning a read to a reference string.\\
+A sequencing error is an incorrect identification of a nucleotide base resulting 
+to an inaccurate machine read. Due to the error in the base calling, there is no 
+precise DNA sequencing. \\
+A quality score indicating the confidence level of correctly seeing a base is 
+assigned to each base of a read sequence.\\
+Different sequencing platform have different quality score leading to variable 
+sequencing error. These errors become visible when aligning a read to a reference 
+string.\\
 The main sequencing error for Illumina platform is base substitution due to reading out one base at a time \cite{art}.\\
 
 The substitution error probability is calculated by the base quality score along with the called base.\\
