@@ -1758,15 +1758,19 @@ A quality score indicating the confidence level of correctly seeing a base is
 assigned to each base of a read sequence.\\
 Different sequencing platform have different quality score leading to variable 
 sequencing error. These errors become visible when aligning a read to a reference 
-string.\\
-The main sequencing error for Illumina platform is base substitution due to reading out one base at a time \cite{art}.\\
+string and (As substitutions or mismatches).\\
+The main sequencing error for Illumina platform is base substitution due to 
+reading out one base at a time \cite{art}.The substitution error probability is 
+calculated by the base quality score along with the called base.\\
 
-The substitution error probability is calculated by the base quality score along with the called base.\\
 
+The output data of sequencing machines significantly differs in quality for 
+several reasons ( for illustration, see Ewing et al. 1998) therefore, an effective 
+measure for the reliability of such a data is vital \cite{phred1}.\\
 
-The output data of sequencing machines significantly differs in quality for several reasons ( for illustration, see Ewing et al. 1998) therefore, an effective measure for the reliability of such a data is vital \cite{phred1}.\\
-
-In order to assess the accuracy of sequencing data, base calling accuracy by Phred quality score (Q score) is the most widely used metric. It demonstrates the probability of an error in base calling by a sequencer.\\
+In order to assess the accuracy of sequencing data, base calling accuracy by Phred 
+quality score (Q score) is the most widely used metric. It demonstrates the probability 
+of seeing an error in each bases, calling by a sequencer.\\
 
 Phred quality scores are defined as \cite{phred2}:
 
@@ -1774,76 +1778,103 @@ $$ Q = -10  log_{10}P   $$
 $$  or $$
 $$ P = 10 ^ { \frac{-Q}{ 10 } } $$
 
-For instance, if Phred score of a base is Q40, it means the probability of an incorrect base call is a 1 in 10000 which shows 99.99\% base call accuracy \cite{IlluminaPhred}. \\  
+For instance, if Phred score of a base is Q$$=$$40, it means the probability of an 
+incorrect base call is a 1 in 10000 which shows 99.99\% base calling accuracy 
+\cite{IlluminaPhred}. \\  
 
 In order to implement sequencing error for simulated reads, There are two
-options in my program (readSim):
+options in my simulator (readSim):
 
-The first option uses a next-generation sequencing read simulation software, (ART).
-ART generates sequencing reads based on different sequencing technology platforms
-(454, Illumina, SOLiD) criteria[35].
+The \textbf{first} option uses a next-generation sequencing read simulator (ART). 
+ART generates sequencing reads based on different sequencing technology 
+platforms (454, Illumina, SOLiD) criteria[35].
 
-ART simulates the substitution error probability, base on the base
-quality score distribution reported by large training datasets[35].
+ART simulates the substitution error probability, based on the base-quality 
+score distribution reported by large training datasets[35].
 
-In order to use ART in readSim you just need to specify the sequencing platform 
-and the length for generating base quality scores. Despite the user-friendly 
-and easy working features of ART, it has a low quality score rate compared
-to the empirical data\cite{bwa} which leads to the high sequencing error rate.
+In order to use ART in readSim user needs to specify the sequencing platform 
+and the reads length for generating base quality scores. Despite the user-friendly 
+and easy working features of ART, it has been proposed before, which low quality score 
+rate compared to the empirical data\cite{bwa} which leads to the high sequencing
+error rate.
 
-For this reason, there is a second option in readSim that simulates
-sequencing error based on an empirical data.
+For this reason, there is a \textbf{second} option in readSim that simulates
+sequencing error based on an empirical data (in house sequenced data).
 
-The implementation looks at the qualities of the sequencing error profile assigned to it base by base and generates a 
-distribution table for it. Then calculates probability mass function (PMF) 
-which is the error quality frequencies at each cycle for both forward and 
-reverse reads. At the next step, cumulative distribution function (CDF) is calculated 
-by summing up the quality frequency of each base with all quality bases before it. 
-Given the CDF distribution, the quality score of bases in a read determined using a 
-random number to sample.
+The implementation looks at the sequencing error assigned to each base at each
+position in the read and generates a distribution table for it (figure \ref{hist}).
 
+\begin{figure}[H]
+\centering
+\includegraphics[width=12cm]{pictures/Rplot_quality.pdf}
+\caption{Number of bases in each cycle in function of having certain quality}
+\label{hist}
+\end{figure}
 
+Then calculating probability mass function (PMF) which is the error quality 
+frequencies at each cycle for both forward and reverse reads. At the next 
+step, cumulative distribution function (CDF) is calculated by summing up the 
+quality frequency of each base with all quality bases before it (figure \ref{ecdf}).
 
+\begin{figure}[H]
+\centering
+\includegraphics[width=12cm]{pictures/Rplot_ecdf.png}
+\caption{Empirical cumulative distribution of all bases in cycle 11 of all forward 
+reads}
+\label{hist}
+\end{figure}
+
+The quality score of each bases in a read, determined by a random number compare to 
+its corresponding value in given CDF.
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \subsection{Simulating Endogenous Sequences}
 
-Ancient DNA extracts consist of a low amount of endogenous DNA which used to be a big problem at evolution researchers until the recent technology of sequencing polymerase chain reaction (PCR) \cite{PCR} made it possible to amplify DNA sequences and produce high coverage data for deeper studies on human origins.
+Ancient DNA extracts consist of a low amount of endogenous DNA which used to be 
+a big problem at evolution researchers until the recent technology of sequencing 
+polymerase chain reaction (PCR) \cite{PCR} made it possible to amplify DNA 
+sequences and produce high coverage data for deeper studies on human origins.
 \\\\
-y endogenous read simulation process starts
+readSim uses the following workfllow to simulate endogenous reads:
 \begin{itemize}
- \item First by uniformly sampling reads over the reference genome.
+ \item Uniformly sampled reads over the reference genome.
 
- \item Second, introducing a small number of differences to 
+ \item Introducing given number of differences to 
  reads in order to simulate different divergence rates.
 
- \item Third, simulating \emph{post-mortem} deamination damage based on deamination parameters (like, deamination rate in overhangs and non-overhang parts and probability for calculating the overhang lengths) by users. 
+ \item Simulating \emph{post-mortem} deamination damage based on deamination 
+parameters (e.g overhang and non-overhang deamination rate in addition to 
+probability of being in overhange) by users. 
 
- \item Fourth,  adding the specific types of errors coming from sequencing machine to the reads.
+ \item Adding the specific types of errors coming from sequencing machine based
+on empirical cumilitive distribution.
 \end{itemize}
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \subsection{Simulating Microbial Sequences}
 
-   
-
-Ancient DNA extracts are highly contaminated by mostly environmental microbes that always make the recognition of endogenous and exogenous DNA hard for aligners.
-Although there is a database of known bacteria DNAs that could help us to detect bacterial sequences and don't mix them with endogenous 
-DNA sequences but still there are a lot of unknown bacterial contamination.
+Ancient DNA extracts are highly contaminated by mostly environmental microbes 
+that always make the recognition of endogenous and exogenous DNA hard for aligners.
+Although there is a database of known bacteria DNAs that could help us to detect 
+bacterial sequences to don't mix them with endogenous DNA sequences but still 
+there are a lot of unknown bacterial contamination.
 \\\\
-In order to have a realistic simulation of ancient DNA, we decided to simulate microbial DNA sequences besides our genomic DNA reads simulations.
+In order to have a realistic simulation of ancient DNA, we decided to simulate 
+microbial DNA sequences besides our genomic DNA reads simulations.
 \\\\
-The microbial reads simulation process starts
+The microbial reads simulation process consist of:
 
 \begin{itemize}
 
- \item First by generating a totally random string of DNA nucleotides (A, C, G, T) for a given length.
+ \item Generating a totally random string of DNA nucleotides (A, C, G, T) for a 
+given length (Chance of seeing each nucleotides is the same as the other one and 
+eaqual to 0.25).
 
- \item Second, Add the \emph{post-mortem} deamination damage to 
-the reads which is the substitution of C base by T based on deamination parameters to simulate the ancient microbial sequences.
+ \item Add the \emph{post-mortem} deamination damage to the reads which is the 
+substitution of base Cytosine to base Thymine, given deamination parameters 
+to simulate ancient damage on microbial sequences.
 
 
- \item Third, introducing sequencing machines errors 
- to the read simulation.
+ \item Introducing sequencing errors to the simulated read.
 
 \end{itemize}
 
@@ -1862,8 +1893,8 @@ generates alignment score and report all possible hits of given reads if require
 
 The R-Candy's output is a BAM file. It is the binary version of a SAM file 
 in order to compress data reasonably well. SAM file (Sam Alignment/Map format) is 
-a tab-delimited text file that contains sequence alignment data \cite{NOOOOO}.   
-ore information about these formats is available on the SAM Tools website: http://samtools.sourceforge.net.
+a tab-delimited text file that contains sequence alignment data \cite{SamSpecification}.   
+%ore information about these formats is available on the SAM Tools website: http://samtools.sourceforge.net.
 
 %R-Candy's documentation and source code are freely available at (https://github.com/udo-stenzel/r-candy.git).
 
@@ -1876,10 +1907,10 @@ ore information about these formats is available on the SAM Tools website: http:
 %\subsection{Evaluated Programs}
 
 To evaluate the performance of R-Candy, we tested an additional Burrows-Wheeler 
-transform-based alignment program: BWA \cite{bwa}
-on the number of simulated datasets modeling different types of reads. \\
-BWA is a widely used aligner for short reads, it indexes reads using Burrows-
-Wheeler transform of the reference genome, and allows gaps and mismatches for alignments\\
+transform-based alignment program: BWA \cite{bwa} on the number of simulated 
+datasets modeling different types of reads. \\
+BWA is a widely used aligner for short reads, it indexes reference using Burrows-
+Wheeler transform, and allows gaps and mismatches for alignments\\
 
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -1891,44 +1922,57 @@ the mapping percentage, the throughput and memory footprint.
 \begin{itemize}
 
  \item The mapping sensitivity or percentage:
-the number of correctly mapped genomic reads divided by the total number of endogenous reads versus the number of aligned simulated microbial reads 
-divided by the total number of simulated microbial reads.
+the number of correctly mapped genomic reads divided by the total number of 
+endogenous reads versus the number of aligned simulated microbial reads 
+divided by the total number of simulated microbial reads(fall-out or Specificity).
 
  \item The aligner's throughput: the number of mapped reads per second(bps/sec).
 
- \item The memory footprint: the required memory by the tool for indexing reference string, process the reads and storing them. 
+ \item The memory footprint: the required memory by the tool for indexing 
+reference string, process the reads and storing them. 
 
 \end{itemize}
 
 
-The mapping sensitivity is divided into two parts, correct(true positives) and incorrect (false positives) alignments.
+The mapping sensitivity is divided into two parts, correct(true positives) and 
+incorrect (false positives) alignments.
 
-There are different ways of calculating the incorrect alignments. For simulated reads,
-the percentage of reads mapped to the incorrect location (aligned to a position differ than the original position in the genome where the read was originally extracted from) which is a common definition of error used in many studies \cite{ErrorDef}. 
+There are different ways of calculating the incorrect alignments. For simulated 
+reads, the percentage of reads mapped to the incorrect location (aligned to 
+a position differ than the original position in the genome where the read was 
+originally extracted from) which is a common definition of error used in many 
+studies \cite{ErrorDef}. 
 
-But, this na\"{\i}ve definition of the correctness of an alignment has some problems. For example after applying sequencing error and deamination damage on the reads, the read does not exactly match the original genomic position. And it would be a problem when the aligner chooses the location for a read with no or fewer mismatches over the original location. In this case, the result will be poorly judged as an incorrect mapping despite the more accurate matching position has been chosen. 
-The problem has been managed using mapping quality/alignment score information. Such that a correct alignment of a read is defined as being to its original genomic location and having the alignment score/mapping quality fewer/greater than a certain threshold. 
+But, this na\"{\i}ve definition of the correctness of an alignment has some 
+problems. For example after applying sequencing error and deamination damage on 
+the reads, the read does not exactly match the original genomic position. And 
+it would be a problem when the aligner chooses the location for a read with no or 
+fewer mismatches over the original location. In this case, the result will be 
+poorly judged as an incorrect mapping despite the more accurate matching position 
+has been chosen. The problem has been managed using mapping quality/alignment 
+score information. Such that a correct alignment of a read is defined as being 
+to its original genomic location and having the alignment score/mapping quality 
+lower/greater than a certain threshold. 
 
 
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-\subsection{Specificity and Sensitivity}
+%\subsection{Specificity and Sensitivity}
 
 
-The sensitivity reported is the number of correctly mapped simulated
-endogenous reads divided by the total number of simulated endogenous reads.\\ 
-The fall-out is the number of aligned simulated microbial reads 
-divided by the total number of simulated microbial reads.
+%The sensitivity reported is the number of correctly mapped simulated
+%endogenous reads divided by the total number of simulated endogenous reads.\\ 
+%The fall-out is the number of aligned simulated microbial reads 
+%divided by the total number of simulated microbial reads.
 
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
-\subsection{Evaluation on Simulated Genome}
+%\subsection{Evaluation on Simulated Genome}
 
-To simulate a genome we used human reference (as a training dataset) and first-order Markov chain as a training model. 
-
-The reads are sampled from the simulated genome 
-with additional properties in the case of different scenarios.
+%To simulate a genome we used human reference (as a training dataset) and \nth{1} 
+%Order Markov chain as a training model. The reads are sampled from the simulated genome 
+%with additional properties in the case of different scenarios.
 
 Knowing the true alignment of the reads, we evaluated the alignment accuracy.\\ 
 %Generated data are in different lengths 25, 30, 35 and 40 with a set of errors, (divergence, deamination, and sequencing error). \\
@@ -1937,66 +1981,83 @@ Knowing the true alignment of the reads, we evaluated the alignment accuracy.\\
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 
-\subsubsection{Evaluation Scenarios}
+\subsubsection{Evaluation Scenarios and Genome Simulation}
 
+To simulate a genome we used human reference (as a training dataset) and \nth{1} 
+Order Markov chain as a training model. The reads are sampled from the simulated genome 
+with additional properties in the case of different scenarios. Also accuracy of
+each tools is evaluated by aligned position given the true position of each reads.
 
-\emph{Post-mortem} damage (deamination) is a specific characteristic of ancient DNA that none of existing aligners for short
-reads are taken into account except R-Candy.\\
+\emph{Post-mortem} damage (deamination) is a specific characteristic of ancient 
+DNA that none of existing aligners for short reads are taken into account except R-Candy.\\
 
 To show the impact of deamination on alignment, I divided my evaluation into six parts:
+\begin{enumerate}
+\item Deaminated sequence and aligned with ancient parameter
+\item Deainatied sequence, aligned without ancient parameter
+\item ......
+\item ......
+\item ......
+\item ......
+\item ......
+\item ......
+\end{enumerate}
 
 \subsection{Scenario 1 }
- 
-  \begin{itemize}
-   \item \textbf{Data:} simulated reads with deamination damage
-with $ \sigma = 0.9$, $ \sigma\prime = 0.93 $, $\delta = 0.02 $,  and $\lambda = 0.3 $ parameters for Philip Johnson deamination model and extra substitutions due to different divergence rate(see Section 4.2.1) and sequencing error using empirical quality distribution data and also sequencing error provided by ART for Illumina platform.
-
-  \item \textbf{Reference genome:}  align to a simulated genome based
- on the human genome.
-
-  \item \textbf{Aligners:} R-Candy with damage parameters and alignments score 20. \\
-BWA with default parameters (there are no damage parameters in BWA)
-and its modified version for ancient data with the number of mismatches ( 0.01 ) and the number of gap opens ( 2 ).
+\begin{itemize}
+   \item \textbf{Data:} simulated reads having deamination damage with $ \sigma = 0.9$, 
+$ \sigma\prime = 0.93 $, $\delta = 0.02 $,  and $\lambda = 0.3 $ as parameters for 
+deamination model and extra substitutions due to different divergence rate( Range 
+(0..6) for number of mismatches see Section 4.2.1) and sequencing error using 
+empirical quality distribution data and also sequencing error provided by ART 
+for Illumina platform infunction of length 25, 30, 35, 40.
+  \item \textbf{Reference genome:}  Read are aligned to a simulated genome (length 1 gb).
+  \item \textbf{Aligners:} R-Candy with damage parameters and maximum alignments score 20. \\
+BWA with default parameters (there are no damage parameters in BWA) and its 
+modified parameter version for ancient data ( Number of mismatches ( -n 0.01 ) 
+and the number of gap openning ( -o 2))
 
   \end{itemize}
 
 \begin{figure}[H]
 \centering
 \includegraphics[width=12cm]{pictures/bROC_DS1_emp.pdf}
-\caption{ROC curve for simulated reads with deamination damage and sequencing error by empirical quality distribution data, aligned to the simulated genome
-         with true deamination parameters.}
+\caption{ROC curve for simulated reads with deamination damage and sequencing 
+error by empirical quality distribution, aligned to the simulated genome
+with provided deamination parameters.}
 \label{DS1_emp}
 \end{figure}
 
 \begin{figure}[H]
 \centering
 \includegraphics[width=12cm]{pictures/bROC_DS1_ART.pdf}
-\caption{ROC curve for simulated reads with deamination damage and sequencing error by ART, aligned to the simulated genome
-         with true deamination parameters.}
+\caption{ROC curve for simulated reads with deamination damage and sequencing 
+error simulated by ART, aligned to the simulated genome with provided 
+deamination parameters.}
 \label{DS1}
 \end{figure}
 
 
-The ROC curve plot shows R-Candy with different AS numbers.
-And in the case of multiple best hits reported by R-Candy, 
-just one hit has been chosen arbitrarily to do a fair comparison 
+The ROC curve shows R-Candy accuracy under different alignment-score cuttoff.
+In the case of multiple best hits reported by R-Candy, just one hit has been 
+chosen \footnote{Completely arbitrarily} to do a fair comparison 
 between R-Candy and BWA which reports one best hit per each read.
-As the result shows, R-Candy archives the highest rate of sensitivity
-in all four lengths.
+As the result shows, R-Candy achives the highest rate of sensitivity
+in all four given lengths.
 
-Length 25 is a very challenging length for aligners, where any
-small change in the read bases could make a perfect match in 
-another part of the reference genome and recognizing the true
-genomic position very hard. 
+Reads in length 25 are a very challenging for aligners, where any small change 
+in the read bases could make a perfect match in another part of the reference 
+genome. This behaviour leads to recognizing the true genomic position very hard. 
 
-In the case of deaminated reads with only sequencing error, 
-no extra substitution (the plot with zero mismatches), 
-the sensitivity rate for R-Candy is 99\% compare to BWA 
-with ancient data parameters 97\% and BWA with default parameters 94\%. 
-Introducing extra mismatches to the reads, we see sensitivity decreasing for both aligners as expected.
+In the case of deaminated reads with only sequencing error, no extra substitution 
+(the plot with zero mismatches), the sensitivity rate for R-Candy is 99\% compare 
+to BWA with ancient-parameters 97\% and BWA with default parameters 94\%. 
+As is expected introducing extra mismatches to the reads leads to have less 
+sensitivity on both aligners but does not have any affect on false positive rate
+(As microbial reads are completely random).
 
-As is expected, increasing the number of  mismatches per read, 
-the sensitivity of alignment decrease but we don't see a big difference in false positive rates.
+%As is expected, increasing the number of  mismatches per read, 
+%the sensitivity of alignment decrease but we don't see a big difference in false positive rates.
 
 R-Candy yields the highest sensitivity rates on the reads of the length of 30 as well. 
 98\%, 94\% and 88\% are the true positive rates of alignment for R-Candy, 
@@ -2004,13 +2065,16 @@ BWA with ancient data parameters and BWA with default parameters respectively
 for the simulated reads with one mismatch. 
 
 The huge decrease in false positive rates between reads of length 25 and 30 
-shows even five bases difference can make a huge difference in the number of non-endogenous reads be accepted or rejected by an aligner.
+shows that even five bases difference can make a huge difference in the number of 
+non-endogenous reads to be mapped.
 
-For reads longer than 35 bps there is no microbial reads alignment.
+For reads longer than 35 bps false positive is zero as there are no microbial 
+reads aligned to the reference.
 
-////
-BWA behaves differently when it's aligning with its default parameters than with ancient parameters.
-For all lengths and number of mismatches, the latter yields a higher rate of sensitivity while aligning a high number of microbial reads.
+As you can see clearly BWA behaves differently when it's aligning with its default 
+parameters or ancient-parameters. For all lengths and number of mismatches, the 
+latter case yields to higher rate of sensitivity while aligning a high number of 
+microbial reads.
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
