@@ -1794,7 +1794,7 @@ random number to sample.
 
 Ancient DNA extracts consist of a low amount of endogenous DNA which used to be a big problem at evolution researchers until the recent technology of sequencing polymerase chain reaction (PCR) \cite{PCR} made it possible to amplify DNA sequences and produce high coverage data for deeper studies on human origins.
 \\\\
-My endogenous read simulation process starts
+y endogenous read simulation process starts
 \begin{itemize}
  \item First by uniformly sampling reads over the reference genome.
 
@@ -1846,7 +1846,7 @@ generates alignment score and produces multiple hits if required.
 
 The R-Candy's output is a BAM file. It is the binary version of a SAM file in order to compress data reasonably well. 
 A SAM file (Sam Alignment/Map format) is a tab-delimited text file that contains sequence alignment data.   
-More information about these formats is available on the SAM Tools website: http://samtools.sourceforge.net.
+ore information about these formats is available on the SAM Tools website: http://samtools.sourceforge.net.
 
 %R-Candy's documentation and source code are freely available at (https://github.com/udo-stenzel/r-candy.git).
 
@@ -2172,16 +2172,23 @@ to help us on evaluating our software.\\
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 \section{Conclusions}
-
+The aim of this thesis ....
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \section{Future Work}
-Use dynamic programming (DP) for alignment algorithm and implement it in the way that instead of filling 
-\emph{score matrix} in a rectangular stick with some diagonals if we know that we will have more match/mismatch instead of INDELs.
-And also, using seed strategy which needs to sub-divide the alignment and start from different places.
-But we need a \emph{Bidirectional Wavelet Tree}\cite{bidirectional} for that. Start aligning from the middle 
-of the reads (because that is the best part that we have in ancient DNA) in one direction and then the other direction, 
-we need a Bidirectional Wavelet Tree to turn around.
+Some bullet point regards the future
+\begin{enumerate}
+\item Use dynamic programming (DP) for alignment algorithm and implement it in 
+the way that instead of filling \emph{score matrix} in a rectangular stick with 
+some diagonals if we know that we will have more match/mismatch instead of INDELs.
+\item using seed strategy which needs to sub-divide the alignment and start from 
+different places which we need a \emph{Bidirectional Wavelet Tree}\cite{bidirectional} 
+for that.
+\item Start aligning from the middle of the reads (because that is the best part 
+that we have in ancient DNA) in one direction and then the other direction (again 
+we need a Bidirectional Wavelet Tree to turn around)
+\item ...... Ask Janet and Udo ........
+\end{enumerate}
 
 
 
