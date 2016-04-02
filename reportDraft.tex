@@ -30,7 +30,7 @@
 \usepackage{caption}
 \usepackage[square,sort,comma,numbers]{natbib}
 \usepackage[super,negative]{nth}
-
+\usepackage{url}
                   
 \usetikzlibrary{arrows, automata}
 
@@ -1675,7 +1675,7 @@ Illumina platform) plus additionally substitution for divergence/mutation.
 
 By definition \emph{\quotes{ divergence is the separation
 of a population's gene pool from the gene pools of other populations 
-due to mutation, genetic drift, and selection \cite{divergence2}.}}\\
+due to mutation, genetic drift, and selection \cite{divergence1}.}}\\
 
 Introducing divergence property which also is used in R-Candy's mapping strategy 
 is on top of simulated reads before any other source of substitution in my workflow. 
@@ -1855,13 +1855,14 @@ the reads which is the substitution of C base by T based on deamination paramete
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %\subsection{Implementation}
 
-The R-Candy is an alignment program for 
-short sequences (30-50 bps) of ancient DNA based on BWT of the reference genome written in Haskell. 
-It performs semi-global alignment for single end reads, supports pair-end aligning, 
-generates alignment score and produces multiple hits if required.
+The R-Candy is an alignment program for ultra short sequences (25-50 bps) of 
+ancient DNA based on BWT of the reference genome written in Haskell. 
+It performs semi-global alignment strategy for single and pair end reads, which 
+generates alignment score and report all possible hits of given reads if required.
 
-The R-Candy's output is a BAM file. It is the binary version of a SAM file in order to compress data reasonably well. 
-A SAM file (Sam Alignment/Map format) is a tab-delimited text file that contains sequence alignment data.   
+The R-Candy's output is a BAM file. It is the binary version of a SAM file 
+in order to compress data reasonably well. SAM file (Sam Alignment/Map format) is 
+a tab-delimited text file that contains sequence alignment data \cite{NOOOOO}.   
 ore information about these formats is available on the SAM Tools website: http://samtools.sourceforge.net.
 
 %R-Candy's documentation and source code are freely available at (https://github.com/udo-stenzel/r-candy.git).
