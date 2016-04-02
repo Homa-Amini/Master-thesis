@@ -2076,11 +2076,11 @@ parameters or ancient-parameters. For all lengths and number of mismatches, the
 latter case yields to higher rate of sensitivity while aligning a high number of 
 microbial reads.
 
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\subsection{Scenario 2}
 
-\subsection{Scenario2}
  
-  \begin{itemize}
+ \begin{itemize}
    \item \textbf{Data:} the same dataset as scenario number 1.
    
    \item \textbf{Reference genome:} align to a simulated genome based
@@ -2111,88 +2111,124 @@ where we have ancient data and treat them like modern data.
 \label{DS2_ART}
 \end{figure}
 
- 
- 
-% \item Third, simulated reads with no deamination damage and align them to the simulated genome with R-Candy's default parameters and with actual parameters which are zero number for deamination parameters and also BWA with default and ancient parameters . 
-
-\end{enumerate}
-
-
-
-
-
-\begin{figure}[H]
-\centering
-\includegraphics[width=12cm]{pictures/DS3-A.png}
-\caption{ROC curve for simulated reads with sequencing error for Illumina platform provided by ART and no deamination damage aligned to the simulated genome.}
-\label{DS3}
-\end{figure}
-
-
-\textbf{Discussion}
 
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
-\subsection{Evaluation on Simulated Reads} 
-
-The simulated reads are based on human genome 
- with introducing a different a small number of differences of $(0..6)$ and deamination based 
-on Philip Jonson model parameters and also sequencing errors of Illumina empirical error profile.\\
-
-
-
-
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-\subsubsection{Results} 
-
-The same evaluation as Section 5.4.1 is done on simulated reads of real genome to see the effect of 
-taking in account the deamination damage working with real genome. \\
-Test data are:
-\begin{itemize}
-
- \item Simulated reads with deamination and align to the human genome with R-Candy ran with 
-the real deamination parameters (\emph{P}, $\delta$, $ \sigma $ and $ \sigma\prime $) and BWA with default
-parameters ( no deamination parameters in BWA) and also BWA with ancient parameters (-n 0.01 , -o 2 ). 
-
- \item The same data aligned to R-Candy with no damage parameters. 
+\subsection{Scenario 3}
  
- \item Simulated reads with no deamination damage aligned to the human genome by R-Candy and BWA. 
+  \begin{itemize}
 
-\end{itemize}
+   \item \textbf{Data:} simulated reads with no deamination damage
+and some substitutions due to different divergence rate(mismatches 
+from 0-6) and sequencing error using both options ( empirical data 
+and ART) for sequencing error in the simulation program.
+   
+   \item \textbf{Reference genome:} align to a simulated genome based
+ on the human genome.
+
+    \item \textbf{Aligners:} 
+R-Candy with default parameters and alignments score 20. \\
+BWA with default parameters and its modified version for ancient
+data with the number of mismatches ( 0.01 ) and the number of gap opens ( 2 ).
+
+  \end{itemize}
+ 
+The goal is to see, the performance of R-Candy for non-damaged data.
 
 \begin{figure}[H]
 \centering
-\includegraphics[width=12cm]{pictures/DS4.png}
-\caption{ROC curve for simulated reads with deamination damage aligned to the human genome
+\includegraphics[width=12cm]{pictures/bROC_DS3_emp.pdf}
+\caption{ROC curve for simulated reads with no deamination damage and sequencing error by empirical quality distribution data, aligned to the simulated genome
+         with default parameters.}
+\label{DS3_emp}
+\end{figure}
+
+\begin{figure}[H]
+\centering
+\includegraphics[width=12cm]{pictures/bROC_DS3_ART.pdf}
+\caption{ROC curve for simulated reads with no deamination damage and sequencing error for Illumina platform provided by ART aligned to the simulated genome
+         with no deamination (default parameters).}
+\label{DS3_ART}
+\end{figure}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\subsection{Scenario 4}
+ 
+  \begin{itemize}
+
+   \item \textbf{Data:} extracted reads from the human genome and simulated 
+with the same properties of datasets in scenario number one.
+   
+   \item \textbf{Reference genome:} align to the human reference genome (version hg19).
+   
+    \item \textbf{Aligners:} R-Candy with damage parameters and alignments score 20. \\
+BWA with default and ancient parameters.
+  \end{itemize}
+ 
+
+The idea for this test is to test R-Candy on a real genome with the characteristics of 
+a real genome like repetitive parts in the genome string which makes the alignment more challenging.
+
+\begin{figure}[H]
+\centering
+\includegraphics[width=12cm]{pictures/bROC_DS4_emp.pdf}
+\caption{ROC curve for simulated reads with deamination damage and sequencing error by empirical quality distribution data, aligned to the human genome
          with deamination parameters.}
-\label{DS4}
-\end{figure}
-
-
-\begin{figure}[H]
-\centering
-\includegraphics[width=12cm]{pictures/DS5.png}
-\caption{ROC curve for simulated reads with deamination damage aligned to the human genome
-         with no deamination parameters.}
-\label{DS5}
+\label{DS4_emp}
 \end{figure}
 
 \begin{figure}[H]
 \centering
-\includegraphics[width=12cm]{pictures/DS6.png}
-\caption{ROC curve for simulated reads with no deamination damage aligned to the human genome.}
-\label{DS6}
+\includegraphics[width=12cm]{pictures/bROC_DS4_ART.pdf}
+\caption{ROC curve for simulated reads with deamination damage and sequencing error simulated by ART aligned to the human genome
+         with damage parameters.}
+\label{DS4_ART}
 \end{figure}
 
 
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\subsection{Scenario 5}
+ 
+  \begin{itemize}
+
+   \item \textbf{Data:} The same dataset as scenario 4.
+     
+   \item \textbf{Reference genome:} align to the human reference genome (version hg19).
+   
+    \item \textbf{Aligners:} R-Candy with no damage parameters and alignments score 20. \\
+BWA with default and ancient parameters.
+  \end{itemize}
+ 
+
+The affect of aligning  damaged data with no damage information to a real genome is evaluated in this test.
+
+
+%\begin{figure}[H]
+%\centering
+%\includegraphics[width=12cm]{pictures/bROC_DS4_emp.pdf}
+%\caption{ROC curve for simulated reads with deamination damage and sequencing error by empirical quality distribution data, aligned to the human genome
+%         with deamination parameters.}
+%\label{DS4_emp}
+%\end{figure}
+
+\begin{figure}[H]
+\centering
+\includegraphics[width=12cm]{pictures/bROC_DS5_ART.pdf}
+\caption{ROC curve for simulated reads with deamination damage and sequencing error simulated by ART aligned to the human genome
+         with no damage parameters.}
+\label{DS5_ART}
+\end{figure}
+
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %\subsection{Effect Of length on alignment}
 
 
 %\subsection{Suitable alignment score}
-
 
 
 
