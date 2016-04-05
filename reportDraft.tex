@@ -183,10 +183,10 @@ the read is reachable with some mismatches.
 Fifth, aligning short reads to a genome with a lot of repetitive elements which often are longer that the length of the reads needs a sensitive heuristic method that gives the higher probability to the original location over the other locations.
 
 Therefore, due to the lack of proper tools such as an aligner that is specific to ancient data and its characteristics, most of the generated data get discarded. 
-This information reduction on the datasets of sparce endogenous data give us the motivation for 
+This information reduction on the datasets of sparse endogenous data give us the motivation for 
 a new aligner to efficiently analyze this particular type of data.
 \\
-The alignment of ancient DNA reads with high accuracy to the reference genome is a crucial step in application workflows such as ancient DNA pipeline, contaminations estimation, divergence estimation, genotyping, heterozygous estimation, etc
+The alignment of ancient DNA reads with high accuracy to the reference genome is a crucial step in application workflows such as ancient DNA pipeline, contamination estimation, divergence estimation, genotyping, heterozygous estimation, etc
 \\
 A number of aligners have been developed to undertake this task such as BWA\cite{bwa} and BWA-PSSM\cite{pssm}.
 Each aligner provides different trade-offs between mapping accuracy and speed. 
@@ -430,22 +430,23 @@ We have two sequences and want to optimally align them.
 $$S_{1}:ACACACTA$$
 $$S_{2}:AGCACACA$$\\
 %$s(S_{1i},S_{2j})= +2 \quad if \quad S_{1i} = S_{2j}(match) \quad and \quad-1  if \quad S_{1i}\neq S_{2j}(mismatch)$\\
-$s(S_{1i},S_{2j})= +2 $\quad if \quad $S_{1i} = S_{2j}(match)$ \quad and \quad-1  if \quad $ S_{1i}\neq S_{2j}(mismatch)$\\
+$s(S_{1i},S_{2j})= +2 $\quad if \quad $S_{1i} = S_{2j}(match)$ \quad and \quad-1 \quad if \quad $ S_{1i}\neq S_{2j}(mismatch)$\\
+and 
 
 
 \[
 H = 
  \begin{pmatrix}
-   & $\_$ & A & C & A & C & A & C & T & A \\
- $\_$ & \textcolor{red}{0} & 0 & 0 & 0 & 0 & 0 & 0 & 0 & 0 \\
- A & 0 & \textcolor{red}{2} & 1 & 2 & 1 & 2 & 1 & 1 & 2 \\
- G & 0 & \textcolor{red}{1} & 1 & 1 & 1 & 1 & 1 & 0 & 1 \\
- C & 0 & 1 & \textcolor{red}{3} & 2 & 3 & 2 & 3 & 2 & 2 \\
- A & 0 & 2 & 2 & \textcolor{red}{5} & 4 & 5 & 4 & 4 & 4 \\
- C & 0 & 1 & 4 & 4 & \textcolor{red}{7}  & 6 & 7 & 6 & 6 \\
- A & 0 & 2 & 3 & 6 & 6 & \textcolor{red}{9} & 8 & 8 & 8 \\
- C & 0 & 1 & 4 & 5 & 8 & 8 & \textcolor{red}{11} & \textcolor{red}{10} & 10 \\
- A & 0 & 2 & 3 & 6 & 7 & 10 & 10 & 10 & \textcolor{red}{12} \\
+   & $\_$ & A & C & A & C & A & C & T & A & C & C & G \\
+ $\_$ & \textcolor{cyan}{0} & 0 & 0 & 0 & 0 & 0 & 0 & 0 & 0 & 0 & 0 \\
+ A & 0 & \textcolor{cyan}{2} & 1 & 2 & 1 & 2 & 1 & 1 & 2 & 1 & 0 & 0 \\
+ G & 0 & \textcolor{cyan}{1} & 1 & 1 & 1 & 1 & 1 & 0 & 1 & 1 & 0 & 2 \\
+ C & 0 & 1 & \textcolor{cyan}{3} & 2 & 3 & 2 & 3 & 2 & 2 & 3 & 3 & 2 \\
+ A & 0 & 2 & 2 & \textcolor{cyan}{5} & 4 & 5 & 4 & 4 & 4 & 3 & 2 & 2 \\
+ C & 0 & 1 & 4 & 4 & \textcolor{cyan}{7}  & 6 & 7 & 6 & 6 & 4 & 5 & 4 \\
+ A & 0 & 2 & 3 & 6 & 6 & \textcolor{red}{9} & 8 & 7 & 8 & 7 & 6 & 5 \\
+ C & 0 & 1 & 4 & 5 & 8 & 8 & \textcolor{cyan}{11} & \textcolor{cyan}{10} & 9 & 9 & 9 & 8\\
+ A & 0 & 2 & 3 & 6 & 7 & 10 & 10 & 10 & \textcolor{red}{12} & 11 & 10 & 9\\
   
  \end{pmatrix}
 \]
@@ -458,11 +459,11 @@ But we still do not have the optimal alignment which will be recover by back tra
 \[
 T = 
  \begin{pmatrix}
-       & $\_$ & A & C & A & C & A & C & T & A \\
-  $\_$ & \textcolor{red}{0} & 0 & 0 & 0 & 0 & 0 & 0 & 0 & 0 \\
- A & 0 & \textcolor{red}{\nwarrow} & \leftarrow & \nwarrow & \leftarrow & \nwarrow & \leftarrow & \leftarrow & \nwarrow \\
- G & 0 & \textcolor{red}{\uparrow} & \nwarrow & \uparrow & \nwarrow & \uparrow & \nwarrow & \nwarrow & \uparrow \\
- C & 0 & \uparrow & \textcolor{red}{\nwarrow} & \leftarrow & \nwarrow & \leftarrow & \nwarrow & \leftarrow & \leftarrow \\
+       & $\_$ & A & C & A & C & A & C & T & A & C & C & G\\
+  $\_$ & \textcolor{cyan}{0} & 0 & 0 & 0 & 0 & 0 & 0 & 0 & 0 & 0 & 0 & 0 \\
+ A & 0 & \textcolor{red}{\nwarrow} & \leftarrow & \nwarrow & \leftarrow & \nwarrow & \leftarrow & \leftarrow & \nwarrow & \leftarrow & \leftarrow & \leftarrow\\
+ G & 0 & \textcolor{red}{\uparrow} & \nwarrow & \uparrow & \nwarrow & \uparrow & \nwarrow & \nwarrow & \uparrow & \nwarrow & \leftarrow & \nwarrow \\
+ C & 0 & \uparrow & \textcolor{red}{\nwarrow} & \leftarrow & \nwarrow & \leftarrow & \nwarrow & \leftarrow & \leftarrow & \\
  A & 0 & \nwarrow & \uparrow & \textcolor{red}{\nwarrow} & \leftarrow & \nwarrow & \leftarrow & \leftarrow & \nwarrow \\
  C & 0 & \uparrow & \nwarrow & \uparrow & \textcolor{red}{\nwarrow} & \leftarrow & \nwarrow & \leftarrow & \leftarrow \\
  A & 0 & \nwarrow & \uparrow & \nwarrow & \uparrow & \textcolor{red}{\nwarrow} & \leftarrow & \leftarrow & \nwarrow \\
