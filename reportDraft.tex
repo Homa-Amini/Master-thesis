@@ -429,8 +429,8 @@ The best way to understand how the local alignment algorithm works is to see an 
 We have two sequences and want to optimally align them.
 $$S_{1}:ACACACTA$$
 $$S_{2}:AGCACACA$$\\
-$s(S_{1i},S_{2j})= +2 \quad if \quad S_{1i} = S_{2j}(match) \quad and \quad-1 if \quad S_{1i}\neq S_{2j}(mismatch)$\\
-
+%$s(S_{1i},S_{2j})= +2 \quad if \quad S_{1i} = S_{2j}(match) \quad and \quad-1  if \quad S_{1i}\neq S_{2j}(mismatch)$\\
+$s(S_{1i},S_{2j})= +2 $\quad if \quad $S_{1i} = S_{2j}(match)$ \quad and \quad-1  if \quad $ S_{1i}\neq S_{2j}(mismatch)$\\
 
 
 \[
@@ -480,7 +480,7 @@ $$S_{2}:AGCACAC-A$$
 
 \paragraph{Semi-global alignment}
 
-Semi-global or "global" (short for global-local) algorithm is a combination of global and local alignments. It is a practical strategy in some situations such as our case: aligning two sequences when one is short (for example an ancient sequence) and the other one is long(for example a chromosome sequence). In this case, neither global nor local alignment is completely applicable. The best solution here is to globally align the short sequence while only a local alignment is appropriate for the long sequence.
+Semi-global or "glocal" (short for global-local) algorithm is a combination of global and local alignments. It is a practical strategy in some situations such as our case: aligning two sequences when one is short (for example an ancient sequence) and the other one is long(for example a chromosome sequence). In this case, neither global nor local alignment is completely applicable. The best solution here is to globally align the short sequence while only a local alignment is appropriate for the long sequence.
 
 %\\\\\\\\
 %\emph{\textbf{You have not mentioned classic alignment algorithms that have been used in the past, nor the idea that the aim is to minimise some kind of a score in order to find the most optimal alignment. Some literature review here would be useful.  There is a book called Biological Sequence Analysis  by Durbin and Eddy.  It might be useful. Even the wikipedia entry provides relevant background.} }
