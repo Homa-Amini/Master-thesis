@@ -419,19 +419,32 @@ Compute the maximum scoring alignment of $L(S_{1}, S_{2})$ over all subsequences
 \[ F(i,j)= max
 \begin{cases}
    F(i-1,j-1) + s(S_{1i} , S_{2j})\\
-   F(i-1 , j)- \delta\\
-   F(i,j-1)- \delta\\
+   F(i-1 , j)+ \delta\\
+   F(i,j-1)+ \delta\\
    0 \quad  
 \end{cases}
 \]
-The best way to understand how the local alignment algorithm works is to see an example.\\
 
-We have two sequences and want to optimally align them.
-$$S_{1}:ACACACTA$$
+To find the actual local alignment:
+\begin{itemize}
+ \item start at a cell with the maximum value.
+ \item traceback.
+ \item stop when you reach a cell with value 0.
+\end{itemize} 
+
+Having two sequences  $S_{1}$ and $S_{2}$, want to optimally align them.
+$$S_{1}:ACACACTACCG$$
 $$S_{2}:AGCACACA$$\\
 %$s(S_{1i},S_{2j})= +2 \quad if \quad S_{1i} = S_{2j}(match) \quad and \quad-1  if \quad S_{1i}\neq S_{2j}(mismatch)$\\
-$s(S_{1i},S_{2j})= +2 $\quad if \quad $S_{1i} = S_{2j}(match)$ \quad and \quad-1 \quad if \quad $ S_{1i}\neq S_{2j}(mismatch)$\\
-and gap penalty 
+%$s(S_{1i},S_{2j})= +2 $\quad if \quad $S_{1i} = S_{2j}(match)$ \quad and \quad-1 \quad if \quad $ S_{1i}\neq S_{2j}(mismatch)$\\
+
+\[ F(i,j)= max
+\begin{cases}
+   s(S_{1i},S_{2j})= +2 \quad match \\
+   s(S_{1i},S_{2j})= -1 \quad mismatch \\
+  \delta = -1  \quad gap \enskip  penalty \\ 
+\end{cases}
+\] \\
 
 
 %\[
@@ -467,33 +480,30 @@ H =
  C & 0 & 1 & 4 & 5 & 8 & 8 & \textcolor{cyan}{11} & \textcolor{cyan}{10} & 9 & 10 & 9 & 8 \\
  A & 0 & 2 & 3 & 6 & 7 & 10 & 10 & 10 & \textcolor{red}{12} & 11 & 10 & 9 \\
  \end{array} 
+$\\\\\\
+Filling the matrix, the optimal alignment score will be the largest value
+in the entire array.\\\\
+
+
 $
-
-After filling the matrix, the optimal alignment score will be the last score that we calculate.
-But we still do not have the optimal alignment which will be recover by back tracing the path that led us to the final score.
-
-
-
-\[
 T = 
- \begin{pmatrix}
+ \begin{array}{ *{13}c} 
        & $\_$ & A & C & A & C & A & C & T & A & C & C & G\\
-  $\_$ & \textcolor{cyan}{0} & 0 & 0 & 0 & 0 & 0 & 0 & 0 & 0 & 0 & 0 & 0 \\
- A & 0 & \textcolor{red}{\nwarrow} & \leftarrow & \nwarrow & \leftarrow & \nwarrow & \leftarrow & \leftarrow & \nwarrow & \leftarrow & \leftarrow & \leftarrow\\
+  $\_$ & \textcolor{black}{0} & 0 & 0 & 0 & 0 & 0 & 0 & 0 & 0 & 0 & 0 & 0 \\
+ A & 0 & \textcolor{red}{\nwarrow} & \leftarrow & \nwarrow & \leftarrow & \nwarrow & \leftarrow & \leftarrow & \nwarrow & \leftarrow & \leftarrow & \leftarrow \\
  G & 0 & \textcolor{red}{\uparrow} & \nwarrow & \uparrow & \nwarrow & \uparrow & \nwarrow & \nwarrow & \uparrow & \nwarrow & \leftarrow & \nwarrow \\
- C & 0 & \uparrow & \textcolor{red}{\nwarrow} & \leftarrow & \nwarrow & \leftarrow & \nwarrow & \leftarrow & \leftarrow & \\
- A & 0 & \nwarrow & \uparrow & \textcolor{red}{\nwarrow} & \leftarrow & \nwarrow & \leftarrow & \leftarrow & \nwarrow \\
- C & 0 & \uparrow & \nwarrow & \uparrow & \textcolor{red}{\nwarrow} & \leftarrow & \nwarrow & \leftarrow & \leftarrow \\
- A & 0 & \nwarrow & \uparrow & \nwarrow & \uparrow & \textcolor{red}{\nwarrow} & \leftarrow & \leftarrow & \nwarrow \\
- C & 0 & \uparrow & \nwarrow & \uparrow & \nwarrow & \leftarrow & \textcolor{red}{\nwarrow} & \textcolor{red}{\leftarrow} & \leftarrow \\
- A & 0 & \nwarrow & \uparrow & \nwarrow & \uparrow & \nwarrow & \uparrow & \nwarrow & \textcolor{red}{\nwarrow} \\
- \end{pmatrix}
-\]
+ C & 0 & \uparrow & \textcolor{red}{\nwarrow} & \leftarrow & \nwarrow & \leftarrow & \nwarrow & \leftarrow & \leftarrow & \nwarrow & \nwarrow & \leftarrow \\
+ A & 0 & \nwarrow & \uparrow & \textcolor{red}{\nwarrow} & \leftarrow & \nwarrow & \leftarrow & \leftarrow & \nwarrow & \leftarrow & \leftarrow & \nwarrow \\
+ C & 0 & \uparrow & \nwarrow & \uparrow & \textcolor{red}{\nwarrow} & \leftarrow & \nwarrow & \leftarrow & \leftarrow & \leftarrow &  \nwarrow & \nwarrow \\
+ A & 0 & \nwarrow & \uparrow & \nwarrow & \uparrow & \textcolor{red}{\nwarrow} & \leftarrow & \leftarrow & \nwarrow & \leftarrow & \leftarrow & \leftarrow\\
+ C & 0 & \uparrow & \nwarrow & \uparrow & \nwarrow & \leftarrow & \textcolor{red}{\nwarrow} & \textcolor{red}{\leftarrow} & \leftarrow & \nwarrow & \leftarrow & \leftarrow \\
+ A & 0 & \nwarrow & \uparrow & \nwarrow & \uparrow & \nwarrow & \uparrow & \nwarrow & \textcolor{red}{\nwarrow}  & \leftarrow & \leftarrow & \leftarrow \\
+ \end{array} 
+$\\\\\\
+The red path corresponds to the local alignment of the two sequences $S_{1}$ and $S_{2}$: 
 
-In the example, the last cell of the matrix (8,8) has the highest value. The trace back corresponds to the red path in the matrix, is the optimal alignment of the two sequences $S_{1}$ and $S_{2}$: 
-
-$$S_{1}:A-CACACTA$$
-$$S_{2}:AGCACAC-A$$
+$$S_{1}:A-CACAC\enskip TACCG$$
+$$S_{2}:A\enskip G CACAC-A\enskip\enskip\enskip\enskip\enskip $$
 
 
 
