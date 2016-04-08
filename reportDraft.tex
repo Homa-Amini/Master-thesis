@@ -467,8 +467,9 @@ $$S_{2}:AGCACACA$$\\
 
 
 $
-H =
- \begin{array}{ *{13}c} 
+H =\left
+[
+\begin{array}{ *{13}c} 
    & $\_$ & A & C & A & C & A & C & T & A & C & C & G \\
  $\_$  & \textcolor{cyan}{0} & 0 & 0 & 0 & 0 & 0 & 0 & 0 & 0 & 0 & 0 & 0 \\
  A & 0 & \textcolor{cyan}{2} & 1 & 2 & 1 & 2 & 1 & 1 & 2 & 1 & 0 & 0 \\
@@ -480,13 +481,15 @@ H =
  C & 0 & 1 & 4 & 5 & 8 & 8 & \textcolor{cyan}{11} & \textcolor{cyan}{10} & 9 & 10 & 9 & 8 \\
  A & 0 & 2 & 3 & 6 & 7 & 10 & 10 & 10 & \textcolor{red}{12} & 11 & 10 & 9 \\
  \end{array} 
+ \right]
 $\\\\\\
 Filling the matrix, the optimal alignment score will be the largest value
 in the entire array.\\\\
 
 
 $
-T = 
+T =\left
+[ 
  \begin{array}{ *{13}c} 
        & $\_$ & A & C & A & C & A & C & T & A & C & C & G\\
   $\_$ & \textcolor{black}{0} & 0 & 0 & 0 & 0 & 0 & 0 & 0 & 0 & 0 & 0 & 0 \\
@@ -499,6 +502,7 @@ T =
  C & 0 & \uparrow & \nwarrow & \uparrow & \nwarrow & \leftarrow & \textcolor{red}{\nwarrow} & \textcolor{red}{\leftarrow} & \leftarrow & \nwarrow & \leftarrow & \leftarrow \\
  A & 0 & \nwarrow & \uparrow & \nwarrow & \uparrow & \nwarrow & \uparrow & \nwarrow & \textcolor{red}{\nwarrow}  & \leftarrow & \leftarrow & \leftarrow \\
  \end{array} 
+\right]
 $\\\\\\
 The red path corresponds to the local alignment of the two sequences $S_{1}$ and $S_{2}$: 
 
@@ -2345,8 +2349,34 @@ memory usage on multi-core computers.\\\\
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 \section{Conclusions}
-%We did not test R-Candy on real data because we do not know the ground truth
-%to help us on evaluating our software.\\
+
+We have presented  R-Candy, a novel method for aligning ancient DNA sequences.
+The algorithm for scoring is based on a probabilistic model that takes into account the specific characteristics of ancient data, post-mortem deamination damage, as well as the other probabilities specific for the data, sequencing error, and a divergence rate. 
+
+For ultra-short reads alignment against the simulated genome, R-Candy achieves a significantly higher alignment accuracy for reads of length 25 to 40, than BWA with and without ancient parameters while aligning against the human reference genome R-Candy has a modest higher alignment accuracy regarding the repetitive parts in the reference genome.
+For the longer (>35 bps) reads, both aligners report no false positive and again R-Candy has a slightly higher rate of alignment accuracy.
+
+R-Candy and BWA both show the same alignment accuracy  on aligning modern data.
+
+In terms of memory footprint, both aligners are equally  good and memory efficient.
+
+But R-Candy has a very low throughput ratio (speed) compared to BWA especially for genome in mammalian size.
+
+The current version of R-Candy has a very good alignment accuracy and memory footprint but is not useable in case of big data regarding its speed.
+\\\\
+In the case of BWA, ancient parameters substantially increase the false positive rate and run-time while giving only a modest increase in the true positive rate.
+\\\\
+We also showed that ART simulates reads with a low quality compared to the Empirically derived, run-specific error model which results in a higher sequencing error rates.
+\\\\
+ R-Candy's speed pitfall is regarding its  backward search algorithm that starts to back trace the alignment from the end of the reads and when it is at the beginning of the read it implies the C to T substitution 
+probabilities which makes the whole process so slow.
+\\\\
+
+One solution to increase the R-Candy's speed problem would be using the seeding strategy as in BWA which in the case of ancient data the seed sequence will be in the middle of a read sequence. The alignment starts in the middle of a read sequence and aligns the read in both directions. But with R-Candy's current genome index structure, Wavelet tree, moving in both directions over the genome is not possible and there is a need for a Bidirectional Wavelet tree/cite{bidirectional-wv} data structure.
+\\\\
+
+R-Candy drags down the shortcut on aDNA alignment to 25 bps which already is 35 bps and makes it possible to align more rare and low-quality endogenous reads.
+
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \section{Future Work}
@@ -2354,8 +2384,11 @@ Some bullet point regards the future
 \begin{enumerate}
 
 \item On the alignment algorithm:
-using dynamic programming (DP) for alignment algorithm 
-and  seed strategy and also support multi-threading.
+using dynamic programming (DP) for alignment algorithm.
+
+Applying seed strategy which needs a Bidirectional Wavelet tree in its genome index data structure to be able to search in both direction given the seed sequence in the middle of a read.
+
+Provide multi-threading feature.
 
 \item On evaluation: finding the best alignment score for different read lengths.
 \end{enumerate}
