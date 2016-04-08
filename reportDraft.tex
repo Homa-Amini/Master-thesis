@@ -2356,7 +2356,7 @@ the specific characteristics of ancient data, post-mortem deamination damage, as
 well as the other probabilities specific to the data, sequencing error, and species
 divergence rate. 
 
-Following two genome-strategy explained in section \ref{Genome Simulation},
+Following two genome-strategy explained in Section 4.1,
 In case of ultra-short reads alignment against the simulated genome, R-Candy 
 achieves a significantly higher alignment accuracy for reads of length 25 to 40, 
 compare to BWA with and without ancient parameters while aligning against the 
@@ -2377,7 +2377,7 @@ R-Candy's speed pitfall is regarding to its backward search algorithm, which
 starts to back trace the alignment from the end of the reads and when it is at 
 the beginning of the read, then it implies the ancient overhang model and C to 
 T substitution probabilities which makes the whole process really slow.
-\\\\
+\\
 
 Also as in this version of R-Candy, genome has been index in one direction, switching
 to bidirectional implementation of genome index structure, Wavelet tree, can increase 
@@ -2399,18 +2399,10 @@ low-quality endogenous reads.
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \section{Future Work}
-Some bullet point regards the future
-\begin{enumerate}
+We have shown that for the alignment of ancient DNA reads  between 25-40 bps  R-Candy provides superior accuracy to BWA.  However, a number of points need to be addressed before R-Candy can be used on datasets of the size typically generated during ancient human genome sequencing projects. 
 
-\item On the alignment algorithm:
-using dynamic programming (DP) for alignment algorithm.
 
-Applying seed strategy which needs a Bidirectional Wavelet tree in its genome index data structure to be able to search in both direction given the seed sequence in the middle of a read.
-
-Provide multi-threading feature.
-
-\item On evaluation: finding the best alignment score for different read lengths.
-\end{enumerate}
+To increase R-Candy's speed a seed strategy will be helpful ...
 
 
 
