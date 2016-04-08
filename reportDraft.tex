@@ -2351,31 +2351,50 @@ memory usage on multi-core computers.\\\\
 \section{Conclusions}
 
 We have presented  R-Candy, a novel method for aligning ancient DNA sequences.
-The algorithm for scoring is based on a probabilistic model that takes into account the specific characteristics of ancient data, post-mortem deamination damage, as well as the other probabilities specific for the data, sequencing error, and a divergence rate. 
+The algorithm for scoring is based on a probabilistic model that takes into account 
+the specific characteristics of ancient data, post-mortem deamination damage, as 
+well as the other probabilities specific to the data, sequencing error, and species
+divergence rate. 
 
-For ultra-short reads alignment against the simulated genome, R-Candy achieves a significantly higher alignment accuracy for reads of length 25 to 40, than BWA with and without ancient parameters while aligning against the human reference genome R-Candy has a modest higher alignment accuracy regarding the repetitive parts in the reference genome.
-For the longer (>35 bps) reads, both aligners report no false positive and again R-Candy has a slightly higher rate of alignment accuracy.
+Following two genome-strategy explained in section \ref{Genome Simulation},
+In case of ultra-short reads alignment against the simulated genome, R-Candy 
+achieves a significantly higher alignment accuracy for reads of length 25 to 40, 
+compare to BWA with and without ancient parameters while aligning against the 
+human reference genome R-Candy has a modest higher alignment accuracy regarding 
+the repetitive parts in the reference genome. For the reads longer than 35 bps, 
+both aligners report no false positive and again R-Candy has a slightly higher 
+rate of alignment accuracy.
 
-R-Candy and BWA both show the same alignment accuracy  on aligning modern data.
+Despite the fact that R-Candy is developed specifically to handle ancient data
+but forcing it to work on modern data doesn't decrease its accuracy compared to 
+BWA results.
 
-In terms of memory footprint, both aligners are equally  good and memory efficient.
+In terms of memory footprint, both aligners are equally good and memory efficient
+to load genome. But R-Candy has a very low throughput ratio (speed) compared to 
+BWA which makes it unusable in case of big-data and genome in mammalian size. 
 
-But R-Candy has a very low throughput ratio (speed) compared to BWA especially for genome in mammalian size.
-
-The current version of R-Candy has a very good alignment accuracy and memory footprint but is not useable in case of big data regarding its speed.
+R-Candy's speed pitfall is regarding to its backward search algorithm, which
+starts to back trace the alignment from the end of the reads and when it is at 
+the beginning of the read, then it implies the ancient overhang model and C to 
+T substitution probabilities which makes the whole process really slow.
 \\\\
-In the case of BWA, ancient parameters substantially increase the false positive rate and run-time while giving only a modest increase in the true positive rate.
-\\\\
-We also showed that ART simulates reads with a low quality compared to the Empirically derived, run-specific error model which results in a higher sequencing error rates.
-\\\\
- R-Candy's speed pitfall is regarding its  backward search algorithm that starts to back trace the alignment from the end of the reads and when it is at the beginning of the read it implies the C to T substitution 
-probabilities which makes the whole process so slow.
-\\\\
 
-One solution to increase the R-Candy's speed problem would be using the seeding strategy as in BWA which in the case of ancient data the seed sequence will be in the middle of a read sequence. The alignment starts in the middle of a read sequence and aligns the read in both directions. But with R-Candy's current genome index structure, Wavelet tree, moving in both directions over the genome is not possible and there is a need for a Bidirectional Wavelet tree/cite{bidirectional-wv} data structure.
-\\\\
+Also as in this version of R-Candy, genome has been index in one direction, switching
+to bidirectional implementation of genome index structure, Wavelet tree, can increase 
+its throughput. Because of damage in ancient reads bidirectional Wavelet tree \cite{bidirectional-wv} 
+also can give us the chance to use seeding strategy as perfect seeding place in 
+ancient reads are in their middle and. The alignment with this strategy starts 
+from the middle of a read sequence and continue to align the read in both directions.
 
-R-Candy drags down the shortcut on aDNA alignment to 25 bps which already is 35 bps and makes it possible to align more rare and low-quality endogenous reads.
+I aslo showed that in the case of BWA, ancient parameters substantially increase the 
+false positive rate and run-time while giving only a modest increase in the true 
+positive rate. The other finding which it was reported before is showing that ART 
+simulates reads with a low quality compared to the Empirically derived, run-specific error model,
+which results in a higher sequencing error rates and decreasing accuracy.
+\\\\
+the main conclusion is R-Candy drags down the shortcut on aDNA alignment to 25 bps 
+which it was in lower-bound 35 bps and makes it possible to align more rare and 
+low-quality endogenous reads.
 
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
