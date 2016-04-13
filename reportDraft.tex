@@ -1970,19 +1970,28 @@ Knowing the true alignment of the reads, we evaluated the alignment accuracy.\\
 
 \textbf{Add one or two sentences on WHY you start with a simulated genome.}
 
-To simulate a genome we used the human reference genome (version hg19)human reference (as a training dataset) and \nth{1} 
-Order Markov chain as a training model. The reads are sampled from the simulated genome 
-and in each of the test scenarios reported below, different sequence properties typical of ancient DNA sequenced on the Illumina platform are added to the simulated reads.
-The accuracy of each tool is evaluated by aligned position given the true position of each reads.
+To simulate a genome we used the human reference genome version hg19 as a training 
+dataset and \nth{1} Order Markov chain as a training model. The reads are sampled 
+from the simulated genome and in each of the test scenarios reported below, 
+different sequence properties typical of ancient DNA sequenced on the Illumina 
+platform are added to the simulated reads. The accuracy of each tools is evaluated 
+by aligned position given the known true position of each reads.
 \\
 \emph{Post-mortem} damage (deamination) is a specific characteristic of ancient 
-DNA that none of existing aligners for short reads are taken into account except R-Candy.\\
+DNA that none of existing aligners for short reads are taken into account except 
+R-Candy.\\
 
-Using the simulated genome I simulated reads of lengths 25, 30, 35, and 40 with and without the deamination typical of ancient DNA, and aligned these back to either a simulated genome or to the human reference genome using BWA and R-Candy (as described in Table \ref{})
+Using the simulated genome I simulated reads of lengths 25, 30, 35, and 40 with 
+and without the deamination typical of ancient DNA, and aligned these back to either 
+a simulated genome or to the human reference genome using BWA and R-Candy (as 
+described in Table \ref{})
 
-In addition to deamination I also added massive divergence in the form of 0-6 mismatches, sequencing error (using empirical error profile).  
+In addition to deamination I also added massive divergence in the form of 0-6 
+mismatches. And in top of all of these I added sequencing error (using empirical 
+error profile).  
 
-I also tested the accuracy of alignment in the presence of microbial reads of lengths 25, 30, 35 and 40(as explained in Section \ref{}).
+I also tested the accuracy of alignment in the presence of microbial reads of 
+lengths 25, 30, 35 and 40(as explained in Section \ref{}).
 
 To show the impact of deamination on alignment, I divided my evaluation into six parts:
 \begin{enumerate}
@@ -2005,12 +2014,13 @@ To show the impact of deamination on alignment, I divided my evaluation into six
 %and a massive divergence rate in the form of 0-6 mismatches 
 %and sequencing error using empirical error profile
    
-   \item \textbf{Reference genome:} Reads were aligned to a simulated genome of length 1Gb.
+   \item \textbf{Reference genome:} Reads were aligned to a simulated genome of 
+length 1Gb.
 
     \item \textbf{Aligners:} 
 R-Candy with default parameters and alignments score cut-off of 20. \\
-BWA with default parameters and ancient
-parameters (the number of mismatches ( 0.01 ) and the number of gap opens ( 2 )).
+BWA with default parameters and ancient parameters (the number of mismatches 
+(0.01) and the number of gap opens (2)).
 
   \end{itemize}
  
@@ -2044,8 +2054,8 @@ The goal is to evaluate, the performance of R-Candy on fresh DNA.
 
     \item \textbf{Aligners:} 
 R-Candy with default parameters and alignments score cut-off of 20. \\
-BWA with default parameters and ancient
-parameters (the number of mismatches ( 0.01 ) and the number of gap opens ( 2 )).
+BWA with default parameters and ancient parameters (the number of mismatches 
+(0.01) and the number of gap opens (2)).
 
 
 \begin{figure}[H]
@@ -2063,13 +2073,14 @@ parameters (the number of mismatches ( 0.01 ) and the number of gap opens ( 2 ))
 \begin{itemize}
    \item \textbf{Data:} damaged DNA extracted from simulated genome (
    damage parameters $ \sigma = 0.9$, 
-$ \sigma\prime = 0.93 $, $\delta = 0.02 $,  and $\lambda = 0.3 $ )and extra substitutions due to different divergence rate( range 
-(0..6) for number of mismatches see Section \ref{}) and empirical sequencing error.
-  \item \textbf{Reference genome:}  Reads are aligned to a simulated genome (length 1 Gb).
-  \item \textbf{Aligners:} R-Candy with ancient parameters and cut-off alignments score 20. \\
-BWA with default parameters 
-and ancient parameters( number of mismatches ( -n 0.01 ) 
-and the number of gap opening ( -o 2))
+$ \sigma\prime = 0.93 $, $\delta = 0.02 $,  and $\lambda = 0.3 $ )and extra 
+substitutions due to different divergence rate( range (0..6) for number of mismatches 
+see Section \ref{}) and empirical sequencing error.
+  \item \textbf{Reference genome:}  Reads are aligned to a simulated genome 
+(length 1 Gb).
+  \item \textbf{Aligners:} R-Candy with ancient parameters and cut-off alignments 
+score 20. \\BWA with default parameters and ancient parameters( number of 
+mismatches ( -n 0.01 ) and the number of gap opening ( -o 2))
 
   \end{itemize}
 
@@ -2328,7 +2339,9 @@ https://github.com/Homa1127/rcandyHash.git
 \renewcommand{\thesubsection}{\Alph{subsection}}
 
 \subsection{Simulation sequencing error by ART software} \label{Simulation sequencing error by ART software}
-
+In this section I follow all the strategy which I explained in section ?? . The
+only difference is sequencing error which instead of using empirical data, ART API
+has been used.
 
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
