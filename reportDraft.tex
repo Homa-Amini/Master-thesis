@@ -1946,9 +1946,7 @@ the mapping accuracy, the throughput and memory footprint.
 
 \begin{itemize}
 
- \item The mapping accuracy:
-
-The mapping accuracy is divided into two parts, correct(true positives) and 
+ \item The mapping accuracy: mapping accuracy is divided into two parts, correct(true positives) and 
 incorrect (false positives) alignments.
 There are different ways of calculating the incorrect alignments. For simulated 
 reads, the percentage of reads mapped to the incorrect location (aligned to 
@@ -1968,7 +1966,7 @@ Knowing the true alignment of the reads, we evaluated the alignment accuracy.\\
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 
-\subsubsection{Evaluation Scenarios and Genome Simulation}
+\subsubsection{Evaluation Scenarios} \label{Evaluation Scenarios}
 
 \textbf{Add one or two sentences on WHY you start with a simulated genome.}
 
@@ -1976,11 +1974,11 @@ To simulate a genome we used the human reference genome (version hg19)human refe
 Order Markov chain as a training model. The reads are sampled from the simulated genome 
 and in each of the test scenarios reported below, different sequence properties typical of ancient DNA sequenced on the Illumina platform are added to the simulated reads.
 The accuracy of each tool is evaluated by aligned position given the true position of each reads.
-
+\\
 \emph{Post-mortem} damage (deamination) is a specific characteristic of ancient 
 DNA that none of existing aligners for short reads are taken into account except R-Candy.\\
 
-Using the simulated genome I simulated reads of lengths 25,30,35, and 40 with and without the deamination typical of ancient DNA, and aligned these back to either a simulated genome or to the human reference genome using BWA and R-Candy (as described in Table \ref{})
+Using the simulated genome I simulated reads of lengths 25, 30, 35, and 40 with and without the deamination typical of ancient DNA, and aligned these back to either a simulated genome or to the human reference genome using BWA and R-Candy (as described in Table \ref{})
 
 In addition to deamination I also added massive divergence in the form of 0-6 mismatches, sequencing error (using empirical error profile).  
 
@@ -2016,7 +2014,7 @@ parameters (the number of mismatches ( 0.01 ) and the number of gap opens ( 2 ))
 
   \end{itemize}
  
-The goal is to evaluate, the performance of R-Candy for fresh DNA.
+The goal is to evaluate, the performance of R-Candy on fresh DNA.
 
 \begin{figure}[H]
 \centering
@@ -2035,19 +2033,42 @@ The goal is to evaluate, the performance of R-Candy for fresh DNA.
 %\label{DS3_ART}
 %\end{figure}
 
+ \begin{itemize}
+
+   \item \textbf{Data:} Fresh DNA extracted from a simulated genome 
+   with different divergence rates and sequencing error.
+%and a massive divergence rate in the form of 0-6 mismatches 
+%and sequencing error using empirical error profile
+   
+   \item \textbf{Reference genome:} The human genome (version hg19) of length 3.2 Gb.
+
+    \item \textbf{Aligners:} 
+R-Candy with default parameters and alignments score cut-off of 20. \\
+BWA with default parameters and ancient
+parameters (the number of mismatches ( 0.01 ) and the number of gap opens ( 2 )).
+
+
+\begin{figure}[H]
+\centering
+\includegraphics[width=12cm]{pictures/sROC_DS6_emp.pdf}
+\caption{ROC curve for simulated fresh DNA reads, aligned to the simulated genome
+         with default parameters.}
+\label{DS6_emp}
+\end{figure}
+  \end{itemize}
+
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-\subsection{Simulated ancient DNA reads, R-Candy with damage parameters, BWA with default and 'ancient' parameters}
+\subsection{Simulated ancient DNA reads}
+%R-Candy with damage parameters, BWA with default and 'ancient' parameters}
 \begin{itemize}
-   \item \textbf{Data:} simulated reads having deamination damage with $ \sigma = 0.9$, 
-$ \sigma\prime = 0.93 $, $\delta = 0.02 $,  and $\lambda = 0.3 $ as parameters for 
-deamination model and extra substitutions due to different divergence rate( Range 
-(0..6) for number of mismatches see Section 4.2.1) and sequencing error using 
-empirical quality distribution data and also sequencing error provided by ART 
-for Illumina platform in function of length 25, 30, 35, 40.
-  \item \textbf{Reference genome:}  Read are aligned to a simulated genome (length 1 gb).
-  \item \textbf{Aligners:} R-Candy with damage parameters and maximum alignments score 20. \\
-BWA with default parameters (there are no damage parameters in BWA) and its 
-modified parameter version for ancient data ( Number of mismatches ( -n 0.01 ) 
+   \item \textbf{Data:} damaged DNA extracted from simulated genome (
+   damage parameters $ \sigma = 0.9$, 
+$ \sigma\prime = 0.93 $, $\delta = 0.02 $,  and $\lambda = 0.3 $ )and extra substitutions due to different divergence rate( range 
+(0..6) for number of mismatches see Section \ref{}) and empirical sequencing error.
+  \item \textbf{Reference genome:}  Reads are aligned to a simulated genome (length 1 Gb).
+  \item \textbf{Aligners:} R-Candy with ancient parameters and cut-off alignments score 20. \\
+BWA with default parameters 
+and ancient parameters( number of mismatches ( -n 0.01 ) 
 and the number of gap opening ( -o 2))
 
   \end{itemize}
@@ -2061,17 +2082,17 @@ with provided deamination parameters.}
 \label{DS1_emp}
 \end{figure}
 
-\begin{figure}[H]
-\centering
-\includegraphics[width=12cm]{pictures/bROC_DS1_ART.pdf}
-\caption{ROC curve for simulated reads with deamination damage and sequencing 
-error simulated by ART, aligned to the simulated genome with provided 
-deamination parameters.}
-\label{DS1}
-\end{figure}
+%\begin{figure}[H]
+%\centering
+%\includegraphics[width=12cm]{pictures/bROC_DS1_ART.pdf}
+%\caption{ROC curve for simulated reads with deamination damage and sequencing 
+%error simulated by ART, aligned to the simulated genome with provided 
+%deamination parameters.}
+%\label{DS1}
+%\end{figure}
 
 
-The ROC curve shows R-Candy accuracy under different alignment-score cutoff.
+The ROC curve shows R-Candy's accuracy under different alignment-score cutoff.
 In the case of multiple best hits reported by R-Candy, just one hit has been 
 chosen \footnote{Completely arbitrarily} to do a fair comparison 
 between R-Candy and BWA which reports one best hit per each read.
@@ -2109,133 +2130,43 @@ parameters or ancient-parameters. For all lengths and number of mismatches, the
 latter case yields to higher rate of sensitivity while aligning a high number of 
 microbial reads.
 
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-\subsection{Scenario 2}
 
  
  \begin{itemize}
-   \item \textbf{Data:} the same dataset as scenario number 1.
+   \item \textbf{Data:} the same damage DNA dataset .
    
-   \item \textbf{Reference genome:} align to a simulated genome based
- on the human genome.
+   \item \textbf{Reference genome:} aligned to a the human reference genome (version hg19).
 
-    \item \textbf{Aligners:} R-Candy with damage parameters equal to zero and 
+    \item \textbf{Aligners:} R-Candy with ancient parameters and 
     alignments score 20. \\
-BWA with default parameters and its modified version for ancient data with the 
-number of mismatches ( 0.01 ) and the number of gap opens ( 2 ).
+BWA with default and ancient parameters 
+(number of mismatches ( 0.01 ) and the number of gap opens ( 2 ).
   
   \end{itemize}
  
-The motivation behind this test is to see the behavior of aligners
-where we have ancient data and treat them like modern data.
 
-
-\begin{figure}[H]
-\centering
-\includegraphics[width=12cm]{pictures/bROC_DS2_emp.pdf}
-\caption{ROC curve for simulated reads with deamination damage and sequencing error 
-by empirical quality distribution data, aligned to the simulated genome
-         with true deamination parameters.}
-\label{DS2_emp}
-\end{figure}
-
-\begin{figure}[H]
-\centering
-\includegraphics[width=12cm]{pictures/bROC_DS2_ART.pdf}
-\caption{ROC curve for simulated reads with deamination damage and sequencing error 
-for Illumina platform provided by ART aligned to the simulated genome
-         with no deamination parameters.}
-\label{DS2_ART}
-\end{figure}
-
-
-
-
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-
-\subsection{Scenario 4}
- 
-  \begin{itemize}
-
-   \item \textbf{Data:} extracted reads from the human genome and simulated 
-with the same properties of datasets in scenario number one.
-   
-   \item \textbf{Reference genome:} align to the human reference genome (version hg19).
-   
-    \item \textbf{Aligners:} R-Candy with damage parameters and alignments score 20. \\
-BWA with default and ancient parameters.
-  \end{itemize}
- 
-
-The idea for this test is to test R-Candy on a real genome with the characteristics of 
-a real genome like repetitive parts in the genome string which makes the alignment more challenging.
 
 \begin{figure}[H]
 \centering
 \includegraphics[width=12cm]{pictures/bROC_DS4_emp.pdf}
 \caption{ROC curve for simulated reads with deamination damage and sequencing error 
-by empirical quality distribution data, aligned to the human genome
-         with deamination parameters.}
+by empirical quality distribution data, aligned to the simulated genome
+         with true deamination parameters.}
 \label{DS4_emp}
 \end{figure}
 
-\begin{figure}[H]
-\centering
-\includegraphics[width=12cm]{pictures/bROC_DS4_ART.pdf}
-\caption{ROC curve for simulated reads with deamination damage and sequencing error 
-simulated by ART aligned to the human genome
-         with damage parameters.}
-\label{DS4_ART}
-\end{figure}
-
-
-
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-\subsection{Scenario 5}
- 
-  \begin{itemize}
-
-   \item \textbf{Data:} The same dataset as scenario 4.
-     
-   \item \textbf{Reference genome:} align to the human reference genome (version hg19).
-   
-    \item \textbf{Aligners:} R-Candy with no damage parameters and alignments score 20. \\
-BWA with default and ancient parameters.
-  \end{itemize}
- 
-
-The affect of aligning  damaged data with no damage information to a real genome is evaluated in this test.
-
-
 %\begin{figure}[H]
 %\centering
-%\includegraphics[width=12cm]{pictures/bROC_DS4_emp.pdf}
-%\caption{ROC curve for simulated reads with deamination damage and sequencing error by 
-%empirical quality distribution data, aligned to the human genome
-%         with deamination parameters.}
-%\label{DS4_emp}
+%\includegraphics[width=12cm]{pictures/bROC_DS2_ART.pdf}
+%\caption{ROC curve for simulated reads with deamination damage and sequencing error 
+%for Illumina platform provided by ART aligned to the simulated genome
+%         with no deamination parameters.}
+%\label{DS2_ART}
 %\end{figure}
 
-\begin{figure}[H]
-\centering
-\includegraphics[width=12cm]{pictures/bROC_DS5_ART.pdf}
-\caption{ROC curve for simulated reads with deamination damage and sequencing error simulated by ART aligned to the human genome
-         with no damage parameters.}
-\label{DS5_ART}
-\end{figure}
 
-
-
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%\subsection{Effect Of length on alignment}
-
-
-%\subsection{Suitable alignment score}
-
-
-
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-\section{Performance} \label{Performance}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\subsection{Performance} \label{Performance}
 
 To evaluate R-Candy's speed, we used two test sets, first simulated genomic 
 and microbial reads align to a simulated genome and second simulated genomic
@@ -2258,7 +2189,7 @@ not included in the reported time.\\
   	& \textbf{Speed R-Candy AS=20, N=64\hspace{35pt}(no. of reads/s)}\\ \hline
   	  
  	  Genomic    & 25  & 0.0192 &   0.123 \\ \hline
-      Genomic    & 30  & 0.0182 &   0.007 \\ \hline
+      Genomic    & 30  & 0.0182 &   0.067 \\ \hline
       Genomic    & 35  & 0.0177 &   0.047 \\ \hline
  	  Genomic	 & 40  & 0.0180 &   0.045 \\ \hline
  	  Microbial  & 25  & 0.0629 &   0.540 \\ \hline
@@ -2305,6 +2236,15 @@ On memory, R-Candy uses 2.5G for single-end mapping.\\
 
 The current version of R-Candy does not support multi-threading to reduce the 
 memory usage on multi-core computers.\\\\
+
+
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%\subsection{Effect Of length on alignment}
+
+
+%\subsection{Suitable alignment score}
 
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
