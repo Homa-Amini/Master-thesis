@@ -140,12 +140,19 @@ The current version of R-Candy compare to other aligners does not have a good th
 \section{Introduction} \label{Introduction}
 
 
-There have been a number of breakthroughs in the development of sequencing technologies that allow us to now sequence whole genomes rapidly and at a reasonable cost\cite{NGS}\cite{454}\cite{NGS2}.
+There have been a number of breakthroughs in the development of sequencing 
+technologies that allow us to now sequence whole genomes rapidly and at a 
+reasonable cost\cite{NGS}\cite{454}\cite{NGS2}.
 \\
-These developments made it possible to get DNA from ancient organisms, including humans \cite{AncientDNA}\cite{fish2human}, and to sequence this DNA to learn about human history\cite{impactOFhg}\cite{ourGenome}\cite{SNP}.
+These developments made it possible to get DNA from ancient organisms, 
+including humans \cite{AncientDNA}\cite{fish2human}, and to sequence 
+this DNA to learn about human history\cite{impactOFhg}\cite{ourGenome}\cite{SNP}.
 
-Since the primary goal of many studies is to find the genetic relationships between extinct and extant species, 
-most often sequences from ancient organisms are analysed by aligning them to the genomes of closely related extant species\cite{Neanthertal}\cite{AncientDNA}.
+Since the primary goal of many studies is to find the genetic 
+relationships between extinct and extant species, 
+most often sequences from ancient organisms are analysed by 
+aligning them to the genomes of closely related extant species
+\cite{Neanthertal}\cite{AncientDNA}.
 
 A number of problems have to be addressed when ancient DNA is aligned.
 The continuous maintenance of a living organism by enzymatic repair stops shortly 
@@ -1127,7 +1134,7 @@ character up to specific position(OCC query) is $O(\log{}\mid\sum\mid)$.
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
-\section{Method} \label{Method}
+%\section{Method} \label{Method}
 
 
 \subsection{Benchmark design} \label{Benchmark design}
@@ -1477,9 +1484,19 @@ per inserted or deleted base, where $G$ is a free parameter again.
 
 
 
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-\section{Test Data}
 
+
+
+
+
+
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+
+\section{Method} \label{Method}
 %In the past few years, the development of new DNA sequencing technologies made it possible to get DNA from ancient organisms.
 %The analysis of such a data regularly by aligning it to the genome of closely related modern species is a big challenge in human evolution studies.
 A number of alignment software are developed to map such a dataset where 
@@ -1492,9 +1509,15 @@ of real data is the key point in evaluation of the new software.\\
 To satisfy this, I developed a genome and NGS read simulation program to evaluate 
 the performance of R-Candy in different cases.
 
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-\subsection{Genome Simulation} \label{Genome Simulation}
 
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\subsection{Genome Simulation ( \nth{1} Order Markov Chain)} 
+\label{ Genome Simulation ( \nth{1} Order Markov Chain)}
+
+ 
 Generally, every genome consists of some repeated stretch of sequences which make 
 the alignment of short reads from these repetitive parts very difficult due to 
 finding the true alignment between the same repeated sequences.
@@ -1505,19 +1528,15 @@ and check its accuracy and performance where we know the true alignment of each
 read.
 
 In this thesis I used a probabilistic model called \emph{Markov Chain} model 
-\footnote{More specifically $\nth{1}$ Order Markov Chain as my future state only 
+\footnote{More specifically \nth{1} Order Markov Chain as my future state only 
 depends on my current state} to simulate a genome by generating stretch of 
 nucleotides (A, C, G, T bases) in a way that  keeps the base composition of the 
 real reference genome but not generates repeats.
-
-
-\subsubsection{$\nth{1}$ Order Markov Chain} 
-%\subsubsection{ Order Markov Chain} 
+ 
+ 
 A Markov chain graphically can be drawn as a collection of states, 
 each corresponds to a particular nucleotide (A, C, G, T) with arrows
 between them like the following (Figure \ref{MC}). 
-%The conversion probability of each state to the other state is 
-%associated with each arrow in the graph. 
 \\\\ 
 Having a set of states,  $ S= \{ A, C,  G, T \}$  and probability
 parameter  associated with arrows in the figure which determines the
@@ -1552,40 +1571,12 @@ or staying on the same state (Emission).
         	edge [bend left]  node {\tiny 0.29} (A)
             edge [bend left]  node {\tiny 0.25} (T);
   \end{tikzpicture}
-  \caption{Trained $\nth{1}$ order Markov chain based on human reference genome}
+  \caption{Trained \nth{1} order Markov chain based on human reference genome}
   \label{MC}
  \end{center}
 \end{figure}
 
 
-%\begin{center}[H]
-% \begin{tikzpicture}[->,>=stealth',shorten >=1pt,auto,node distance=3cm,
-%                    semithick, bend angle=5]
-%  \tikzstyle{every state}=[fill=white,draw=black,text=black]
-
-%  \node[state]         (A)              {$A$};
-%  \node[state]         (T) [right of=A] {$T$};
-%  \node[state]         (C) [below of=A] {$C$};
-%  \node[state]         (G) [below of=T] {$G$};
-  
-%  \path (A) edge [bend left]   node {\footnotesize 0.3} (T)
-%  			edge [loop above]  node {\footnotesize 0.3} (A)
-%            edge [bend left] node {\footnotesize 0.2} (C)
-%            edge [bend left=5] node {\footnotesize 0.2} (G)
-%        (T) edge [loop above] node {\footnotesize 0.3} (T)
-%            edge [bend left]  node {\footnotesize 0.2} (A)
-%            edge [bend left=5]  node {\footnotesize 0.2} (C)
-%            edge [bend left]  node {\footnotesize 0.3} (G)
-%        (C) edge [bend left=5]  node {\footnotesize 0.3} (T)
-%            edge [loop below] node {\footnotesize 0.3} (C)
-%            edge [bend left]  node {\footnotesize 0.1} (G)
-%            edge [bend left]  node {\footnotesize 0.3} (A)
-%        (G) edge [loop below] node {\footnotesize 0.3} (G)
-%        	edge [bend left]  node {\footnotesize 0.2} (C)
-%        	edge [bend left=5]  node {\footnotesize 0.3} (A)
-%            edge [bend left]  node {\footnotesize 0.2} (T);
-% \end{tikzpicture}
-%\end{center}
 
 
 
@@ -1697,7 +1688,9 @@ model starts randomly from one of the states and continuously walk between state
 based on their probabilities on transition matrix till the number of visited stateds 
 is reached the given genome length which could equally be at any state. \\\\
 
+
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
 \subsection{Read Simulation} \label{Read Simulation}
 
 The second part of my test data preparation is about simulating ancient DNA reads 
@@ -1708,7 +1701,9 @@ specific characteristics of ancient DNA), and sequencing errors \cite{phred1} (f
 Illumina platform) plus additionally substitution for divergence/mutation.
 
 
+
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
 \subsubsection{Divergence} \label{Divergence}
 
 By definition \emph{\quotes{ divergence is the separation
@@ -1726,8 +1721,104 @@ and 5\% respectively} to the reference genome.
 And ran R-Candy with a default value for different datasets of reads with a 
 different number of divergence substitution rates to evaluate the accurate of its 
 alignment while aligning reads to close or far genomes.
+ 
+ 
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% 
 
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\subsubsection{Sequencing Error} \label{Sequencing Error}
+ 
+
+A sequencing error is an incorrect identification of a nucleotide base resulting 
+to an inaccurate machine read. Due to the error in the base calling, there is no 
+precise DNA sequencing. \\
+A quality score indicating the confidence level of correctly seeing a base is 
+assigned to each base of a read sequence.\\
+Different sequencing platform have different quality score leading to variable 
+sequencing error. These errors become visible when aligning a read to a reference 
+string as substitutions or mismatches.\\
+The main sequencing error for Illumina platform is base substitution due to 
+reading out one base at a time \cite{art}.The substitution error probability is 
+calculated by the base quality score along with the called base.\\
+
+The output data of sequencing machines significantly differs in quality for 
+several reasons ( for illustration, see Ewing et al. 1998) therefore, an effective 
+measure for the reliability of such a data is vital \cite{phred1}.\\
+
+In order to assess the accuracy of sequencing data, base calling accuracy by Phred 
+quality score (Q score) is the most widely used metric. It demonstrates the probability 
+of seeing an error in each bases, calling by a sequencer.\\
+
+Phred quality scores are defined as \cite{phred2}:
+
+$$ Q = -10  log_{10}P   $$
+$$  or $$
+$$ P = 10 ^ { \frac{-Q}{ 10 } } $$
+
+For instance, if Phred score of a base is Q$=$40, it means the probability of an 
+incorrect base call is a 1 in 10000 which shows 99.99\% base calling accuracy 
+\cite{IlluminaPhred}. \\  
+
+In order to implement sequencing error for simulated reads, There are two
+options in my simulator (readSim):
+
+The \textbf{first} option uses a next-generation sequencing read simulator (ART). 
+ART generates sequencing reads based on different sequencing technology 
+platforms (454, Illumina, SOLiD) criteria \cite{art}.
+
+ART simulates the substitution error probability, based on the base-quality 
+score distribution reported by large training datasets \cite{art}.
+
+In order to use ART in readSim user needs to specify the sequencing platform 
+and the reads length for generating base quality scores. Despite the user-friendly 
+and easy working features of ART, it has been proposed before, which low quality score 
+rate compared to the empirical data\cite{pssm} which leads to the high sequencing
+error rate.
+
+For this reason, there is a \textbf{second} option in readSim that simulates
+sequencing error based on an empirical data (in house sequenced data).
+
+The implementation looks at the quality values assigned to each base at each
+position in the read and generates a distribution table for it (figure \ref{hist}).
+
+\begin{figure}[H]
+\centering
+\includegraphics[width=12cm]{pictures/Rplot_quality.pdf}
+\caption{Number of bases in each cycle in function of having certain quality}
+\label{hist}
+\end{figure}
+
+Then calculates the probability mass function (PMF) which is the quality 
+frequencies at each cycle for both forward and reverse reads. At the next 
+step, cumulative distribution function (CDF) is calculated by summing up the 
+quality frequency of each base with all quality bases before it (Figure \ref{CDF}).
+
+\begin{figure}[H]
+\centering
+\includegraphics[width=12cm]{pictures/Rplot_ecdf.png}
+\caption{Empirical cumulative distribution of all bases in cycle 11 of all forward 
+reads}
+\label{CDF}
+\end{figure}
+
+The quality score of each bases in a read, determined by a random number compare to 
+its corresponding value in given CDF.
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\subsubsection{Fresh DNA Reads Simulation} \label{Fresh DNA Reads Simulation}
+
+
+
+
+
+
+
+
+
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
 \subsubsection{Deamination} \label{Deamination}
 
 A high nucleotide misincorporation rate of  deamination of cytosine(C) to uracil, 
@@ -1784,88 +1875,12 @@ success fraction value.And then uses the user-specified substitution ratio numbe
 overhangs which usually is higher than the deamination substitution ratio, $delta$, 
 in non-overhang parts of aDNA reads.
 
- 
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% 
-\subsubsection{Sequencing Error}   \label{Sequencing Error}
- 
 
-A sequencing error is an incorrect identification of a nucleotide base resulting 
-to an inaccurate machine read. Due to the error in the base calling, there is no 
-precise DNA sequencing. \\
-A quality score indicating the confidence level of correctly seeing a base is 
-assigned to each base of a read sequence.\\
-Different sequencing platform have different quality score leading to variable 
-sequencing error. These errors become visible when aligning a read to a reference 
-string as substitutions or mismatches.\\
-The main sequencing error for Illumina platform is base substitution due to 
-reading out one base at a time \cite{art}.The substitution error probability is 
-calculated by the base quality score along with the called base.\\
-
-The output data of sequencing machines significantly differs in quality for 
-several reasons ( for illustration, see Ewing et al. 1998) therefore, an effective 
-measure for the reliability of such a data is vital \cite{phred1}.\\
-
-In order to assess the accuracy of sequencing data, base calling accuracy by Phred 
-quality score (Q score) is the most widely used metric. It demonstrates the probability 
-of seeing an error in each bases, calling by a sequencer.\\
-
-Phred quality scores are defined as \cite{phred2}:
-
-$$ Q = -10  log_{10}P   $$
-$$  or $$
-$$ P = 10 ^ { \frac{-Q}{ 10 } } $$
-
-For instance, if Phred score of a base is Q$=$40, it means the probability of an 
-incorrect base call is a 1 in 10000 which shows 99.99\% base calling accuracy 
-\cite{IlluminaPhred}. \\  
-
-In order to implement sequencing error for simulated reads, There are two
-options in my simulator (readSim):
-
-The \textbf{first} option uses a next-generation sequencing read simulator (ART). 
-ART generates sequencing reads based on different sequencing technology 
-platforms (454, Illumina, SOLiD) criteria[35].
-
-ART simulates the substitution error probability, based on the base-quality 
-score distribution reported by large training datasets[35].
-
-In order to use ART in readSim user needs to specify the sequencing platform 
-and the reads length for generating base quality scores. Despite the user-friendly 
-and easy working features of ART, it has been proposed before, which low quality score 
-rate compared to the empirical data\cite{pssm} which leads to the high sequencing
-error rate.
-
-For this reason, there is a \textbf{second} option in readSim that simulates
-sequencing error based on an empirical data (in house sequenced data).
-
-The implementation looks at the quality values assigned to each base at each
-position in the read and generates a distribution table for it (figure \ref{hist}).
-
-\begin{figure}[H]
-\centering
-\includegraphics[width=12cm]{pictures/Rplot_quality.pdf}
-\caption{Number of bases in each cycle in function of having certain quality}
-\label{hist}
-\end{figure}
-
-Then calculates the probability mass function (PMF) which is the quality 
-frequencies at each cycle for both forward and reverse reads. At the next 
-step, cumulative distribution function (CDF) is calculated by summing up the 
-quality frequency of each base with all quality bases before it (Figure \ref{CDF}).
-
-\begin{figure}[H]
-\centering
-\includegraphics[width=12cm]{pictures/Rplot_ecdf.png}
-\caption{Empirical cumulative distribution of all bases in cycle 11 of all forward 
-reads}
-\label{CDF}
-\end{figure}
-
-The quality score of each bases in a read, determined by a random number compare to 
-its corresponding value in given CDF.
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-\subsection{Simulating Endogenous Sequences}  \label{Simulating Endogenous Sequences}
+
+\subsubsection{Ancient DNA Reads Simulation }  
+\label{ Ancient DNA Reads Simulation}
 
 Ancient DNA extracts consist of a low amount of endogenous DNA which used to be 
 a big problem at evolution researchers until the recent technology of sequencing 
@@ -1888,8 +1903,11 @@ on empirical cumulative distribution or ART .
 \end{itemize}
 
 
+
+
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-\subsection{Simulating Microbial Sequences} \label{Simulating Microbial Sequences}
+
+\subsubsection{Simulation of Microbial Reads } \label{Simulation of Microbial Reads }
 
 Ancient DNA extracts are highly contaminated by mostly environmental microbes 
 that always make the recognition of endogenous and exogenous DNA hard for aligners.
@@ -1917,28 +1935,41 @@ to simulate ancient damage on microbial sequences.
 
 \end{itemize}
 
- 
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\subsection{Evaluating Results on the Human Genome} \label{Evaluating Results on the Human Genome}
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% 
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
 \section{Results and Discussion} \label{Results and Discussion}
 
-R-Candy is an alignment program for ultra short ancient DNA sequences (25-50 bps)
-based on BWT of the reference genome. It is  written in Haskell. 
+R-Candy is an alignment program for ultra short ancient DNA sequences 
+(25-50 bps) based on BWT of the reference genome. It is  written in Haskell. 
 It performs semi-global alignment for single and paired end reads, 
 generates an alignment score and reports all possible hits for each read.
 
-As input R-Candy takes a BAM file and its output is in BAM format too which is a compressed binary version of a SAM file. 
-SAM file (Sam Alignment/Map format) is 
-a tab-delimited text file that contains sequence alignment data \cite{SamSpecification}.   
-\\\\
-
-We compared the performance of R-Candy to another aligner that uses the Burrows-Wheeler 
-transform\cite{bwa} on a number of simulated 
+As input R-Candy takes a BAM file and its output is in BAM format
+too which is a compressed binary version of a SAM file. 
+SAM file (Sam Alignment/Map format) is a tab-delimited text file 
+that contains sequence alignment data \cite{SamSpecification}.   
+\\
+We compared the performance of R-Candy to another aligner that 
+uses the Burrows-Wheeler transform\cite{bwa} on a number of simulated 
 datasets modeling different types of reads. \\
-BWA is a widely used aligner for short reads including ancient DNA sequence read.
-It has been widely used as aligner for ancient DNA by increasing the number of mismatches and gaps allowed.  
-However, it includes no model of ancient DNA damage, and is not particularly well-suited for alignment of very short reads.
+
+BWA is a widely used aligner for short reads including ancient
+DNA sequence reads.
+It has been widely used as aligner for ancient DNA by increasing 
+the number of mismatches and gaps allowed.  
+However, it includes no model of ancient DNA damage, and is not 
+particularly well-suited for alignment of very short reads.
+
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
 \subsection{Evaluation criteria} \label{Evaluation criteria}
 
 The evaluation is done based on three aspects, namely, 
@@ -1946,7 +1977,8 @@ the mapping accuracy, the throughput and memory footprint.
 
 \begin{itemize}
 
- \item The mapping accuracy: mapping accuracy is divided into two parts, correct(true positives) and 
+ \item The mapping accuracy: mapping accuracy is divided into two parts,
+ correct(true positives) and 
 incorrect (false positives) alignments.
 There are different ways of calculating the incorrect alignments. For simulated 
 reads, the percentage of reads mapped to the incorrect location (aligned to 
@@ -1960,18 +1992,19 @@ studies \cite{ErrorDef}.
 the reference string, processing the reads and storing them. 
 
 \end{itemize}
-
-Knowing the true alignment of the reads, we evaluated the alignment accuracy.\\ 
+ 
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 
 \subsubsection{Evaluation Scenarios} \label{Evaluation Scenarios}
 
-\textbf{Add one or two sentences on WHY you start with a simulated genome.}
+A simulated genome is used for evaluation due to a clear expectation
+and clear results (knowing the true alignment of the reads, 
+we evaluated the alignment accuracy).\\
 
 To simulate a genome we used the human reference genome version hg19 as a training 
-dataset and \nth{1} Order Markov chain as a training model. The reads are sampled 
+dataset and the \nth{1} Order Markov chain as a training model. The reads are sampled 
 from the simulated genome and in each of the test scenarios reported below, 
 different sequence properties typical of ancient DNA sequenced on the Illumina 
 platform are added to the simulated reads. The accuracy of each tools is evaluated 
@@ -1995,8 +2028,7 @@ lengths 25, 30, 35 and 40(as explained in Section \ref{}).
 
 To show the impact of deamination on alignment, I divided my evaluation into six parts:
 \begin{enumerate}
-%\item Deaminated sequences extracted from a simulated genome and aligned with ancient parameters.
-%\item Deaminated sequences extracted from a simulated genome and aligned without ancient parameters.
+
 \item Fresh DNA sequences extracted from a simulated genome, aligned with default parameters (no damage).
 \item Fresh DNA sequences extracted from the human genome and aligned with default parameters.
 \item Damaged DNA sequences extracted from a simulated genome and aligned without damage parameters.
@@ -2011,9 +2043,7 @@ To show the impact of deamination on alignment, I divided my evaluation into six
 
    \item \textbf{Data:} Fresh DNA extracted from a simulated genome 
    with different divergence rates and sequencing error.
-%and a massive divergence rate in the form of 0-6 mismatches 
-%and sequencing error using empirical error profile
-   
+
    \item \textbf{Reference genome:} Reads were aligned to a simulated genome of 
 length 1Gb.
 
@@ -2034,21 +2064,11 @@ The goal is to evaluate, the performance of R-Candy on fresh DNA.
 \label{DS3_emp}
 \end{figure}
 
-%\begin{figure}[H]
-%\centering
-%\includegraphics[width=12cm]{pictures/bROC_DS3_ART.pdf}
-%\caption{ROC curve for simulated reads with no deamination damage and sequencing 
-%error for Illumina platform provided by ART aligned to the simulated genome
-%         with no deamination (default parameters).}
-%\label{DS3_ART}
-%\end{figure}
 
  \begin{itemize}
 
    \item \textbf{Data:} Fresh DNA extracted from a simulated genome 
    with different divergence rates and sequencing error.
-%and a massive divergence rate in the form of 0-6 mismatches 
-%and sequencing error using empirical error profile
    
    \item \textbf{Reference genome:} The human genome (version hg19) of length 3.2 Gb.
 
@@ -2060,16 +2080,19 @@ BWA with default parameters and ancient parameters (the number of mismatches
 
 \begin{figure}[H]
 \centering
-\includegraphics[width=12cm]{pictures/sROC_DS6_emp.pdf}
+\includegraphics[width=12cm]{pictures/bROC_DS6_emp_30.pdf}
 \caption{ROC curve for simulated fresh DNA reads, aligned to the simulated genome
          with default parameters.}
 \label{DS6_emp}
 \end{figure}
   \end{itemize}
 
+
+
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
 \subsection{Simulated ancient DNA reads}
-%R-Candy with damage parameters, BWA with default and 'ancient' parameters}
+
 \begin{itemize}
    \item \textbf{Data:} damaged DNA extracted from simulated genome (
    damage parameters $ \sigma = 0.9$, 
@@ -2093,15 +2116,6 @@ with provided deamination parameters.}
 \label{DS1_emp}
 \end{figure}
 
-%\begin{figure}[H]
-%\centering
-%\includegraphics[width=12cm]{pictures/bROC_DS1_ART.pdf}
-%\caption{ROC curve for simulated reads with deamination damage and sequencing 
-%error simulated by ART, aligned to the simulated genome with provided 
-%deamination parameters.}
-%\label{DS1}
-%\end{figure}
-
 
 The ROC curve shows R-Candy's accuracy under different alignment-score cutoff.
 In the case of multiple best hits reported by R-Candy, just one hit has been 
@@ -2120,9 +2134,6 @@ to BWA with ancient-parameters 97\% and BWA with default parameters 94\%.
 As is expected introducing extra mismatches to the reads leads to have less 
 sensitivity on both aligners but does not have any affect on false positive rate
 (As microbial reads are completely random).
-
-%As is expected, increasing the number of  mismatches per read, 
-%the sensitivity of alignment decrease but we don't see a big difference in false positive rates.
 
 R-Candy yields the highest sensitivity rates on the reads of the length of 30 as well. 
 98\%, 94\% and 88\% are the true positive rates of alignment for R-Candy, 
@@ -2166,24 +2177,22 @@ by empirical quality distribution data, aligned to the simulated genome
 \label{DS4_emp}
 \end{figure}
 
-%\begin{figure}[H]
-%\centering
-%\includegraphics[width=12cm]{pictures/bROC_DS2_ART.pdf}
-%\caption{ROC curve for simulated reads with deamination damage and sequencing error 
-%for Illumina platform provided by ART aligned to the simulated genome
-%         with no deamination parameters.}
-%\label{DS2_ART}
-%\end{figure}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+
+\subsection{Suitable Alignment Score}
+Sensible cut-off from hg19.
 
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
 \subsection{Performance} \label{Performance}
 
 To evaluate R-Candy's speed, we used two test sets, first simulated genomic 
 and microbial reads align to a simulated genome and second simulated genomic
 and microbial reads align to a real genome.\\
 
-Tables  \ref{speed-SG} and \ref{speed-RG} show the speed of 
+Tables \ref{speed-SG} and \ref{speed-RG} show the speed of 
 the two aligners used in this evaluation
 R-Candy and BWA on a single CPU.
 Notice that the time required for building the genome index is 
@@ -2255,7 +2264,6 @@ memory usage on multi-core computers.\\\\
 %\subsection{Effect Of length on alignment}
 
 
-%\subsection{Suitable alignment score}
 
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -2270,7 +2278,8 @@ well as the other probabilities specific to the data, sequencing error, and spec
 divergence rate. 
 \\
 For the both evaluated aligners, varying the cutoff (number of mismatches for BWA 
-and alignment score for R-Candy) allows trading a slight increase in sensitivity for specificity and runtime.
+and alignment score for R-Candy) allows trading a slight increase in sensitivity 
+for specificity and runtime.
 \\\\
 The accuracy of R-Candy on aligning fresh DNA with "default" parameters (no damage model) 
 matches BWA, with either "default" or "ancient" parameters, depending  on the cutoff values.
@@ -2285,21 +2294,29 @@ BWA which makes it unusable in case of big-data and genome of mammalian size.
 \\\\
 The main conclusion is R-Candy drags down the shortcut on aDNA alignment to 25 bps 
 which it was in lower-bound 35 bps and makes it possible to align more rare and 
-low-quality endogenous reads.
+low-quality endogenous reads but needs some modifications in terms of speed to 
+make it useable on datasets of the size typically generated during ancient human
+genome sequencing projects. 
 
+
+
+ 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
 \section{Future Work} \label{Future Work}
 We have shown that for the alignment of ancient DNA reads between 25-40 
 bps R-Candy provides superior accuracy to BWA.  
 However, a number of points need to be addressed before R-Candy can be used 
-on datasets of the size typically generated during ancient human genome sequencing projects. 
-
+on big datasets generated for ... 
 
 To increase R-Candy's speed  ...
 
 
 
+
+
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
 \section{Availability} \label{Availability}
 
 R-Candy's documentation and source code are freely available at\\
@@ -2310,6 +2327,8 @@ Genome/read simulation program written in C++ is freely available at
 \\\\
 The hash program for analysing R-Candy's output written in C++, available at
 https://github.com/Homa1127/rcandyHash.git
+
+
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
@@ -2332,16 +2351,83 @@ https://github.com/Homa1127/rcandyHash.git
 \textbf{BAM}: Binary Alignment/Map;
 \textbf{CDF}: cumulative distribution function.
 \textbf{PCR}: Polymerase Chain Reaction.
+
+
+
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
 \newpage
 \appendix
 \section*{Appendix}
 \renewcommand{\thesubsection}{\Alph{subsection}}
 
-\subsection{Simulation sequencing error by ART software} \label{Simulation sequencing error by ART software}
-In this section I follow all the strategy which I explained in section ?? . The
-only difference is sequencing error which instead of using empirical data, ART API
-has been used.
+\subsection{Simulation sequencing error by ART software} 
+\label{Simulation sequencing error by ART software}
+
+In this section, I follow all the evaluation scenarios which I explained in
+Section \ref{Evaluation Scenarios}  with different sequencing error simulation.
+ART, a next-generation sequencing read simulator is used to simulate sequencing
+error of Illumina platform. 
+ART generates sequencing reads based on different sequencing technology 
+platforms (454, Illumina, SOLiD) criteria[35] and simulates the
+substitution error probability, based on the base-quality 
+score distribution reported by large training datasets[35].\\
+
+In order to use ART in readSim user needs to specify the sequencing
+platform and the reads length for generating base quality scores.\\
+
+The result of aligning different datasets showed that ART simulates a
+low base quality score (compared to the empirical data) that leads to 
+a high rate of sequencing error which degrades the performance of BWA.\\
+
+So we didn't use it for our evaluations. \\
+
+\begin{figure}[H]
+\centering
+\includegraphics[width=12cm]{pictures/bROC_DS3_ART.pdf}
+\caption{ROC curve for fresh DNA from a simulated genome and sequencing error 
+for Illumina platform provided by ART aligned by 
+R-Candy with default parameters and BWA with "ancient" and default parameters
+to the simulated genome.}
+\label{DS3_ART}
+\end{figure}
+
+
+
+\begin{figure}[H]
+\centering
+\includegraphics[width=12cm]{pictures/bROC_DS6_ART.pdf}
+\caption{ROC curve for fresh DNA from the human genome and sequencing error 
+for Illumina platform provided by ART aligned by 
+R-Candy with default parameters and BWA with "ancient" and default parameters
+to the human genome.}
+\label{DS6_ART}
+\end{figure}
+
+
+
+\begin{figure}[H]
+\centering
+\includegraphics[width=12cm]{pictures/bROC_DS1_ART.pdf}
+\caption{ROC curve for ancient DNA from a simulated genome and sequencing error 
+for Illumina platform provided by ART aligned by 
+R-Candy with ancient parameters and BWA with "ancient" and default parameters
+to the simulated genome.}
+\label{DS1_ART}
+\end{figure}
+
+
+
+\begin{figure}[H]
+\centering
+\includegraphics[width=12cm]{pictures/bROC_DS4_ART.pdf}
+\caption{ROC curve for ancient DNA from the human genome and sequencing error 
+for Illumina platform provided by ART aligned by 
+R-Candy with ancient parameters and BWA with "ancient" and default parameters
+to the human genome.}
+\label{DS4_ART}
+\end{figure}
+
 
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
