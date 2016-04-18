@@ -1078,9 +1078,6 @@ character up to specific position(OCC query) is $O(\log{}\mid\sum\mid)$.
 
 
 
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-
-\subsubsection{Seeding Heuristic}
 
 
 
@@ -1236,19 +1233,38 @@ For each block, we store:\\\\
 \end{cases}
 \]
 
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\subsection{Seeding Heuristics}
+
+Set a limit on the number of allowed mismatches in the first few tens of bases
+on a read sequence, calling it the \emph{seed} sequence.
+By default, BWA uses the first 32 bps of a read sequence as a seed, allowing 
+maximum two mismatches in order to increase the overall speed of the alignment 
+(for reads that are shorter than 32 bps, the seed is disabled)\cite{bwa}. 
+In the case of ancient DNA with high rates of mismatches at the 5-termini' and 
+3'-termini due to the post-mortem deamination of cytosine, as well as also short 
+read fragments, could limit the performance of seed-based alignment approaches 
+to determine the genuine alignment .
+The current version of R-Candy does not support the seeding strategy.
+
+
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 
 \section{Method} \label{Method}
-%In the past few years, the development of new DNA sequencing technologies made it possible to get DNA from ancient organisms.
-%The analysis of such a data regularly by aligning it to the genome of closely related modern species is a big challenge in human evolution studies.
+
+In the past few years, the development of new DNA sequencing technologies made 
+it possible to get DNA from ancient organisms.
+The analysis of such a data regularly by aligning it to the genome of closely 
+related modern species is a big challenge in human evolution studies.
 A number of alignment software are developed to map such a dataset where 
 simulated data is essential to guide the new software development and 
 evaluating their performance.
 
 Therefore, simulating data that captures the most crucial characteristics 
-of real data is the key point in evaluation of the new software.\\
+of real data is the key point in the evaluation of the new software.\\
 
 To satisfy this, I developed a genome and NGS read simulation program to evaluate 
 the performance of R-Candy in different cases.
@@ -1438,10 +1454,6 @@ is reached the given genome length which could equally be at any state. \\\\
 The second part of my test data preparation is about simulating ancient DNA reads 
 sequenced by Illumina machine.
 
-Read has been sequenced with \emph{post-mortem }damage \cite{damagepattern} (the 
-specific characteristics of ancient DNA), and sequencing errors \cite{phred1} (from
-Illumina platform) plus additionally substitution for divergence/mutation.
-
 
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -1542,11 +1554,11 @@ its corresponding value in given CDF.
 \subsubsection{Fresh DNA Reads Simulation} \label{Fresh DNA Reads Simulation}
 
 
-
-
-
-
-
+Simulation of fresh DNA reads is done by extracting reads of given length from a 
+reference genome and introducing a massive number differences to reads due to 
+simulating different divergence (see also Section \ref{Divergence}) rate and on 
+top of it sequencing errors of Illumina platform using empirical error profile 
+is simulated (see Section \ref{Sequencing Error}).
 
 
 
@@ -2123,7 +2135,7 @@ matches BWA, with either "default" or "ancient" parameters, depending  on the cu
 \\\\
 R-Candy has a higher sensitivity value on aligning ancient DNA with ancient parameters
 compared to BWA with "ancient" parameters and better specificity compared to the 
-"default" BWA at the cutoff value of 15.
+"default" BWA at the cutoff value of 12.
 \\\\
 In terms of memory footprint, both aligners are equally good and memory efficient
 to load genome. But R-Candy has a very low throughput ratio (speed) compared to 
@@ -2158,7 +2170,8 @@ due to low deamination damage rate in the middle of  ancient DNA read sequences.
 
 Distribute or parallel the program and support multithreading feature.
 
-
+A method that combines dynamic programming with a Full-Text index might extend
+the usefulness of R-Candy to longer reads.
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
