@@ -224,12 +224,12 @@ It is typically very hard to sequence a long fragment of a DNA molecule,
 such as a whole chromosome. However, It is easy to subdivide longer sequences
 into short pieces, create multiple copies of them (called \emph{amplification} ) 
 and sequence all the copies. The sequence of every piece is called a read and 
-the whole process is known as shotgun sequencing \cite{algorithmDesign}.
+the whole process is known as \emph{shotgun sequencing} \cite{algorithmDesign}.
 
 The human genome sequence is made up of 3 billion DNA base pairs.
 Although the human genome has been completely sequenced,it is not yet fully 
 understood. However, some of the known characteristics of the human genome 
-are CpG or CG poor and repeat-rich,  50\%  of  the human genome is consists 
+are CpG or CG poor and repeat-rich, 50\% of the human genome is consists 
 of repetitive DNA sequences.
 The CpG sites are regions of DNA where a cytosine nucleotide is followed by 
 a guanine nucleotide which are four folders under-represented in the human genome. 
@@ -1805,6 +1805,9 @@ and aligned these to the simulated genome or the human reference genome.
 
 \subsection{Evaluation on Simulated Fresh DNA Reads } \label{Simulated Fresh DNA Reads }
  
+ The purpose of these tests is to see the performance of R-Candy on 
+ fresh DNA sequences aligning R-Candy's default parameters. 
+
  \subsubsection {Alignment of Simulated Fresh DNA Reads to a Simulated Genome.}
  \label {Alignment of Simulated Fresh DNA Reads to a Simulated Genome.}
  
@@ -1958,7 +1961,7 @@ As is expected introducing extra mismatches to the reads decreases
 the sensitivity of the both aligners.
 
 The huge decrease in the false positive rates between reads of length 
-25 and 30 shows that even five bases difference can make a huge 
+25 and 30 show that even five bases difference can make a huge 
 difference in the number of mapped exogenous reads.
 
 
