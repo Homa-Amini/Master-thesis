@@ -97,30 +97,36 @@
 \section*{Abstract}
 
 Recent technological developments, such as high-throughput sequencing,
-have enabled the sequencing of the genomes of many living organisms.  Recently, it has also become possible to extract and sequence DNA from extinct organisms.\\ 
+have enabled the sequencing of the genomes of many living organisms.  
+Recently, it has also become possible to extract and sequence DNA from extinct organisms.\\ 
 In comparison with modern DNA, the computational analysis of ancient DNA is complicated
 by the fact that the sequenced fragments tend to be short, degraded and contaminated with
 extraneous environmental sequences, such as bacteria and modern human DNA.
 
-Identification of endogenous sequences from this mix of DNA is generally achieved by alignment to a reference genome sequence. 
-However existing alignment software does not work well with these ultra-short, chemically damaged sequences.
+Identification of endogenous sequences from this mix of DNA is generally achieved by
+alignment to a reference genome sequence. 
+However existing alignment software does not work well with these ultra-short, 
+chemically damaged sequences.
 
 In order to deal with these much older samples a new software program has been implemented
 (R-Candy; U. Stenzel unpubl.)which aims to align these ultra-short reads and cope with the high 
 levels of chemical damage present, using self-index data structures for pattern matching
 based on a Burrows-Wheeler Transform based FM-Index.
-%It supports genomes of any size and requires just ??? GB of memory.
-It supports genomes of any size and requires not more than the provided genome size of memory.
 
-This thesis evaluates the performance of the R-Candy aligner, using simulated data.
+%It supports genomes of any size and requires not more than the provided genome size of memory.
 
-Tests on simulated datasets showed that R-Candy is the most accurate aligner currently available for ancient DNA sequences.
+This thesis evaluates the accuracy and performance of the R Candy aligner using 
+simulated ancient DNA sequences. 
 
-R-Candy yields a higher rate of sensitivity 
-%(the number of correctly mapped endogenous genomic reads divided by the total number of endogenous reads)
-and a low rate of false positive
-% (the number of aligned microbial reads divided by the total number of microbial reads).
-The current version of R-Candy compare to other aligners does not have a good throughput rate due to non-supporting multithreading feature. 
+R Candy is compared to BWA, which is currently the most-commonly used aligner for ancient DNA.
+
+Tests on simulated data showed that R-Candy outperforms BWA (run using default 
+and ancient parameters), correctly aligning more endogenous reads correctly even
+in the presence of extensive deamination, as well as incorrectly aligning fewer
+microbial reads.
+
+The current version of R-Candy compare to other aligners does not have a good 
+throughput rate due to its backward search algorithm and non-supporting multithreading feature. 
 
 \newpage\null\thispagestyle{empty}\newpage
 \section*{Acknowledgements}
@@ -146,110 +152,101 @@ reasonable cost\cite{NGS}\cite{454}\cite{NGS2}.
 \\
 These developments made it possible to get DNA from ancient organisms, 
 including humans \cite{AncientDNA}\cite{fish2human}, and to sequence 
-this DNA to learn about human history\cite{impactOFhg}\cite{ourGenome}\cite{SNP}.
+this DNA to learn about human history\cite{impactOFhg}\cite{ourGenome}
+\cite{SNP}.
 
 Since the primary goal of many studies is to find the genetic 
-relationships between extinct and extant species, 
-most often sequences from ancient organisms are analysed by 
-aligning them to the genomes of closely related extant species
-\cite{Neanthertal}\cite{AncientDNA}.
+relationships between extinct and extant species, most often sequences 
+from ancient organisms are analysed by aligning them to the genomes of 
+closely related extant species\cite{Neanthertal}\cite{AncientDNA}.
 
 A number of problems have to be addressed when ancient DNA is aligned.
-The continuous maintenance of a living organism by enzymatic repair stops shortly 
-after a death of a living organism. Along with the aggression of microbes,
-insects and fungi on the DNA molecule make the extraction of a high-quality 
-endogenous DNA of the original owner(not the contaminant sources of DNA) 
-very difficult and result in very short(the mean aDNA fragments vary between 
-36 to 150 base pairs providing by Illumina platform\cite{rizzi2012ancient} 
-\footnote{This range varies due to environment and the age of the sample})
- and degraded DNA sequences\cite{paabo2004genetic}.
+The continuous maintenance of a living organism by enzymatic repair stops 
+shortly after a death of a living organism. Along with the aggression of
+microbes, insects and fungi on the DNA molecule make the extraction of a 
+high-quality endogenous DNA very difficult and result in very short(the 
+mean aDNA fragments vary between 36 to 150 base pairs providing by Illumina 
+platform\cite{rizzi2012ancient} \footnote{This range varies due to environment 
+and the age of the sample})and degraded DNA sequences\cite{paabo2004genetic}.
+ 
 In addition to \emph{post-mortem} damage which is the degradation process of
 ancient DNA over time results in deamination of cytosine to uracil and C to T 
 changes at the both ends of DNA fragments \cite{futureofaDNA}, the low amount 
 of survived endogenous DNA over a long period of time (above 38,000 years) 
-are highly contaminated \cite{paabo2004genetic}\cite{aDNA}.
+are highly contaminated \cite{paabo2004genetic}\cite{aDNA}
+by microbes, mostly bacteria of colonized dead organisms.
 
-As mentioned before there are two sources of contamination in ancient DNA.
-First microbial contamination (bacteria of colonized dead organisms) and second present-day human contamination that comes from the first touch in excavation sites and afterwards in the process of preparing PCR libraries in the sequencing laboratories \cite{AncientDNA}.
+For samples that are reasonably preserved approaches to the alignment
+of reads that are longer than 35bp have been developed. 
+These use standard alignment software (eg BWA) but modify the parameters 
+to compensate more differences.
+But for older or less well-preserved samples that have even shorter 
+sequences $(<35 bp)$ \cite{meyer2014mitochondrial},
+using standard aligners like BWA leads to spurious alignments for a 
+number of reasons.
 
-For samples that are reasonably preserved approaches to the alignment of reads that are longer than 35bp have been developed. 
-These use standard alignment software (eg BWA) but modify the parameters to compensate more differences.
-But for older or less well-preserved samples that have even shorter sequences $(<35 bp)$ \cite{meyer2014mitochondrial},
-using standard aligners like BWA leads to spurious alignments for a number of reasons.
+First given the mammalian genome size - random alignments of shorter 
+sequences become increasingly likely as the length decreases. 
+This means that an increasing number of incorrect alignments can be 
+found (and this is true for both endogenous and microbial DNA).
 
-First given the mammalian genome size - random alignments of shorter sequences become increasingly likely as the length decreases. This means that an increasing number of incorrect alignments can be found (and this is true for both endogenous and microbial DNA).
+Second, standard aligners don't include a model of chemical damage that 
+is specific to ancient DNA, and, therefore, penalise reads with mismatches
+that are due to chemical damage.
 
-Second, standard aligners don't include a model of chemical damage that is specific to ancient DNA, and, therefore, penalise reads with mismatches that are due to chemical damage.
+Third, most aligners require an exact match of some minimum length(seed), 
+that is often longer than the read length possible with ancient DNA.
 
-Third, most aligners require an exact match of some minimum length(seed), that is often longer than the read length possible with ancient DNA.
-
-Fourth, the ultra-short sequence fragments with some 
-substitution regarding mutation, divergence,  sequencing error and \emph{post-mortem} damage are so likely to be found alignments with an exact match while the original location of 
-the read is reachable with some mismatches.
-
-Fifth, aligning short reads to a genome with a lot of repetitive elements which often are longer that the length of the reads needs a sensitive heuristic method that gives the higher probability to the original location over the other locations.
-
-Therefore, due to the lack of proper tools such as an aligner that is specific to ancient data and its characteristics, most of the generated data get discarded. 
-This information reduction on the datasets of sparse endogenous data give us the motivation for 
-a new aligner to efficiently analyze this particular type of data.
+Therefore, due to the lack of proper tools such as an aligner that is 
+specific to ancient data and its characteristics, most of the generated 
+data get discarded. 
+This information reduction on the datasets of sparse endogenous data give 
+us the motivation for a new aligner to efficiently analyze this particular
+type of data.
 \\
-The alignment of ancient DNA reads with high accuracy to the reference genome is a crucial step in application workflows such as ancient DNA pipeline, contamination estimation, divergence estimation, genotyping, heterozygous estimation, etc
-\\
-A number of aligners have been developed to undertake this task such as BWA\cite{bwa} and BWA-PSSM\cite{pssm}.
-Each aligner provides different trade-offs between mapping accuracy and speed. 
-For example, different parameters that compromised the mapping accuracy to reduce runtime are\cite{benchmarking}:\\
-Limiting the number of allowed mismatches,
-Limit the length of allowed gaps and
-neglecting base quality score.
-\\\\
-
-In this thesis, I present a comparison between standard BWA, a modified version of BWA for working with ancient data and R-Candy.
-
-The accuracy of these aligners is evaluated on different settings. 
-%A read is defined to be correctly mapped if it maps to the correct location in the genome and has the best quality score(lower or equal to the threshold). 
-I considered small simulated data sets of 700,000 reads of lengths 25, 30, 35 and 40 bps and map against a simulated genome of length 1Gbp and the Human genome of length 3Gbp as the reference genomes.
-
-%Evaluating the sensitivity of the aligners according to the number of intervals they detected. The sensitivity evaluation criteria is used to evaluate the performance of both aligners on simulated and real genome.
-
-% Additionally, the error model I use does not include INDELs and only allows mismatches.
-
-Two different sets of experiments are presented to evaluate and understand the strengths and weaknesses of the new aligner(r-candy).
-
-The first set includes the benchmarking suite, consisting of tests that cover input properties and algorithmic features. These tests are applied to genomic and microbial re-sequencing synthetic data to verify the effectiveness of the benchmarking tests. 
-
-We consider a read alignment correct if the read is aligned to its original location in the genome and has the best alignment score(lower or equal to the threshold)
-Although it is biologically relevant but has some computational pitfalls. For example, a read can be aligned to its original genomic location with some mismatches (due to sequencing error or other substitutions called SNP) while there is an exact match to another location. Therefore, an aligner needs another criterion to take the inexact match but the right location over the exact match. 
-
-Unlike the BWA,  R-Candy reports all the mapping locations of a read, therefore,  
-in order to compare the mapping accuracy performance of the two aligners, in the case of multiple alignments for r-candy we chose one alignment arbitrarily over the others, even though comparing the execution time performance will not be fair.  
-
-I also emphasize on the effect of the indexing technique on the performance of the R-Candy which the
-
-BWA also uses a Burrows-Wheeler transform based FM-Index but with different axillary data structures.
+This thesis evaluates the performance of R-Candy aligner and compares it 
+with BWA which is a widely used aligner for short reads.
 
 
 
-%\subsection{Terminologies}
 
-%\begin{itemize} 
-%	\item  \emph{DNA }: or deoxyribonucleic acid is a hereditary long molecule in human and all other organisms that contains the genetic information needed for development and reproduction of living organisms.
-	
-	
-%	\item \emph{Nucleotide}: DNA contains four basic building blocks or bases: Adenine, Cytosine, Thymine and Guanine denoted by A, C, T and G respectively.The order of these nucleotides determine the instruction of a DNA molecule.
-	
-%	\item DNA is a two-stranded double helix shape molecule where nucleotides in each strand pair together with the complementary nucleotide (A with T, C with G) on the opposite strand. Two strands run on anti-parallel in the way that on runs on \enquote*{5} to \enquote*{3} (The beginning and end of each strand respectively) and the other one runs \enquote*{3} to \enquote*{5}.
-	
-%	\item \emph{Next-generation sequencing technology (NGS)}: also known as massively parallel sequencing.
-%	Includes technologies such as: Illumina, SOLiD, 454 which was a very important technology in early days and then Pacific Bioscience (PacBio).
-	
-	%\item \emph{First generation sequencing technology}: Basically refers to Sanger sequencing.
-	
-%\end{itemize}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\clearpage
+\section{Background } \label{Background }
+
+
+\emph{Sequencing} is the process of determining the precise order of bases 
+(adenine, guanine, cytosine, and thymine) that compose a DNA molecule. 
+It is typically very hard to sequence a long fragment of a DNA molecule, 
+such as a whole chromosome. However, It is easy to subdivide longer sequences
+into short pieces, create multiple copies of them (called \emph{amplification} ) 
+and sequence all the copies. The sequence of every piece is called a read and 
+the whole process is known as shotgun sequencing \cite{makinen2015genome}.
+
+
+
+The human genome sequence is made up of  3 billion DNA base pairs.
+Although the human genome has been completely sequenced,it is not yet fully 
+understood. However, some of the known characteristics of the human genome 
+are CpG or CG poor and repeat-rich,$50 %$ of  the human genome is consists 
+of repetitive DNA sequences.
+The CpG sites are regions of DNA where a cytosine nucleotide is followed by 
+a guanine nucleotide which are four folders under-represented in the human genome. 
+
+
+
 
 \subsection{Ancient DNA } \label{Ancient DNA }
-The ancient DNA exploration broadly describes as the retrieval of DNA sequences from fossils remains, archaeological discovery, museum specimens and other exceptional sources, only become doable when the new technologies for amplification and sequencing of DNA sequences, called PCR got invented \cite{paabo2004genetic}.
+The ancient DNA exploration broadly describes as the retrieval of DNA sequences 
+from fossils remains, archaeological discovery, museum specimens and other 
+exceptional sources, only become doable when the new technologies for amplification
+and sequencing of DNA sequences, called PCR got invented \cite{paabo2004genetic}.
 
-The extracted DNA from long-dead organisms has significantly different characteristics that differ it from modern DNA which are summarized in Table\ref{aDNAchar} .\\
+The extracted DNA from long-dead organisms has significantly different characteristics
+ that differ it from modern DNA which are summarized in Table\ref{aDNAchar} .\\
 
 
 
@@ -266,38 +263,28 @@ The extracted DNA from long-dead organisms has significantly different character
 \label{aDNAchar}
 \end{table}
 
-%\textbf{Length:}The continuous maintenance of a living organism by enzymatic repair stops shortly after a death of a living organism. Along with the aggression of microbes, insects and fungi on the DNA molecule make the extraction of a high-quality endogenous DNA of the original owner(not the contaminant sources of DNA) very difficult and result in very short(the mean aDNA fragments vary between 35 to 150 base pairs providing by Illumina platform\cite{rizzi2012ancient}) and degraded DNA sequences\cite{paabo2004genetic}.\\\\
-%\textbf{Post-Mortem damage:} the degradation of DNA molecule to small average size (the mean aDNA fragments vary between 35 to 150 base pairs providing by Illumina platform\cite{rizzi2012ancient}) by enzymes shortly after death as well as feeding of bacteria, fungi and insects on organisms after their death\cite{paabo2004genetic}.
-%\textbf{Post-Mortem damage:} 
-%The degradation process of ancient DNA over time results in deamination of cytosine to uracil and C to T changes at the both ends of DNA fragments \cite{futureofaDNA}.\\\\
-%Therefore, the low amount of survived endogenous DNA over a long period of time (above 38,000 years) are highly contaminated \cite{paabo2004genetic}\cite{aDNA}.\\\\
-%\textbf{Contamination:}
-%There are two sources of contamination in ancient DNA.
-%First microbial contamination (bacteria of colonized dead organisms) and second present-day human contamination that comes from the first touch in excavation sites and afterwards in the process of preparing PCR libraries in the sequencing laboratories \cite{AncientDNA}.\\
-
 
 The challenges with ancient DNA was the requirement for new software to efficiently 
 align millions of ultra-short, degraded and deaminated reads to a reference genome.
 
 
 \subsection{Alignment} \label{Alignment}
-%Alignment or mapping of reads is determining the corresponding part of the reference sequence for each read in our sequence data.\\
 
-%An alignment between two strings $S_{1}$ and $S_{2}$ aims to highlight the similarities between two sequences and reveals their relationship.\\
-%This concept gets more interesting when a string $S_{1}$ changes into $S_{2}$ over time, through some operations like substitution/mutation of one character with/into another one or insertion or deletion of a character.\\
-
-That sequence alignment is a common problem in computational biology, and one that can be simplified as follows:
+That sequence alignment is a common problem in computational biology, 
+and one that can be simplified as follows:
 
 An alignment between two strings $S_{1}$ and $S_{2}$ assumes a common origin and 
 tries to highlight their similarities by explaining one of them as a small number 
 of mutations, insertions and deletions applied to the other.\\
 
-For those characters the survived over the times, an alignment of two strings is a list of indices (i,j) where $S_{1}[i]$ matches $S_{2}[j]$.\\ 
-In its simplest form an alignment of two strings is obtained by placing two strings one above 
-the other one in the way that every character in either string is above a unique character 
-in opposite string and then looking for relation between them.\\\\
+For those characters the survived over the times, an alignment of two strings is 
+a list of indices (i,j) where $S_{1}[i]$ matches $S_{2}[j]$.\\ 
+In its simplest form an alignment of two strings is obtained by placing two strings
+one above the other one in the way that every character in either string is above 
+a unique character in opposite string and then looking for relation between them.\\\\
 
-As an example, consider the alignment of two strings $S_{1}$:\emph{'CCGATGA'} and $S_{2}$:\emph{'TCGCTG'} shown below. 
+As an example, consider the alignment of two strings $S_{1}$:\emph{'CCGATGA'} 
+and $S_{2}$:\emph{'TCGCTG'} shown below. 
 
 \begin{center}
 	%\begin{tabular}{c *{12}c|cc|c}
@@ -305,13 +292,15 @@ As an example, consider the alignment of two strings $S_{1}$:\emph{'CCGATGA'} an
 %	\hline
    $S_{1}$   &  & & C & C & G & A & - & T & G & A && \\
 	%\hline
-$S_{2}$ 	&  & &{\textcolor{red}T}& C & G & {\textcolor{green}-}& {\textcolor{cyan}C }  &  T & G & {\textcolor{green}- }& \\
+$S_{2}$ 	&  & &{\textcolor{red}T}& C & G & {\textcolor{green}-}& {\textcolor{cyan}C } 
+ &  T & G & {\textcolor{green}- }& \\
     	                                 
 	\end{tabular}
 \end{center} 
 In this alignment,there is one mismatch of character T highlighted in red, 
 two deletion of character A highlighted in green and one insertion of character
-C highlighted in cyan and all the other characters match their counterparts in the opposite string. 
+C highlighted in cyan and all the other characters match their counterparts in 
+the opposite string. 
 \\\\
 
 There are some key issues for an ideal alignment that needs to be considered:
@@ -439,6 +428,20 @@ To find the actual local alignment:
  \item stop when you reach a cell with value 0.
 \end{itemize} 
 
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\paragraph{Semi-global alignment}
+
+Semi-global or "glocal" (short for global-local) algorithm is a combination of global
+and local alignments. 
+It is a practical strategy in the case of ancient DNA.
+Aligning two sequences, one short ( an ancient DNA sequence) and the 
+other one long( a chromosome sequence). In this case, neither global 
+nor local alignment is completely applicable. The best solution here is to globally 
+align the short sequence while only a local alignment is appropriate for the long sequence.
+
+
 Having two sequences  $S_{1}$ and $S_{2}$, want to optimally align them.
 $$S_{1}:ACACACTACCG$$
 $$S_{2}:AGCACACA$$\\
@@ -453,24 +456,6 @@ $$S_{2}:AGCACACA$$\\
 \end{cases}
 \] \\
 
-
-%\[
-%H = 
-% \begin{pmatrix}
- 
-%    & $\_$ & A & C & A & C & A & C & T & A & C & C & G \\
-% $\_$  & \textcolor{cyan}{0} & 0 & 0 & 0 & 0 & 0 & 0 & 0 & 0 & 0 & 0 & 0 \\
-% A & 0 & \textcolor{cyan}{2} & 1 & 2 & 1 & 2 & 1 & 1 & 2 & 1 & 0 & 0 \\
-% G & 0 & \textcolor{cyan}{1} & 1 & 1 & 1 & 1 & 1 & 0 & 1 & 1 & 0 & 2 \\
-% C & 0 & 1 & \textcolor{cyan}{3} & 2 & 3 & 2 & 3 & 2 & 1 & 3 & 3 & 2 \\
-% A & 0 & 2 & 2 & \textcolor{cyan}{5} & 4 & 5 & 4 & 3 & 4 & 3 & 2 & 2 \\
-% C & 0 & 1 & 4 & 4 & \textcolor{cyan}{7}  & 6 & 7 & 6 & 5 & 4 & 5 & 4 \\
-% A & 0 & 2 & 3 & 6 & 6 & \textcolor{cyan}{9} & 8 & 7 & 8 & 7 & 6 & 5 \\
-% C & 0 & 1 & 4 & 5 & 8 & 8 & \textcolor{cyan}{11} & \textcolor{cyan}{10} & 9 & 10 & 9 & 8 \\
-% A & 0 & 2 & 3 & 6 & 7 & 10 & 10 & 10 & \textcolor{red}{12} & 11 & 10 & 9 \\
-  
-% \end{pmatrix}
-%\]
 
 
 $
@@ -518,168 +503,148 @@ $$S_{2}:A\enskip G CACAC-A\enskip\enskip\enskip\enskip\enskip $$
 
 
 
-\paragraph{Semi-global alignment}
 
-Semi-global or "glocal" (short for global-local) algorithm is a combination of global and local alignments. It is a practical strategy in some situations such as our case: aligning two sequences when one is short (for example an ancient sequence) and the other one is long(for example a chromosome sequence). In this case, neither global nor local alignment is completely applicable. The best solution here is to globally align the short sequence while only a local alignment is appropriate for the long sequence.
+Semi-global \footnote{Reads are globally aligned(fully aligned)where the reference is
+locally aligned (with some gaps at the end of the reference string)} alignment results
+have been produced by R-Candy as a result of mapping sets of short strings against 
+long reference (for instance, strings of length $\geq 25$ bps aligned to a refernce of length 3.2 Gbs).
+To calculate the highest similarity score(lowest Levenshtein distance) between two strings, 
+we fill out the desirable and reference in the Y-axis and X-axis respectively.
+Starting from the top left with score zero the score matrix leads us to the 
+maximum score in the bottom right position.
 
-%\\\\\\\\
-%\emph{\textbf{You have not mentioned classic alignment algorithms that have been used in the past, nor the idea that the aim is to minimise some kind of a score in order to find the most optimal alignment. Some literature review here would be useful.  There is a book called Biological Sequence Analysis  by Durbin and Eddy.  It might be useful. Even the wikipedia entry provides relevant background.} }
-%https://en.wikipedia.org/wiki/Sequence_alignment 
-
-%Mapping is alignment to a large, static genome and correspond to the offline approximate string matching problem. 
-
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%\subsection{Why a New Aligner is Required }
-%\emph{\textbf{The three points below don't capture well the reasons shorter fragments are harder to align.}}\\\\
-
-%As mentioned above, Ancient DNA has fragmented DNA molecules which can lead to shorter reads.
-%These short reads are harder to align because:\\
-%\begin{enumerate}
-%\item Given the mammalian genome size - random alignments of shorter sequences become increasingly likely as the length decreases. This means that an increasing number of incorrect alignments can be found (and this is true for both endogenous and microbial DNA)\\
-%\item Standard aligners don't include a model of chemical damage that is specific to ancient DNA, and therefore penalise reads with mismatches that are due to chemical damage.\\
-%\item  Most aligners require an exact match of some minimum length, that is often longer than the read length possible with ancient DNA\\
-%\item Damage creates the same problem; matches are not exact i.e. the heuristic needs
-%to be able to allow for one or more mismatches while disentangle this from damage.\\
-%\item Contamination increases the false-positive rate since it is hard to distinguish
-%between incorrect matches (produced by contamination) and true-positive endogenous reads.\\\\
-%\end{enumerate}
+Comparing every individual string with a corresponding-length reference is not feasible in
+terms of memory consumption(exponential to the number of insertion and deletion allowance) 
+therefore alternative heuristic which takes the following characteristics into account is needed: 
 
 
+\begin{itemize}
 
-%%%%%%%%%%%%%%%%%%%%%%%
+\item Dealing with ancient DNA, we have very short reads and we do not allow for 
+more than one INDEL, which reduces the memory usage.\\
+
+\item 
+In our case, the reference is a tree, not a sequence as our genome sequence is 
+converted to a Wavelet Tree data structure.
+We simply say that we split the reference into branches for reference. So we have
+a reference that gives for any tree the outgoing edges from the root which all have 
+letters  as a label and then an attached tree.
+We will be able to start from the beginning (tree's root) and look for the query in 
+branches which uses the Depth First Search(DFS) algorithm. 
+It also is cheaper in terms of memory because using a tree as a reference makes
+it reusable.
+All needs to be done is to backtrack one step and look at another branch, so most
+of the matrix is reused.\\
 
 
-The key motivation behind this thesis comes from the crucial needs for 
-sophisticated computational tools and methods to deal with massive amount of ancient data coming from archeological remains such as teeth \cite{teeth}, bones \cite{hagelberg1989ancient}, hair \cite{gilbert2004population}, coprolites \cite{coprolites} and soft tissue.
-% that needs new method and tool for new types of data.\\
-
-In this thesis we aim to address this need by evaluating the performance of an ancient DNA specific aligner called R-Candy developed by Udo Stenzel at Max Planck institute that is optimized for ultra-short reads of length 30 to 50 with a high level of microbial contamination and extensive deamination using real and simulated data sets. \\
-
-
-I show that alignments of such a data using existing heuristics (e.g. BWA) are not good enough for our purposes.\\ 
-
-R-Candy has a novel scoring system that takes in account the deamination of C to T(replacement of cytosine with uracil) and G to A(opposite strand) that improves the accuracy and performance of a sequences alignments, as I will show in the result section. 
-
-It is a Haskell based open source software(https://github.com/udo-stenzel/r-candy.git) which is specific for aligning ancient DNA sequences.
-\\\\\\
-
-The thesis is organized as follow:
+\item
+As we always start from the root note:
+\begin{enumerate}
+ \item When we are done with the query it does not matter if its corresponding 
+ reference if not finished yet.
  
-Section 2, I introduce some data structures like Suffix arrays and FM-Index for fast pattern matching. In addition Burrows-Wheeler transform, Wavelet tree and \emph{rank9} data structure will be introduced.
+ \item Not to end up at the leaf while the query has not finished yet,
+we run down all the queries that are as long as our query.
 
-Section 3 will describe our approach to R-Candy aligner implementation.
-I will provide an overview of different data structures used by R-Candy and its alignment algorithm and scoring system.
+\end{enumerate}
 
-In Section 4, I will describe how we evaluated the performance of our aligner and present the result of applying R-Candy on simulated and real datasets in comparison with BWA aligner.
-
-Finally, we will summarize our achievements in Section 5 and improvement of R-Candy's performance will be discussed in Section 6. 
-
-
-
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-\clearpage
-
-
-\section{Background } \label{Background }
-
-Determining the corresponding part of a genome for DNA sequences is a special case of pattern matching.
-Where the incorporation of the special DNA characteristics and the sequencing technologies make it more challenging.
-\\\\
-Some features of DNA and sequencing technologies, which can influence the mapping process:
-\begin{itemize} 
- \item \emph{Seeding}
-The seeding feature that is used to to maximize performance and accuracy could simply be defined as follows:\\
-Theorem: if a Pattern occurs in a genome with N mismatches, and divide the genome into N+1 equal pieces, at least, one piece has an exact match. 
-Due to the properties of NGS technologies, the first few base pairs of a read sequence contains fewer errors. And the seed regions are supposed to have fewer false characters.
-
- \item \emph{The base quality score} is a measure of correctly reading each base in a read by a sequencing machine which is defined by the Phred score(for more explanation see Section 4.0.3.3 Sequencing Error ).
-The quality scores can be used to determine mismatch locations.
-
-% \item \emph{SNP}
-%A single nucleotide polymorphism called SNP is a common type of genetic variations among  individuals of the same species. 
-%SNPs could easily be mistaken as mismatches in the mapping process, where the true identification of their location before the mapping could improve the quality of mapping.
-
-
- \item \emph{Paired-end reads}
-The \quotes{paired-end} expression refers to sequencing both ends of a DNA molecule.
-It increases the mapping accuracy by having the distance information
- between the end points.
- 
- \item \emph{INDELs existence}  which is allowing insertion or deletion of a nucleotide(base) while aligning a sequence to a reference string of a genome called gaps.Choosing the location of a gap gets so complicated regarding the length of a read especially in the case of ancient data where the read length is ultra-short(25-50 bps). Therefore, some aligners do not allow any gaps or limit their numbers and locations while dealing with short reads.
+ \item Following the Branch and Bound heuristic, we increase the lower bound of the 
+ introduced score that we are willing to endure. In the case of not finding anything 
+ below that limit, no alignment found gets report.
  
 \end{itemize}
-
-\subsection{Tools' Description} \label{Tools' Description}
-
-The mapping procedure for most of the existing aligners (including R-Candy and BWA) starts by indexing the reference genome in order to accelerate the process of finding the corresponding position of each read in the reference.
-One of the most common techniques to build an index for a reference genome or reads is Burrows-Wheeler Transform.
-\\
-In general Burrows-Wheeler Transform is an efficient data indexing technique that requires a small amount of memory while searching a query through a big data string(more details in Section 2.2.2).\\
-
-To evaluate the performance of R-Candy, I tested an additional
-alignment program called BWA.
-BWA is a Burrows-Wheeler Transform based aligner that uses backward search (Ferragina and Manzini, 2000) 
-to find matches  between a query and substring of the reference string within a certain defined distance\cite{bwa}.
-
-Each aligner supports different sequencing technologies features and handles them differently apart from differences in their mapping approach.
-For example, R-Candy uses an alignment score to accept or reject and alignment while BWA alignment technique for accepting or rejecting an alignment is based on the number of mismatches between the read and the reference genome\cite{bwa}.
+Given a non-empty sequence $q\in (q_{1}..q_{n})$, we want to align it to 
+another non-empty sequence (reference)$r\in (r_{1}..r_{n})$:\\\\
 
 
-\begin{table}[H]
- \centering
- \caption{features supported by tools}
-  \begin{tabular}{ |  p{4cm} | c | c |}
-   \hline 
-  				  	   & \textbf{R-Candy} &\textbf{ BWA}  \\ \hline
-  	   Post-mortem damage & Yes & - \\	  	   
-       Seed mismatches &  -  & Any  \\
-   Non-seed mismatches & AS  & Count  \\ 
-          Gapped align & partially & partially \\ 
-       Mapping quality & - & Yes  \\
-       Var. seed len.  & -   &  Any \\
-       \hline
-      \end{tabular}
-	\caption*{count: total count of mismatches in the read, AS: alignment score. 
-	%Gap alignment for R-Candy is limited to 1 and for BWA is limited to .
-	 }
- 	\label{features}
-\end{table}
 
-%The mapping quality used by BWA is a Phred-scaled probability of the alignment being incorrect\cite{bwa}.
-%While
-%The R-Candy's alignment score is the probability of the occurrence of the read sequence given an alignment location.
+\begin{figure}[H]
+\centering
+\includegraphics[width=15cm]{pictures/A_HS.png}
+%\caption{ROC curve for simulated reads with deamination damage aligned to the simulated genome
+ %        with deamination parameters.}
+\label{formula}
+\end{figure}
 
-\subsubsection{Default options of the tested tools} \label{Default options of the tested tools}
 
-Generally, using a tool with its default parameters gives a good performance. Most of the time users use the tools with the default setting or just tweak some of them. Thus, it is important to know these
-options and the effect of using them.  
-The most important default parameters of the two considered aligners in this thesis are the following:
-
-\begin{itemize} 
- \item \emph{Alignment score}  which is the probability of the occurrence of the read sequence given an alignment location is set to 12 for R-Candy by default and BWA does not provide alignment score for its alignments.
- 
- \item \emph{post-mortem damage deamination parameters:} For R-Candy the left and right overhang parameters which are used to calculate the length of overhangs by geometric distribution in 5' and 3' ends respectively are sets as zero in case the reads are not ancient and do not have \emph{post-mortem} damage.The deamination rates of cytosine residues into uracil residues for double and single stranded parts of a read are set by default 0.02 and 0.45 respectively.\\
-BWA does not include \emph{post-mortem} damage at its alignment process.
+We take the minimal score of three options match/mismatch, insertion and 
+deletions, as described in the above code.
+The score that we have so far plus match score between q and r and pair it 
+with Match operation (M) in the CIGAR field \cite{samtools}.\\
+In the case of insertion (I) in the MD field \cite{samtools}: 
+calculated score so far plus insertion score(penalty) pair with insertion
+operation and CIGAR field for insertion.
+The same procedure applied to deletion operation.
 
  
- \item \emph{Divergence rate:} which is defined as one-third of the expected 
-divergence rate between the reads and reference genome.  R-Candy's default 
-divergence rate is 0.005,  assuming aligning a human genome to a chimpanzee 
-genome.\\Not available for BWA.
-  
- %\item \emph{INDEL rate:}???
-  
- \item \emph{Maximum number of allowed mismatches in the read:}  BWA determines the number of mismatches based on the read length. For 15-37 bps reads is 2; for 38-63 bps is 3; for 64-92 bps is 4, for 93-123 bps is 5 and for 124-156 bps is 6\cite{bwa}.
-For R-Candy, it is included in its alignment score.
+\paragraph{Scoring} \label{Scoring}
 
- \item \emph{Seed length and Maximum number of allowed mismatches in the seed:} By default, the seed length for BWA is 32 bps allowing maximum two mismatches in this part to speed up the alignment. But for reads shorter than seed region, BWA's seeding feature is disabled.
-Generally, the seeding strategy needs long reads which in the case of ancient data is not achievable therefore R-Candy does not support seeding.
- 
-%Minimum and maximum insert sizes for paired-end mapping: The insert size represents the distance between the two ends. The values used for the minimum and the maximum insert size is 500 for BWA.
+%\textbf{\emph{Going to rewrite this section, not my voice.}}
+%But, this na\"{\i}ve definition of the correctness of an alignment has some 
+%problems. For example after applying sequencing error and deamination damage on 
+%the reads, the read does not exactly match the original genomic position. And 
+%it would be a problem when the aligner chooses the location for a read with no or 
+%fewer mismatches over the original location. In this case, the result will be 
+%poorly judged as an incorrect mapping despite the more accurate matching position 
+%has been chosen. The problem has been managed using mapping quality/alignment 
+%score information. Such that a correct alignment of a read is defined as being 
+%to its original genomic location and having the alignment score/mapping quality 
+%lower/greater than a certain threshold. 
+Let $\sigma$ and $\delta$ be the single stranded and the double stranded
+deamination rates.  Let $l$ be the length of the read being aligned.  
 
-\end{itemize} 
+For double stranded library preparation, let $\lambda$ be overhang
+length parameter.  For every position $i \in [0..l-1]$ define
 
-Therefore, it's important to have the same values when comparing two pieces of software because different default values lead to different results for the same datasets.\\
+\begin{align*}
+p_{fwd} &= \lambda^{i+1} \\
+p_{rev} &= \lambda^{l-i} 
+\end{align*}
+
+For single stranded library preparation, let $\lambda_s$, $\kappa_s$ be
+the 5' overhang length parameter and the 3' overhang parameter.  Let $l$
+be the length of the read being aligned.  For every position $i \in
+[0..l-1]$ define
+
+\begin{align*}
+p_{fwd} &= \lambda_s^{i+1} + \kappa_s^{l-i} - \lambda_s^{i+1} \kappa_s^{l-i} \\
+p_{rev} &= 0
+\end{align*}
+
+Now define effective substitution probabilities
+
+\begin{equation*}
+p_{C} = \sigma p_{fwd} + \delta (1 - p_{fwd}), \quad
+p_{G} = \sigma p_{rev} + \delta (1 - p_{rev}) 
+\end{equation*}
+
+Scoring a base at position $i$ with quality score $q$ involves
+deamination, divergence and error.  We assume both a trivial error model
+and a trivial model of evolution, where all possible changes occur with
+a uniform rate derived from the quality score and a uniform rate given
+by parameter $D$, respectively.  Define 
+
+\begin{equation*}
+\epsilon_0 = {10^{-q/10}}/4, \quad \epsilon = \epsilon_0 + D/3 - \epsilon_0 D/3
+\end{equation*}
+
+and the complete substitution matrix becomes (reference base in columns,
+query base in rows, both in the order A, C, G, T):
+
+\begin{equation*}
+\left( \begin{array}{cccc}
+1 - 3 \epsilon &       \epsilon                            &       \epsilon + p_{G} - 4 \epsilon p_{G} &       \epsilon \\
+      \epsilon & 1 - 3 \epsilon - p_{C} + 4 \epsilon p_{C} &       \epsilon                            &       \epsilon \\
+      \epsilon &       \epsilon                            & 1 - 3 \epsilon - p_{G} + 4 \epsilon p_{G} &       \epsilon \\
+      \epsilon &       \epsilon + p_{C} - 4 \epsilon p_{C} &       \epsilon                            & 1 - 3 \epsilon 
+\end{array} \right)
+\end{equation*}
+
+Alignment scores are simply the sum of the natural logarithms of the
+entries in that matrix for every aligned base, plus a penalty for
+insertions and deletions.  We use linear gap costs with a cost of $G$
+per inserted or deleted base, where $G$ is a free parameter again.
+
 
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -701,8 +666,6 @@ Some of the main data structures used by our new aligner(R-Candy) for indexing a
 \label{Array-representation}
 \end{table}
 
-
-%Since a crucial part of my project is to describe the design and implementation of an index over a string, I start by formally introducing a text string.
 
 
 A string \emph{S} is concatenation of \emph{N} characters. 
@@ -1066,10 +1029,10 @@ of it recursively to reach the saved positions at any time it is necessary \cite
 
 \subsubsection{A Wavelet Tree based FM-Index} \label{A Wavelet Tree based FM-Index}
 
-%A Wavelet Tree based FM-Index is used to create a simple and robust index structure for a genome with efficient time complexity on pattern searching.\\
 We used a Wavelet Tree based FM-Index to create a simple and robust index structure for 
 a genome with efficient time complexity on pattern matching.\\
-\paragraph{Wavelet Tree}
+
+%\paragraph{Wavelet Tree}
 
 A Wavelet Tree is a balanced binary tree to store strings as bit vectors in a 
 compressed space\cite{navarroWavelet}\cite{Wavthesis}\cite{AlexBowe}.\\\\
@@ -1105,56 +1068,23 @@ Notice on the first level an "a" is encoded as a 0, but it is encoded as a
 The time complexity of Wavelet Tree to look for number of occurrences of a 
 character up to specific position(OCC query) is $O(\log{}\mid\sum\mid)$.
 
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-
-%\section{Method} \label{Method}
 
 
-\subsection{Benchmark design} \label{Benchmark design}
-
-The features being covered by my benchmarking suite will be present in this section in addition to R-Candy's indexing structure and mapping algorithm.
-\\\\
-The evaluation is organized as follows: 
-\\\\
-\textbf{Mapping options}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 
-\begin{itemize}
-
- \item \emph{Mapping quality threshold:} R-Candy uses the quality threshold (alignment score) to determine the accuracy of each alignment. 
- It is the probability of observing a read sequence given the alignment location. 
-
-\end{itemize}
-\textbf{Input properties}
-
-\begin{itemize}
-
- \item \emph{Read length:}
-The read length for ancient data varies between 25bps to 50bps and It's essential that its impact be considered for throughput evaluation.
+\subsubsection{Bi-directional Wavelet Tree}
 
 
- \item \emph{Genome type:} 
-The human genome is used to test the performance of many aligners.
-By the fact that each genome has different properties such as the different percentage of repetitive elements.
-Thus, more than one genome should be used to reveal the effect of these properties. Two genomes are used in our evaluation, the human genome (version hg19) and a simulated genome based on the human genome.
 
-\end{itemize}
-\textbf{Scalability}
-\\
-The scalability of aligners could be considered in the aspect of parallel settings.
-Some aligners support multithreading feature to increase their speed by allowing to use more than one CPU core.
-The current version of R-Candy does not support multithreading while BWA does support multithreading.
- \\\\
-\textbf{Accuracy evaluation}
-\\
-Each aligner is expected to align a set of reads while sometimes it does not happen due to its mapping algorithm or limitations in their default alignment parameters. Besides, some reads get align while violating the mapping principles of an aligner.
-\\\\
-\textbf{Usecase:}
-\\
-For example calculating Hamming distance between modern human genome and Neandertal genome .  
-Calculating Hamming distance between two strings is the process of detecting the number of positions where the corresponding characters are different. In other words, it highlights the similarities and differences and helps us to learn about evolution. The alignment is the first step in this process which is very important to be done accurately.
 
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%5
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\subsubsection{Seeding Heuristic}
+
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \subsection{Index Data Structure} \label{Index Data Structure}
 
 There are some challenges on the mapping of short reads\\
@@ -1256,6 +1186,9 @@ We define \emph{$rank(n,0)= n- rank(n,1)$} and implement \emph{$rank(. , 1)$}
 using the Rank9 structure described below.
 
 
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
 \subsubsection{The rank9 Data Structure} \label{The rank9 Data Structure}
 
 %In this part, the layout of our data structure will be introduced.\\	
@@ -1287,10 +1220,6 @@ To construct the rank9  we divide the bit string into several basic blocks.
 For each basic block boundary, a sum of previous ranks (first-level rank) and the address of  
 stored offset values(second-level rank) are stored which gives us an efficient rank query time. \\
 
-%And when we want to rank a position \emph{p}, use following formula:\\
-
-%To construct the rank9 layout, we divide the bit vector of Wavelet tree into several blocks and then divide these blocks further, into words of 64 bits.
-
 For each block, we store:\\\\
 \centerline{$ block[i].total= rank(i*512)$}\\\\
 \centerline{$ block[i].subtotal[j]= rank(i*512 + (j+1)*64)-block[i].total$}\\\\
@@ -1306,164 +1235,6 @@ For each block, we store:\\\\
 	k=[ x \% 64  ]\\
 \end{cases}
 \]
-
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-
-\subsection{Alignment} \label{Alignment}
-
-Semi-global \footnote{Reads are globally aligned(fully aligned)where the reference is
-locally aligned (with some gaps at the end of the reference string)} alignment results
-have been produced by R-Candy as a result of mapping sets of short strings against 
-long reference (for instance, strings of length $\geq 25$ bps aligned to a refernce of length 3.2 Gbs).
-To calculate the highest similarity score(lowest Levenshtein distance) between two strings, 
-we fill out the desirable and reference in the Y-axis and X-axis respectively.
-Starting from the top left with score zero the score matrix leads us to the 
-maximum score in the bottom right position.
-
-Comparing every individual string with a corresponding-length reference is not feasible in
-terms of memory consumption(exponential to the number of insertion and deletion allowance) 
-therefore alternative heuristic which takes the following characteristics into account is needed: 
-
-
-\begin{itemize}
-
-\item Dealing with ancient DNA, we have very short reads and we do not allow for more than one INDEL, which reduces the memory usage.\\
-
-\item 
-In our case, the reference is a tree, not a sequence as our genome sequence is converted to 
-a Wavelet Tree data structure.
-We simply say that we split the reference into branches for reference. So we have a reference that gives for 
-any tree the outgoing edges from the root which all have letters  as a label and then an attached tree.
-We will be able to start from the beginning (tree's root) and look for the query in branches which uses the Depth First Search(DFS) algorithm. 
-It also is cheaper in terms of memory because using a tree as a reference makes it reusable.
-All needs to be done is to backtrack one step and look at another branch, so most of the matrix is reused.\\
-
-
-%\item When we are done with query doesn't matter its reference left over. 
-%We always start from the root node but we don't end up at the leaf,
-%we end up anywhere when we are done with the query. In fact, 
-%run down all the queries that are as long as your query.\\
-
-\item
-As we always start from the root note:
-\begin{enumerate}
- \item When we are done with the query it does not matter if its corresponding reference if not finished yet.
- 
- \item Not to end up at the leaf while the query has not finished yet,
-we run down all the queries that are as long as our query.
-
-\end{enumerate}
-%\item We also introduce a bound 'b' which is the maximum score that we are willing to endure.
-%We put some limit on the computed score of each cell
-%and if we never find anything  below that limit, we say we did not find an alignment but as 
-%soon as finding an alignment, you lower the limit because you want a better one calling it Branch and Bound\cite{}.\\\\
-
- \item Following the Branch and Bound heuristic, we increase the lower bound of the introduced score that we are willing to endure. In the case of not finding anything below that limit, no alignment found gets report.
- 
-\end{itemize}
-Given a non-empty sequence $q\in (q_{1}..q_{n})$, we want to align it to 
-another non-empty sequence (reference)$r\in (r_{1}..r_{n})$:\\\\
-
-
-
-\begin{figure}[H]
-\centering
-\includegraphics[width=15cm]{pictures/A_HS.png}
-%\caption{ROC curve for simulated reads with deamination damage aligned to the simulated genome
- %        with deamination parameters.}
-\label{formula}
-\end{figure}
-
-
-We take the minimal score of three options match/mismatch, insertion and 
-deletions, as described in the above code.
-The score that we have so far plus match score between q and r and pair it 
-with Match operation (M) in the CIGAR field \cite{samtools}.\\
-In the case of insertion (I) in the MD field \cite{samtools}: 
-calculated score so far plus insertion score(penalty) pair with insertion
-operation and CIGAR field for insertion.
-The same procedure applied to deletion operation.
-
- 
-\subsubsection{Scoring} \label{Scoring}
-
-\textbf{\emph{Going to rewrite this section, not my voice.}}
-%But, this na\"{\i}ve definition of the correctness of an alignment has some 
-%problems. For example after applying sequencing error and deamination damage on 
-%the reads, the read does not exactly match the original genomic position. And 
-%it would be a problem when the aligner chooses the location for a read with no or 
-%fewer mismatches over the original location. In this case, the result will be 
-%poorly judged as an incorrect mapping despite the more accurate matching position 
-%has been chosen. The problem has been managed using mapping quality/alignment 
-%score information. Such that a correct alignment of a read is defined as being 
-%to its original genomic location and having the alignment score/mapping quality 
-%lower/greater than a certain threshold. 
-\\
-
-Let $\sigma$ and $\delta$ be the single stranded and the double stranded
-deamination rates.  Let $l$ be the length of the read being aligned.  
-
-For double stranded library preparation, let $\lambda$ be overhang
-length parameter.  For every position $i \in [0..l-1]$ define
-
-\begin{align*}
-p_{fwd} &= \lambda^{i+1} \\
-p_{rev} &= \lambda^{l-i} 
-\end{align*}
-
-For single stranded library preparation, let $\lambda_s$, $\kappa_s$ be
-the 5' overhang length parameter and the 3' overhang parameter.  Let $l$
-be the length of the read being aligned.  For every position $i \in
-[0..l-1]$ define
-
-\begin{align*}
-p_{fwd} &= \lambda_s^{i+1} + \kappa_s^{l-i} - \lambda_s^{i+1} \kappa_s^{l-i} \\
-p_{rev} &= 0
-\end{align*}
-
-Now define effective substitution probabilities
-
-\begin{equation*}
-p_{C} = \sigma p_{fwd} + \delta (1 - p_{fwd}), \quad
-p_{G} = \sigma p_{rev} + \delta (1 - p_{rev}) 
-\end{equation*}
-
-Scoring a base at position $i$ with quality score $q$ involves
-deamination, divergence and error.  We assume both a trivial error model
-and a trivial model of evolution, where all possible changes occur with
-a uniform rate derived from the quality score and a uniform rate given
-by parameter $D$, respectively.  Define 
-
-\begin{equation*}
-\epsilon_0 = {10^{-q/10}}/4, \quad \epsilon = \epsilon_0 + D/3 - \epsilon_0 D/3
-\end{equation*}
-
-and the complete substitution matrix becomes (reference base in columns,
-query base in rows, both in the order A, C, G, T):
-
-\begin{equation*}
-\left( \begin{array}{cccc}
-1 - 3 \epsilon &       \epsilon                            &       \epsilon + p_{G} - 4 \epsilon p_{G} &       \epsilon \\
-      \epsilon & 1 - 3 \epsilon - p_{C} + 4 \epsilon p_{C} &       \epsilon                            &       \epsilon \\
-      \epsilon &       \epsilon                            & 1 - 3 \epsilon - p_{G} + 4 \epsilon p_{G} &       \epsilon \\
-      \epsilon &       \epsilon + p_{C} - 4 \epsilon p_{C} &       \epsilon                            & 1 - 3 \epsilon 
-\end{array} \right)
-\end{equation*}
-
-Alignment scores are simply the sum of the natural logarithms of the
-entries in that matrix for every aligned base, plus a penalty for
-insertions and deletions.  We use linear gap costs with a cost of $G$
-per inserted or deleted base, where $G$ is a free parameter again.
-
-
-
-
-
-
-
-
-
-
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -1481,8 +1252,6 @@ of real data is the key point in evaluation of the new software.\\
 
 To satisfy this, I developed a genome and NGS read simulation program to evaluate 
 the performance of R-Candy in different cases.
-
-
 
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -1770,7 +1539,7 @@ its corresponding value in given CDF.
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
-%\subsubsection{Fresh DNA Reads Simulation} \label{Fresh DNA Reads Simulation}
+\subsubsection{Fresh DNA Reads Simulation} \label{Fresh DNA Reads Simulation}
 
 
 
@@ -1901,57 +1670,12 @@ to simulate ancient damage on microbial sequences.
 \end{itemize}
 
 
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-
-%\subsection{Evaluating Results on the Human Genome} \label{Evaluating Results on the Human Genome}
 
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% 
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-
-\section{Results and Discussion} \label{Results and Discussion}
-
-R-Candy is an alignment program for ultra short ancient DNA sequences 
-(25-50 bps) based on BWT of the reference genome. It is  written in Haskell. 
-It performs semi-global alignment for single and paired end reads, 
-generates an alignment score and reports all possible hits for each read.
-
-As input R-Candy takes a BAM file and generates output in BAM format
-which is a compressed binary version of a SAM file. 
-SAM file (Sam Alignment/Map format) is a tab-delimited text file 
-that contains sequence alignment data \cite{SamSpecification}.   
-\\
-We compared the performance of R-Candy to another aligner that 
-uses the Burrows-Wheeler transform\cite{bwa} on a number of simulated 
-datasets modeling different types of reads. 
-
-BWA is a widely used aligner for short reads including ancient
-DNA sequence reads.
-It has been widely used as aligner for ancient DNA by increasing 
-the number of mismatches and gaps allowed.  
-However, it includes no model of ancient DNA damage, and is not 
-particularly well-suited for alignment of very short reads.
-
-
-
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \subsection{Evaluation Criteria} \label{Evaluation Criteria}
 
-The evaluation is done based on three aspects, namely, 
+Evaluation of R-Candy is done based on three aspects, namely, 
 the mapping accuracy, the throughput and memory footprint.
 
 \begin{itemize}
@@ -1987,9 +1711,30 @@ the reference string, processing the reads and storing them.
  
 
 
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% 
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\section{Results and Discussion} \label{Results and Discussion}
 
+R-Candy is an alignment program for ultra short ancient DNA sequences 
+(25-50 bps) based on BWT of the reference genome. It is  written in Haskell. 
+It performs semi-global alignment for single reads, 
+generates an alignment score and reports all possible hits for each read.
+\\
+We compared the performance of R-Candy to another aligner that 
+uses the Burrows-Wheeler transform\cite{bwa} on a number of simulated 
+datasets modeling different types of reads. 
+
+BWA is a widely used aligner for short reads including ancient
+DNA sequence reads.
+It has been widely used as aligner for ancient DNA by increasing 
+the number of mismatches and gaps allowed.  
+However, it includes no model of ancient DNA damage, and is not 
+particularly well-suited for alignment of very short reads.
+
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 \subsubsection{Evaluation Scenarios} \label{Evaluation Scenarios}
 
@@ -2047,10 +1792,11 @@ and aligned these to the simulated genome or the human reference genome.
 
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-\subsection{Simulated Fresh DNA Reads } \label{Simulated Fresh DNA Reads }
+
+\subsection{Evaluation on Simulated Fresh DNA Reads } \label{Simulated Fresh DNA Reads }
  
- \subsubsection {Scenario 1 : Alignment of Simulated Fresh DNA Reads to a Simulated Genome.}
- \label {Scenario 1 : Alignment of Simulated Fresh DNA Reads to a Simulated Genome.}
+ \subsubsection {Alignment of Simulated Fresh DNA Reads to a Simulated Genome.}
+ \label {Alignment of Simulated Fresh DNA Reads to a Simulated Genome.}
  
   \begin{itemize}
 
@@ -2088,10 +1834,8 @@ to increasing sequence divergence and empirical sequencing error.}
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
-\subsubsection{Scenario 2 : 
-Alignment of Simulated Fresh DNA Reads to a the Human Reference Genome.}
-\label{Scenario 2 : 
-Alignment of Simulated Fresh DNA Reads to a the Human Reference Genome.}
+\subsubsection{ Alignment of Simulated Fresh DNA Reads to a the Human Reference Genome.}
+\label{ Alignment of Simulated Fresh DNA Reads to a the Human Reference Genome.}
 
  \begin{itemize}
  
@@ -2108,7 +1852,7 @@ BWA version 0.5.10-evan.10 with default parameters and ancient parameters
 (0.01) and the number of gap opens (2)).
 
 
-Here we aim to evaluate the performance of R-Candy on ancient DNA reads, 
+Here we aim to evaluate the performance of R-Candy on fresh DNA reads, 
 aligned to the human reference genome without using the deamination parameters  
 (R-Candy's default parameters).
 
@@ -2132,12 +1876,10 @@ to increasing sequence divergence and empirical sequencing error.
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
-\subsection{Simulated Ancient DNA Reads}
+\subsection{Evaluation on Simulated Ancient DNA Reads}
 
-\subsubsection{Scenario 3:
-Alignment of Simulated Ancient DNA Reads to a Simulated Genome.}
-\label{ Scenario 3:
-Alignment of Simulated Ancient DNA Reads to a Simulated Genome.}
+\subsubsection{Alignment of Simulated Ancient DNA Reads to a Simulated Genome.}
+\label{ Alignment of Simulated Ancient DNA Reads to a Simulated Genome.}
 
 \begin{itemize}
  
@@ -2185,22 +1927,21 @@ empirical sequencing error.
 
 
 
-The ROC curve shows R-Candy's accuracy under the different alignment score cutoffs.
-As the result shows, R-Candy achieves the highest rate of sensitivity
+The ROC curve shows R-Candy's accuracy under the different alignment score 
+cutoffs. As the result shows, R-Candy achieves the highest rate of sensitivity
 in all four given lengths.
 
-Reads in length 25 are very challenging for aligners, where any small 
-change in the read bases could make a perfect match in another part of
-the reference genome which makes the true alignment very hard.
+Reads in length 25 are very challenging for aligners, where
+the spurious alignments of contaminant read sequences are very likely.
 
 For deaminated reads of length 25 bps with no divergence substitution 
-(the plot with zero mismatches), the sensitivity rate for R-Candy is 99\% compare 
-to BWA with ancient-parameters 97\% and BWA with default parameters 94\%. 
+(the plot with zero mismatches), the sensitivity rate for R-Candy is 99\% 
+compare to BWA with ancient-parameters 97\% and BWA with default parameters 94\%. 
 
 
 For the reads of length 30 bps, the sensitivity values are 98\%, 94\% 
 and 88\% for R-Candy, BWA with ancient data parameters and BWA with 
-default parameters respectively, which again yields  R-Candy's higher
+default parameters respectively, which again yields R-Candy's higher
 accuracy.
 
 As is expected introducing extra mismatches to the reads decreases  
@@ -2223,10 +1964,8 @@ outperforms BWA in all cases.
 
  %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
-\subsubsection{Scenario 4:
-Alignment of Simulated Ancient DNA Reads to the Human Reference Genome.}
-\label{ Scenario 3:
-Alignment of Simulated Ancient DNA Reads to the Human Reference Genome.}
+\subsubsection{Alignment of Simulated Ancient DNA Reads to the Human Reference Genome.}
+\label{Alignment of Simulated Ancient DNA Reads to the Human Reference Genome.}
  
  \begin{itemize}
  
@@ -2369,7 +2108,7 @@ memory usage on multi-core computers.\\\\
 \section{Conclusions} \label{Conclusions}
 
 
-We have presented  R-Candy, a novel method for aligning ancient DNA sequences.
+We have presented R-Candy, a novel method for aligning ancient DNA sequences.
 The algorithm for scoring is based on a probabilistic model that takes into account 
 the specific characteristics of ancient data, post-mortem deamination damage, as 
 well as the other probabilities specific to the data, sequencing error, and species
