@@ -252,7 +252,7 @@ The extracted DNA from long-dead organisms has significantly different character
   \begin{tabular}{ |  p{4cm} | p{2cm} | p{5cm} |}
     \hline
   \textbf{  Properties} & \textbf{Modern DNA } &\textbf{ ancient DNA} \\ \hline
-       Length &  100 bps  & $\leq$  35 bps \\ \hline
+       Length &  100 bp  & $\leq$  35 bp \\ \hline
        Post-Morten substitutions & No  & Deamination of C$\to$T
 (more likely near the end of a read) \\ \hline
   Contaminated & negligible & Microbial+Modern human\\ \hline
@@ -505,7 +505,7 @@ $$S_{2}:A\enskip G CACAC-A\enskip\enskip\enskip\enskip\enskip $$
 Semi-global \footnote{Reads are globally aligned(fully aligned)where the reference is
 locally aligned (with some gaps at the end of the reference string)} alignment results
 have been produced by R-Candy as a result of mapping sets of short strings against 
-long reference (for instance, strings of length $\geq 25$ bps aligned to a refernce of length 3.2 Gbs).
+long reference (for instance, strings of length $\geq 25$ bp aligned to a refernce of length 3.2 Gbs).
 To calculate the highest similarity score(lowest Levenshtein distance) between two strings, 
 we fill out the desirable and reference in the Y-axis and X-axis respectively.
 Starting from the top left with score zero the score matrix leads us to the 
@@ -747,7 +747,7 @@ Figure 4 shows the construction of suffix array for string "barbara".
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \subsubsection{The Burrows-Wheeler Transform} \label{The Burrows-Wheeler Transform}
 
-To index a reference genome in order to accelerate the process of finding the location of each read in the reference genome while aligning a read as well as using memory efficiently especially while working with a big data like human genome of ~3.2 Gbps (giga-basepairs), R-Candy uses Burrows-Wheeler Transform data structure.
+To index a reference genome in order to accelerate the process of finding the location of each read in the reference genome while aligning a read as well as using memory efficiently especially while working with a big data like human genome of ~3.2 Gbp (giga-basepairs), R-Candy uses Burrows-Wheeler Transform data structure.
 
 The important role of BWT in pattern matching and indexing forced me to pay a special attention to BWT and its properties.Therefore, In this section, I describe the construction scheme of BWT and its special relation with Suffix Array.\\
 
@@ -1084,7 +1084,7 @@ character up to specific position(OCC query) is $O(\log{}\mid\sum\mid)$.
 
 There are some challenges on the mapping of short reads\\
 The first challenge is time and memory consumption: aligning billions of short
-reads to an enormous genome (human genome of size about 3,200 Mbps), 
+reads to an enormous genome (human genome of size about 3,200 Mbp), 
 calls for an efficient algorithm with optimal query time and memory space.\\
 Therefore, R-Candy builds a robust index structure with 
 the efficient time complexity for pattern matching in a long sequence of a genome
@@ -1237,9 +1237,9 @@ For each block, we store:\\\\
 
 Set a limit on the number of allowed mismatches in the first few tens of bases
 on a read sequence, calling it the \emph{seed} sequence.
-By default, BWA uses the first 32 bps of a read sequence as a seed, allowing 
+By default, BWA uses the first 32 bp of a read sequence as a seed, allowing 
 maximum two mismatches in order to increase the overall speed of the alignment 
-(for reads that are shorter than 32 bps, the seed is disabled)\cite{bwa}. 
+(for reads that are shorter than 32 bp, the seed is disabled)\cite{bwa}. 
 In the case of ancient DNA with high rates of mismatches at the 5-termini' and 
 3'-termini due to the post-mortem deamination of cytosine, as well as also short 
 read fragments, could limit the performance of seed-based alignment approaches 
@@ -1712,7 +1712,7 @@ by aligned position given the known true position of the read.\\
 Specificity is the number of aligned  microbial reads 
 divided by the total number of  microbial reads.
 
- \item The aligner's throughput: the number of mapped reads per second(bps/sec).
+ \item The aligner's throughput: the number of mapped reads per second(bp/sec).
 
  \item The memory footprint: the required memory by the tool for indexing 
 the reference string, processing the reads and storing them. 
@@ -1727,7 +1727,7 @@ the reference string, processing the reads and storing them.
 \section{Results and Discussion} \label{Results and Discussion}
 
 R-Candy is an alignment program for ultra short ancient DNA sequences 
-(25-50 bps) based on BWT of the reference genome. It is written in Haskell. 
+(25-50 bp) based on BWT of the reference genome. It is written in Haskell. 
 It performs semi-global alignment for single reads, 
 generates an alignment score and reports all possible hits for each read.
 
@@ -1968,12 +1968,12 @@ in all four given lengths.
 Reads in length 25 are very challenging for aligners, where
 the spurious alignments of contaminant read sequences are very likely.
 
-For deaminated reads of length 25 bps with no divergence substitution 
+For deaminated reads of length 25 bp with no divergence substitution 
 (the plot with zero mismatches), the sensitivity rate for R-Candy is 99\% 
 compare to BWA with ancient-parameters 97\% and BWA with default parameters 94\%. 
 
 
-For the reads of length 30 bps, the sensitivity values are 98\%, 94\% 
+For the reads of length 30 bp, the sensitivity values are 98\%, 94\% 
 and 88\% for R-Candy, BWA with ancient data parameters and BWA with 
 default parameters respectively, which again yields R-Candy's higher
 accuracy.
@@ -1986,7 +1986,7 @@ The huge decrease in the false positive rates between reads of length
 difference in the number of mapped exogenous reads.
 
 
-No difference in specificity for reads longer than 35 bps is observed
+No difference in specificity for reads longer than 35 bp is observed
 (no microbial reads alignment).
 
 
@@ -2055,14 +2055,14 @@ The lower sensitivity values for reads with higher simulated rate of
 divergence (simulated by a massive increase in the introduced differences
 to the reads) for both R-Candy and BWA is observed in the results.
 
-The highest specificity value for reads of length 25bps shows the higher 
+The highest specificity value for reads of length 25 bp shows the higher 
 chance of spurious alignments of contaminant reads for alignment of 
 ultra-short reads.
 So increasing the length of the reads leads to lower spurious alignment 
 of  exogenous read data.
 
 The plots show no spurious alignments of  contaminant bacterial reads of 
-lengths bigger than 35 bps with specificity value of zero.
+lengths bigger than 35 bp with specificity value of zero.
 
 R-Candy with deamination parameters outperforms BWA in aligning ancient 
 short DNA reads to the human genome, although 
@@ -2073,9 +2073,25 @@ ancient reads when using the ancient parameters.
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 
-\subsection{Suitable Alignment Score}
-Sensible cut-off from hg19.
+\subsection{Suitable Alignment Score} 
+\label{Suitable Alignment Score}
 
+We are looking for the best alignment score cutoff to achieve the 
+highest accuracy while speeding up R-Candy's alignment process.
+
+Using our simulation, we were looking for an alignment score that 
+gives us a higher sensitivity than BWA with 'ancient' parameters 
+and lower specificity than BWA with default parameters where a
+there is a full recall and complete benefit of rejecting bacterial 
+alignments is achievable.
+
+Using the test scenario number 4, aligning ancient reads to the human
+genome for the read of length 30bp and one mismatch (due to 4\% 
+divergence rate), at alignment score of range 12-13 of R-Candy 
+achieves the highest accuracy compare two BWA with either default
+or 'ancient' parameters.
+
+We picked alignment score 12 as a suitable cutoff R-Candy aligner. 
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
@@ -2084,7 +2100,7 @@ Sensible cut-off from hg19.
 The speed evaluation was done on small datasets of 3500 simulated ancient 
 genomic and 1000 simulated ancient microbial read sequences extracted from
 the human genome and aligned back to the human reference genome of size 3.2 
-Gbps by R-Candy and BWA aligners.
+Gbp by R-Candy and BWA aligners.
 
 Tables \ref{speed-RG} shows the speed of 
 the two aligners ran on a single CPU with R-Candy's alignment score cutoff 
@@ -2093,26 +2109,26 @@ Notice that the time required for building the genome index is
 not included in the reported time.\\
 
 
-%\begin{table}[H]
- % \begin{tabular}{ |  p{2cm} | p{2cm} | p{2cm} | p{2cm} |p{2cm} | }
-  %  \hline
-  %	\textbf{Type} & \textbf{Read length }&\textbf{Speed BWA 
-  %	default\hspace{35pt}(no. of reads/s) } 	 
-  %	&\textbf{Speed BWA ancient)\hspace{35pt}(no. of reads/s)} 
-  %	& \textbf{Speed R-Candy ancient \hspace{35pt}(no. of reads/s)}\\ \hline
- %	  Genomic    & 25  & 0.0045 &  0.0291   &  0.5564 \\ \hline
-  %    Genomic    & 30  & 0.0019 &  0.0191   &  0.4502 \\ \hline
-   %   Genomic    & 35  & 0.0016 &  0.0023   &  0.4410 \\ \hline
- %	  Genomic	 & 40  & 0.0020 &  0.0028   &  0.4072 \\ \hline
- %	  Microbial  & 25  & 0.0068 &  0.0720   &  0.5927 \\ \hline
-  %    Microbial  & 30  & 0.0046 &  0.0236   &  0.4548 \\ \hline
- %	  Microbial  & 35  & 0.0043 &  0.0065   &  0.5961 \\ \hline
- %	  Microbial  & 40  & 0.0056 &  0.0069   &  0.3222 \\ \hline
- %  \end{tabular}
-%\caption{The alignment speed for ancient reads aligned to 
-%the human reference genome.}
-%\label{speed-RG}
-%\end{table}
+\begin{table}[H]
+ \begin{tabular}{ |  p{2cm} | p{2cm} | p{2cm} | p{2cm} |p{2cm} | }
+  \hline
+  	\textbf{Type} & \textbf{Read length }&\textbf{Speed BWA 
+  	default\hspace{35pt}(no. of reads/s) } 	 
+  	&\textbf{Speed BWA ancient)\hspace{35pt}(no. of reads/s)} 
+  	& \textbf{Speed R-Candy ancient \hspace{35pt}(no. of reads/s)}\\ \hline
+ 	  Genomic    & 25  & 0.0045 &  0.0291   &  0.5564 \\ \hline
+      Genomic    & 30  & 0.0019 &  0.0191   &  0.4502 \\ \hline
+      Genomic    & 35  & 0.0016 &  0.0023   &  0.4410 \\ \hline
+ 	  Genomic	 & 40  & 0.0020 &  0.0028   &  0.4072 \\ \hline
+ 	  Microbial  & 25  & 0.0068 &  0.0720   &  0.5927 \\ \hline
+      Microbial  & 30  & 0.0046 &  0.0236   &  0.4548 \\ \hline
+ 	  Microbial  & 35  & 0.0043 &  0.0065   &  0.5961 \\ \hline
+ 	  Microbial  & 40  & 0.0056 &  0.0069   &  0.3222 \\ \hline
+   \end{tabular}
+\caption{The alignment speed for ancient reads aligned to 
+the human reference genome.}
+\label{speed-RG}
+\end{table}
 
 \begin{table}[H]
   \begin{tabular}{ |  p{2cm} | p{2cm} | p{2cm} | p{2cm} |p{2cm} | }
@@ -2136,7 +2152,7 @@ the human reference genome.}
 \end{table}
 
 Throughput number on both aligners is affected by the read length.
-For instance, alignment of genomic reads of length 30 bps aligning
+For instance, alignment of genomic reads of length 30 bp aligning
 by BWA ancient parameters is 23 times faster than alignment R-Candy
 with ancient parameters.
 The speed performance reveals on datasets of the size generated 
@@ -2184,8 +2200,8 @@ In terms of memory footprint, both aligners are equally good and memory efficien
 to load genome. But R-Candy has a very low throughput ratio (speed) compared to 
 BWA which makes it unusable in case of big-data and genome of mammalian size. 
 \\\\
-The main conclusion is R-Candy drags down the shortcut on aDNA alignment to 25 bps 
-which it was in lower-bound 35 bps and makes it possible to align more rare and 
+The main conclusion is R-Candy drags down the shortcut on aDNA alignment to 25 bp 
+which it was in lower-bound 35 bp and makes it possible to align more rare and 
 low-quality endogenous reads but needs some modifications in terms of speed to 
 make it useable on datasets of the size typically generated during ancient human
 genome sequencing projects. 
@@ -2197,7 +2213,7 @@ genome sequencing projects.
 
 \section{Future Work} \label{Future Work}
 We have shown that for the alignment of ancient DNA reads between 25-40 
-bps R-Candy provides superior accuracy to BWA.  
+bp R-Candy provides superior accuracy to BWA.  
 However, a number of points need to be addressed before R-Candy can be used 
 on big datasets of ancient genome projects. 
 
@@ -2236,7 +2252,7 @@ https://github.com/Homa1127/rcandyHash.git
 \section{Abbreviations} \label{Abbreviations}
 
 \textbf{DNA}: deoxyribonucleic acid;
-\textbf{bp}: base pair;
+\textbf{bp}: base pairs;
 \textbf{NGS}: next generation sequencing technologies;
 \textbf{BWT}: Burrows-Wheeler transform;
 \textbf{FM}: full-text minute-space;
@@ -2267,12 +2283,12 @@ https://github.com/Homa1127/rcandyHash.git
 
 In this section, I follow all the evaluation scenarios which I explained in
 Section \ref{Evaluation Scenarios}  with different sequencing error simulation.
-ART, a next-generation sequencing read simulator is used to simulate sequencing
+ART \cite{art}, a next-generation sequencing read simulator is used to simulate sequencing
 error of Illumina platform. 
 ART generates sequencing reads based on different sequencing technology 
-platforms (454, Illumina, SOLiD) criteria[35] and simulates the
+platforms (454, Illumina, SOLiD) criteria \cite{art} and simulates the
 substitution error probability, based on the base-quality 
-score distribution reported by large training datasets[35].\\
+score distribution reported by large training datasets \cite{art}.\\
 
 In order to use ART in readSim user needs to specify the sequencing
 platform and the reads length for generating base quality scores.\\
