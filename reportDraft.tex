@@ -125,8 +125,8 @@ and ancient parameters), correctly aligning more endogenous reads correctly even
 in the presence of extensive deamination, as well as incorrectly aligning fewer
 microbial reads.
 
-The current version of R-Candy compare to other aligners does not have a good 
-throughput rate due to its backward search algorithm and non-supporting multithreading feature. 
+The current version of R-Candy compare to other aligners (e.g. BWA) does not have a good 
+throughput rate due to its simplistic search algorithm and non-supporting multithreading feature. 
 
 \newpage\null\thispagestyle{empty}\newpage
 \section*{Acknowledgements}
@@ -200,7 +200,7 @@ that is often longer than the read length possible with ancient DNA.
 Therefore, due to the lack of proper tools such as an aligner that is 
 specific to ancient data and its characteristics, most of the generated 
 data get discarded. 
-This information reduction on the datasets of sparse endogenous data give 
+This information reduction on the data sets of sparse endogenous data give 
 us the motivation for a new aligner to efficiently analyze this particular
 type of data.
 \\
@@ -226,13 +226,14 @@ into short pieces, create multiple copies of them (called \emph{amplification} )
 and sequence all the copies. The sequence of every piece is called a read and 
 the whole process is known as \emph{shotgun sequencing} \cite{algorithmDesign}.
 
+
 The human genome sequence is made up of 3 billion DNA base pairs.
-Although the human genome has been completely sequenced,it is not yet fully 
-understood. However, some of the known characteristics of the human genome 
-are CpG or CG poor and repeat-rich, 50\% of the human genome is consists 
-of repetitive DNA sequences.
+Although it is completely sequenced but is not yet fully understood. 
 The CpG sites are regions of DNA where a cytosine nucleotide is followed by 
 a guanine nucleotide which are four folders under-represented in the human genome. 
+The human genome is CpG poor and repeat-rich, 50\% of the human genome is consists 
+of repetitive DNA sequences.
+
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
@@ -263,7 +264,8 @@ The extracted DNA from long-dead organisms has significantly different character
 
 
 The challenges with ancient DNA was the requirement for new software to efficiently 
-align millions of ultra-short, degraded and deaminated reads to a reference genome.
+align millions of ultra-short, degraded and deaminated reads to a reference genome 
+without being overwhelmed by spurious alignments of contaminant reads.
 
 
 \subsection{Alignment} \label{Alignment}
@@ -317,7 +319,7 @@ In the case of biological, the assumption is that the two sequences differ
 due to a mutation process that led to a substitution 
 of one base by another base,as well as insertion and deletion (INDEL) which add or remove bases.
 We are aiming at aligning the two sequences in a way that maximizes their similarity.\\ \\
-First, let me set up the problem with some notation:\\
+First, let set up the problem with some notation:\\
 We call the two sequences, $S_{1}$ and $S_{2}$ of length N and M respectively. 
 The $i^{th}$ symbol in $S_{1}$ is $S_{1i}$ and $j^{th}$ symbol in $S_{2}$ is $S_{2j}$. 
 In the case of DNA, these symbols are $\left\{A, C, G, T\right\}$.\\
@@ -356,18 +358,29 @@ If $\delta$=1 then the total score of following alignment is:
 
 -0.5 + 1 + 1 - 1 - 1 + 1 - 1 + 1 = 0.5
 
-\subsubsection{Alignment Algorithms} \label{Alignment Algorithms}
 
-Having the scoring system, we need an algorithm for finding the optimal alignment 
-between a pair of sequences. Why we need a complicated heuristic algorithm and can
-not just calculate the all possible alignments and choose the best one?\\
-Because it is not computationally practical to calculate  
-$$ \binom{2n}{n} = \frac{(2n)!}{(n!)^2} \simeq \frac{2^{2n}}{\sqrt{2\pi n}} $$
-possible alignment between two sequences of length N. The problem gets even more complicated when we allow for gaps. 
-The algorithm that guarantees to find the optimal alignment between a pair of sequences base on the best alignment 
-score is an instance of dynamic programming. 
-Dynamic programming has an essential role in computational sequence analysis.\\ 
-For different types of alignment, there are slightly different types of dynamic programming algorithm(alignment algorithms).\\\\
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\subsubsection{Alignment Algorithms} \label{Alignment Algorithms}
+Having the scoring system, we need an algorithm for finding the 
+optimal alignment between a pair of sequences. 
+Aligning a sequence of length N to another sequence of length N,
+there is only one global alignment but things get complicated when 
+gaps are allowed.
+ 
+There are \cite{durbin}
+$$ \binom{2n}{n} = \frac{(2n)!}{(n!)^2} \simeq \frac{2^{2n}}
+{\sqrt{2\pi n}} $$
+global alignment between two sequences of length N.
+
+Obviously, it is not computationally doable to calculate all these
+alignments. Therefore, finding the optimal alignment between two 
+sequences is a crucial part in computational sequence analysis.
+Such an algorithm is called Dynamic programming which uses an 
+additive alignment score for  weighting alignments. 
+
+For different types of alignment, there are slightly different 
+types of dynamic programming algorithms (alignment algorithms).\\\\
+
 
 The four essential steps in all dynamic programming algorithms are:
 
@@ -378,19 +391,30 @@ The four essential steps in all dynamic programming algorithms are:
 	\item Reconstruct the optimal approach that led us to the optimal score by a traceback on the matrix\cite{eddydynamic}.
 \end{itemize}
 
-In the following part I will describe the two more basic alignment algorithms that easily can be expanded to the more complex versions.
+In the following part I will describe the two more basic alignment 
+algorithms that easily can be expanded to the more complex versions.
 
 \paragraph{ Global alignment ( Needleman-Wunsch algorithm) }
 
-The Needleman-Wunsch algorithm, which is based on dynamic programming is a widely used/well-known global alignment technique in biological sequence analyses to obtain the best-matching alignment of two sequences, allowing  gaps.\\
+The Needleman-Wunsch algorithm, which is based on dynamic programming 
+is a widely used/well-known global alignment technique in biological 
+sequence analyses to obtain the best-matching alignment of two sequences, 
+allowing  gaps.\\
 It aims to construct an optimal alignment using previous solutions for
 optimal alignments of smaller subsequences \cite{durbin}.\\
-We are going to calculate the optimal alignment score as been described in\cite{durbin} by constructing a matrix F indexed
+We are going to calculate the optimal alignment score as been described 
+in\cite{durbin} by constructing a matrix F indexed
 by i and j, one index for each sequence, where the value F(i, j) is the score
-of the best alignment between the initial segment $S-{1i..i}$ of $S_{1}$ up to $S_{1i}$ and the initial segment $S_{21..j}$ of $S_{2}$  up to $S_{2j}$. We can build F(i, j) recursively start by initialising F(0, 0) = 0. Afterwards we fill the matrix matrix from top left to bottom right. 
-Once $ F(i-1, j-1 ), F(i-1 , j) $ and $ F(i , j-1) $ are known, we are able to calculate $ F(i, j)$ \cite{durbin}.
+of the best alignment between the initial segment $S-{1i..i}$ of $S_{1}$ 
+up to $S_{1i}$ and the initial segment $S_{21..j}$ of $S_{2}$  up to 
+$S_{2j}$. We can build F(i, j) recursively start by initialising 
+F(0, 0) = 0. Afterwards we fill the matrix matrix from top left to 
+bottom right. 
+Once $ F(i-1, j-1 ), F(i-1 , j) $ and $ F(i , j-1) $ are known, we 
+are able to calculate $ F(i, j)$ \cite{durbin}.
 
-The best score of F(i,j) up to $S_{1i}$ and $S_{2j}$ is the maximum value of $S(i,j)$:
+The best score of F(i,j) up to $S_{1i}$ and $S_{2j}$ is the maximum 
+value of $S(i,j)$:
 
 \[ F(i,j)= max
 \begin{cases}
@@ -399,15 +423,22 @@ The best score of F(i,j) up to $S_{1i}$ and $S_{2j}$ is the maximum value of $S(
    F(i,j-1)- \delta
 \end{cases}
 \]
-The value in the last cell of matrix F(n,m) is by definition the optimal alignment score. 
-For obtaining the alignment itself we need the path that led us to the final score. We use the traceback procedure to recursively recover the optimal alignment\cite{durbin}\cite{eddydynamic}.
-We start from the last cell F(n,m) and follow each of the three cases that we chose to get to this point. We continue doing this until reaching the cell F(0,0) and in this point the optimal alignment is completely reconstructed \cite{eddydynamic}.
+The value in the last cell of matrix F(n,m) is by definition the optimal 
+alignment score. 
+For obtaining the alignment itself we need the path that led us to the 
+final score. We use the trace back procedure to recursively recover the 
+optimal alignment\cite{durbin}\cite{eddydynamic}.
+We start from the last cell F(n,m) and follow each of the three cases 
+that we chose to get to this point. We continue doing this until reaching
+the cell F(0,0) and in this point the optimal alignment is completely 
+reconstructed \cite{eddydynamic}.
 
 
-
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \paragraph{ Local alignment ( Smith-Waterman algorithm ) }
 
-Compute the maximum scoring alignment of $L(S_{1}, S_{2})$ over all subsequences $S_{1}$ and $S_{2}$ is:
+Compute the maximum scoring alignment of $L(S_{1}, S_{2})$ over all 
+sub-sequences $S_{1}$ and $S_{2}$ is:
 
 
 \[ F(i,j)= max
@@ -434,7 +465,7 @@ To find the actual local alignment:
 Semi-global or "glocal" (short for global-local) algorithm is a combination of global
 and local alignments. 
 It is a practical strategy in the case of ancient DNA.
-Aligning two sequences, one short ( an ancient DNA sequence) and the 
+Aligning two sequences, one short ( an ancient DNA read) and the 
 other one long( a chromosome sequence). In this case, neither global 
 nor local alignment is completely applicable. The best solution here is to globally 
 align the short sequence while only a local alignment is appropriate for the long sequence.
@@ -443,8 +474,6 @@ align the short sequence while only a local alignment is appropriate for the lon
 Having two sequences  $S_{1}$ and $S_{2}$, want to optimally align them.
 $$S_{1}:ACACACTACCG$$
 $$S_{2}:AGCACACA$$\\
-%$s(S_{1i},S_{2j})= +2 \quad if \quad S_{1i} = S_{2j}(match) \quad and \quad-1  if \quad S_{1i}\neq S_{2j}(mismatch)$\\
-%$s(S_{1i},S_{2j})= +2 $\quad if \quad $S_{1i} = S_{2j}(match)$ \quad and \quad-1 \quad if \quad $ S_{1i}\neq S_{2j}(mismatch)$\\
 
 \[ F(i,j)= max
 \begin{cases}
@@ -648,7 +677,9 @@ per inserted or deleted base, where $G$ is a free parameter again.
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \subsection{Data Structures}  \label{Data Structures}
 
-Some of the main data structures used by our new aligner(R-Candy) for indexing and mapping process plus fundamental concepts required for better understanding of this thesis are described in this section. 
+Some of the main data structures used by our new aligner(R-Candy) for indexing and 
+mapping process plus fundamental concepts required for better understanding of this 
+thesis are described in this section. 
 
 \subsubsection{Introductory} \label{Introductory}
 
@@ -667,32 +698,44 @@ Some of the main data structures used by our new aligner(R-Candy) for indexing a
 
 
 A string \emph{S} is concatenation of \emph{N} characters. 
-The length of the \emph{S} is denoted as $\lvert S \rvert$ = N and S[i] represents the $i_{th}$ character of the S.
-The string's index starts from 0 and S[0,N-1] represents the whole string S while S[i..k] shows the substring of S from the position i to k inclusive with $i < k < N$. 
+The length of the \emph{S} is denoted as $\lvert S \rvert$ = N and S[i] represents 
+the $i_{th}$ character of the S.
+The string's index starts from 0 and S[0,N-1] represents the whole string S while 
+S[i..k] shows the substring of S from the position i to k inclusive with $i < k < N$. 
 S[i..N-1] is the i\textsuperscript{th} suffix of So the 2th suffix of above example is S[2..7]='arbara\$' and
  S[0..i] is defined as i\textsuperscript{th} prefix, so the 7\textsuperscript{th} of table 2 is 'barbara\$'.
  
 The pattern that we will be searching for is P.
 
 
-$ \sum $  denotes the alphabet that all the characters of S belong to it And  $ c_{i} < c_{k}$ means $c_{i}$ appears before $c_{k}$ in lexicographic ordering.
+$ \sum $  denotes the alphabet that all the characters of S belong to it And  
+$ c_{i} < c_{k}$ means $c_{i}$ appears before $c_{k}$ in lexicographic ordering.
 
-A genome is presented by four letters $\left\{ 'A', 'C', 'G' and 'T'\right\}$, which corresponds to adenine, cytosine, guanine and thymine nucleotides. The character ('N') usually represents positions that are unknown in a genome.
+A genome is presented by four letters $\left\{ 'A', 'C', 'G' and 'T'\right\}$, 
+which corresponds to adenine, cytosine, guanine and thymine nucleotides. 
+The character ('N') usually represents positions that are unknown in a genome.
 
 
-A bit string is a string of characters called bits which are characters of a special alphabet  $ \sum = \left\{ 0, 1 \right\}$.
+A bit string is a string of characters called bits which are characters of a 
+special alphabet  $ \sum = \left\{ 0, 1 \right\}$.
 \\\\
 %Since tree is another elementary data structure used in this thesis, I am going to explain it in more details.
 
 
-A Trie is a rooted tree data structure with labeled edges by letters in the alphabet and nodes with concatenated characters from the root\cite{trie}. 
+A Trie is a rooted tree data structure with labeled edges by letters in the 
+alphabet and nodes with concatenated characters from the root\cite{trie}. 
 
-A Trie of all the suffixes of string S is called a Suffix Trie where each path from the root to a leaf is a suffix \cite{gusfield1997algorithms}.
+A Trie of all the suffixes of string S is called a Suffix Trie where each path
+ from the root to a leaf is a suffix \cite{gusfield1997algorithms}.
 
-Coalescing each non-branching path of a Suffix Trie into a single edge, labeled by the string of that path generates another kind of tree called Suffix Tree \cite{gusfield1997algorithms}.\\
+Coalescing each non-branching path of a Suffix Trie into a single edge, labeled 
+by the string of that path generates another kind of tree called Suffix Tree 
+\cite{gusfield1997algorithms}.\\
 
 
-Suffix Array was developed by Manber and Myers(1990) in order to reduce the memory requirement of suffix tree. In other words Suffix Array is a compact representation of Suffix Tree. \\
+Suffix Array was developed by Manber and Myers(1990) in order to reduce the 
+memory requirement of suffix tree. In other words Suffix Array is a compact 
+representation of Suffix Tree. \\
 A suffix array for a string S[1..k], can be constructed like:
 \begin{itemize} 
 	\item  Construct all the suffixes of string S.
@@ -747,19 +790,29 @@ Figure 4 shows the construction of suffix array for string "barbara".
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \subsubsection{The Burrows-Wheeler Transform} \label{The Burrows-Wheeler Transform}
 
-To index a reference genome in order to accelerate the process of finding the location of each read in the reference genome while aligning a read as well as using memory efficiently especially while working with a big data like human genome of ~3.2 Gbp (giga-basepairs), R-Candy uses Burrows-Wheeler Transform data structure.
+To index a reference genome in order to accelerate the process of finding the 
+location of each read in the reference genome while aligning a read as well as
+using memory efficiently especially while working with a big data like human 
+genome of ~3.2 Gbp (giga-basepairs), R-Candy uses Burrows-Wheeler Transform 
+data structure.
 
-The important role of BWT in pattern matching and indexing forced me to pay a special attention to BWT and its properties.Therefore, In this section, I describe the construction scheme of BWT and its special relation with Suffix Array.\\
+The important role of BWT in pattern matching and indexing forced me to pay a 
+special attention to BWT and its properties.Therefore, In this section, I 
+describe the construction scheme of BWT and its special relation with Suffix Array.\\
 
 \paragraph{Construction and Properties}
 
-A Burrows-Wheelers transformation for a string S[0..L] is s special rearrangement of its characters into runs of similar called $S^{BWT}$ and consists of the following steps \cite{bwt}:
+A Burrows-Wheelers transformation for a string S[0..L] is s special rearrangement 
+of its characters into runs of similar called $S^{BWT}$ and consists of the 
+following steps \cite{bwt}:
 
 \begin{itemize} 
-	\item Append special character \$ as a terminator symbol to the end of S which is lexicographically smaller than any other alphabet characters.
+	\item Append special character \$ as a terminator symbol to the end of S 
+	which is lexicographically smaller than any other alphabet characters.
 	\item  Construct all the cyclic rotations of S.
 	\item  Lexicographically sort all these strings.
-	\item The last column of this conceptual matrix \emph{$M_{T}$}, is called BWT(transformed text $S^{BWT}$).
+	\item The last column of this conceptual matrix \emph{$M_{T}$}, is called 
+	BWT(transformed text $S^{BWT}$).
 \end{itemize}
 
 
@@ -864,9 +917,13 @@ at 0-based offset \emph{i} in BWT(S)\cite{bwt}, as can be seen in Table \ref{BWT
 \end{table}
 
 
-The other fascinating property of BWT that I describe here is called LF-mapping (last to first mapping).\\\\
-\textbf{LF-mapping}  Last to first mapping describes the relation between the last(L) and first(F) column of $M_{T}$\cite{bwt}.\\\\
-\textbf{Lemma 1:}\emph{the $i^{th}$ occurrence of c in the first column \emph{F} corresponds to the $i^{th}$ occurrence of the symbol c in the Last column \emph{L} of $M_{T}$} \cite{bwt}.\\\\
+The other fascinating property of BWT that I describe here is called 
+LF-mapping (last to first mapping).\\\\
+\textbf{LF-mapping}  Last to first mapping describes the relation 
+between the last(L) and first(F) column of $M_{T}$\cite{bwt}.\\\\
+\textbf{Lemma 1:}\emph{the $i^{th}$ occurrence of c in the first 
+column \emph{F} corresponds to the $i^{th}$ occurrence of the symbol 
+c in the Last column \emph{L} of $M_{T}$} \cite{bwt}.\\\\
 Figure \ref{Lemma1} illustrates Lemma 1\\
 
 \begin{figure}[H]
@@ -896,7 +953,8 @@ To apply LF-mapping in efficient time of \emph{O(1}), a \emph{sum table} and an 
 	
 \end{itemize}
 
-Using \emph{OCC} and \emph{C}, the LF-mapping can be defined as \emph{LF(i) = C[L[i]] + OCC(L[i], i)} \\\\
+Using \emph{OCC} and \emph{C}, the LF-mapping can be defined as 
+\emph{LF(i) = C[L[i]] + OCC(L[i], i)} \\\\
 
 \paragraph{Reversing}
 
@@ -925,11 +983,14 @@ A search algorithm called backward search will be used for pattern recognition u
 The BWT matrix is constructed by sorting all the cyclic rotations of a string,therefore
 if a pattern \emph{P} appears in the string it will be a prefix in $M_{T}$ and if \emph {P} 
 appears in multiple positions, they will be successive.\\ 
-To search for a pattern using $S^{BWT}$, the backward search starts from the end of a pattern.
-At first searches for an empty  pattern all over the BWT matrix. Then looks for the 
-last character of the desired pattern. After finding the character, updates indexes and 
+To search for a pattern using $S^{BWT}$, the backward search starts 
+from the end of a pattern.
+At first searches for an empty  pattern all over the BWT matrix. 
+Then looks for the last character of the desired pattern. 
+After finding the character, updates indexes and 
 search for the character before that last one among the updated indexes.
-Continues the process to find the pattern.Updating indexes is the crucial part of this procedure (See Figure \ref{backwardSearch}).\\\\
+Continues the process to find the pattern.Updating indexes is the 
+crucial part of this procedure (See Figure \ref{backwardSearch}).\\\\
 
 
 
@@ -967,7 +1028,8 @@ Continues the process to find the pattern.Updating indexes is the crucial part o
 \begin{figure}[H]
 \centering
 \includegraphics[width=12cm]{pictures/bar_1.png}
-\caption{Backward search for pattern "bar" in string S using first and last column of BWT matrix. Updating indexes iteratively.}
+\caption{Backward search for pattern "bar" in string S using first and 
+last column of BWT matrix. Updating indexes iteratively.}
 \label{backwardSearch}
 \end{figure}
 
@@ -982,12 +1044,15 @@ The search algorithm consists of two phases, counting the number of occurrences 
 a pattern and localization of their positions in the string.
 The counting time is linear to the length of the P because at each iteration 
 only one character of P is processed and length of the string doesn't have any 
-impact on searching time which is one of the main reasons of using BWT for a large string like a genome.
+impact on searching time which is one of the main reasons of using BWT for a l
+arge string like a genome.
 On the other hand, the localization time is more affected by the number of occurrences 
 of the pattern  because, for each occurrence of P, a look up at SA is needed.
 \\\\
 
-After introducing BWT and its properties and emphasising on its important job in pattern searching, in the following section the usage of BWT in an indexing data structure called FM-Index will be discussed\cite{fmindex}. 
+After introducing BWT and its properties and emphasising on its important job 
+in pattern searching, in the following section the usage of BWT in an indexing
+ data structure called FM-Index will be discussed\cite{fmindex}. 
 
 
 
@@ -1470,7 +1535,7 @@ number of absolute mismatches \footnote {These fix number of differences depends
 on the length of the read are representing different divergence rate. As an example 
 2 mismatches on the sequence length 25 and 40 are showing the divergance rate of 8\% 
 and 5\% respectively} to the reference genome.
-And ran R-Candy with a default value for different datasets of reads with a 
+And ran R-Candy with a default value for different data sets of reads with a 
 different number of divergence substitution rates to evaluate the accurate of its 
 alignment while aligning reads to close or far genomes.
  
@@ -1906,7 +1971,7 @@ both BWA ancient and R-Candy compare to the same test on the simulated genome.
 Results show a big difference in specificity between length 25 and 30, where 
 increasing the length decreases the rate of spurious alignments of endogenous reads.
 
-The plots show no spurious alignments of  contaminant bacterial reads of 
+The plots show no spurious alignments of contaminant bacterial reads of 
 length 35 and 40, by the both aligners.
 
 The other observation on the plots, shows lower sensitivity value for R-Candy 
@@ -2059,7 +2124,7 @@ The highest specificity value for reads of length 25 bp shows the higher
 chance of spurious alignments of contaminant reads for alignment of 
 ultra-short reads.
 So increasing the length of the reads leads to lower spurious alignment 
-of  exogenous read data.
+of exogenous read data.
 
 The plots show no spurious alignments of  contaminant bacterial reads of 
 lengths bigger than 35 bp with specificity value of zero.
@@ -2097,7 +2162,7 @@ We picked alignment score 12 as a suitable cutoff R-Candy aligner.
 
 \subsection{Performance} \label{Performance}
 
-The speed evaluation was done on small datasets of 3500 simulated ancient 
+The speed evaluation was done on small data sets of 3500 simulated ancient 
 genomic and 1000 simulated ancient microbial read sequences extracted from
 the human genome and aligned back to the human reference genome of size 3.2 
 Gbp by R-Candy and BWA aligners.
@@ -2135,7 +2200,7 @@ the human reference genome.}
     \hline
   	\textbf{Type} & \textbf{Read length }&\textbf{Speed BWA 
   	default\hspace{35pt}(no. of reads/s) } 	 
-  	&\textbf{Speed BWA ancient)\hspace{35pt}(no. of reads/s)} 
+  	&\textbf{Speed BWA ancient \hspace{35pt}(no. of reads/s)} 
   	& \textbf{Speed R-Candy ancient \hspace{35pt}(no. of reads/s)}\\ \hline
  	  Genomic    & 25  & 222 &  34   &  1.79 \\ \hline
       Genomic    & 30  & 526 &  52   &  2.22 \\ \hline
@@ -2155,7 +2220,7 @@ Throughput number on both aligners is affected by the read length.
 For instance, alignment of genomic reads of length 30 bp aligning
 by BWA ancient parameters is 23 times faster than alignment R-Candy
 with ancient parameters.
-The speed performance reveals on datasets of the size generated 
+The speed performance reveals on data sets of the size generated 
 during ancient human studies projects is not practical.
 
 
@@ -2187,7 +2252,7 @@ divergence rate.
 \\
 For the both evaluated aligners, varying the cutoff (number of mismatches for BWA 
 and alignment score for R-Candy) allows trading a slight increase in sensitivity 
-for specificity and runtime.
+for specificity and run time.
 \\\\
 The accuracy of R-Candy on aligning fresh DNA with "default" parameters (no damage model) 
 matches BWA, with either "default" or "ancient" parameters, depending  on the cutoff values.
@@ -2203,7 +2268,7 @@ BWA which makes it unusable in case of big-data and genome of mammalian size.
 The main conclusion is R-Candy drags down the shortcut on aDNA alignment to 25 bp 
 which it was in lower-bound 35 bp and makes it possible to align more rare and 
 low-quality endogenous reads but needs some modifications in terms of speed to 
-make it useable on datasets of the size typically generated during ancient human
+make it useable on data sets of the size typically generated during ancient human
 genome sequencing projects. 
 
 
@@ -2215,7 +2280,7 @@ genome sequencing projects.
 We have shown that for the alignment of ancient DNA reads between 25-40 
 bp R-Candy provides superior accuracy to BWA.  
 However, a number of points need to be addressed before R-Candy can be used 
-on big datasets of ancient genome projects. 
+on big data sets of ancient genome projects. 
 
 %To increase R-Candy's speed  ...
 
@@ -2260,7 +2325,7 @@ https://github.com/Homa1127/rcandyHash.git
 \textbf{C}: Cytosine;
 \textbf{T}: Thymine;
 \textbf{G}: Guanine;
-\textbf{PacBio}: Pacific Bioscience;
+\textbf{CpG}: C followed by G;
 \textbf{SA}: suffix array;
 \textbf{LF}: last to first;
 \textbf{DFS}: depth first search;
@@ -2288,12 +2353,12 @@ error of Illumina platform.
 ART generates sequencing reads based on different sequencing technology 
 platforms (454, Illumina, SOLiD) criteria \cite{art} and simulates the
 substitution error probability, based on the base-quality 
-score distribution reported by large training datasets \cite{art}.\\
+score distribution reported by large training data sets \cite{art}.\\
 
 In order to use ART in readSim user needs to specify the sequencing
 platform and the reads length for generating base quality scores.\\
 
-The result of aligning different datasets showed that ART simulates a
+The result of aligning different data sets showed that ART simulates a
 low base quality score (compared to the empirical data) that leads to 
 a high rate of sequencing error which degrades the performance of BWA.\\
 
