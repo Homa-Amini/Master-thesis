@@ -812,7 +812,7 @@ following steps \cite{bwt}:
 	\item  Construct all the cyclic rotations of S.
 	\item  Lexicographically sort all these strings.
 	\item The last column of this conceptual matrix \emph{$M_{T}$}, is called 
-	BWT(transformed text $S^{BWT}$).
+	BWT ( transformed text $S^{BWT}$ ).
 \end{itemize}
 
 
@@ -999,7 +999,7 @@ crucial part of this procedure (See Figure \ref{backwardSearch}).\\\\
    \caption{BWT matching algorithm}
     \begin{algorithmic}[1]
      % \Function{BWMatching}{$LastColumn,Pattern,FirstOccurance,Count$} 
-      \Function{BWMatching}{$LastColumn,Patterns,C,OCC$}
+      \Function{BWTMatching}{$LastColumn,Patterns,C,OCC$}
        	\State ${top} = 0$
         \State ${bottom} = \lvert LastColumn \rvert -1$
         \While{ ${top}\le{bottom}$}
@@ -1020,6 +1020,7 @@ crucial part of this procedure (See Figure \ref{backwardSearch}).\\\\
     \EndFunction
 
 	\end{algorithmic}
+  \label{backward search alg}	
 \end{algorithm}
 
 
@@ -1136,9 +1137,58 @@ character up to specific position(OCC query) is $O(\log{}\mid\sum\mid)$.
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 
-\subsubsection{Bi-directional Wavelet Tree}
+\subsubsection{Bi-directional Wavelet Index}
+
+A bi-directional Wavelet index of string S is consists of \cite{bidirectional}
+
+the backward index that supports backward search based on the wavelet tree of 
+the BWT string of S and
+
+the forward index that supports backward search on the Wavelet tree of the BWT
+string of the reverse string S ( denoted as $BWT^{rev}$ ).
+The main challenge is to do a synchronized search on the both indexes.
+To illustrate it, assume that we know the $\omega$-interval [i..j] in the backward 
+index and $\omega^{rev}$-interval [$i^{rev}$..$j^{rev}$] in the forward index 
+where $\omega$ is a substring of S.
+Given a character c and interval [i..j], the backward search on the backward 
+index returns c$\omega$-interval (by Algorithm \ref{backward search alg}), 
+but we need to find the corresponding interval in the forward index and vice versa.
+Dealing with the first case, all of our information is that the suffixes of 
+$S^{rev}$ are lexicographically ordered. \\\\
+In other words\\
+$S^{rev}[SA^{rev}[k]+|\omega|] < c for all k in i^{rev}  \leq k  < p$ ,\\
+$S^{rev}[SA^{rev}[k]+|\omega|] = c for all k in  p  \leq  k  \leq  q $,\\
+$S^{rev}[SA^{rev}[k]+|\omega|] > c for all k in  q  \leq  k <  j^{rev}$.
+\\\\
+As an example,\\\\\\\\
 
 
+\begin{algorithm}[H]
+  % \caption{BWT matching algorithm}
+    \begin{algorithmic}[1] 
+      \Function{getBounds}{$[i..j],[l..r],c $}
+        	\If{$ l = r $}
+            	\State $remove last letter from Pattern$
+            	\State \textbf{return} $(0,0)$
+            \Else
+        	     \State $(a_{0}, b_{0}) \leftarrow  rank_{0}( B^{[l..r]}, i-1), rank_{0}(B^{[l..r],j}))$
+        		 \State $(a_{1}, b_{1})$ $\leftarrow$ $(i-1-a_{0}, j - b_{0}) $
+        		 \State $/* (a_{1}, b_{1}) \leftarrow  rank_{1}( B^{[l..r]}, i-1), rank_{1}(B^{[l..r],j})) */$
+        		 \State $m = \lfloor \dfrac  {l+r}{2} \rfloor$
+        		 \If{$c \leq \sum[m]$}
+        		 	\State $(smaller, greater) \leftarrow getBounds ([a_{0}+1..b_{0}],[l..m],c)$
+        		 	\State \textbf{return} $(smaller, greater+b_{1}-a_{1})$
+     	  		\Else 
+     	  			\State $(smaller, greater) \leftarrow getBounds ([a_{1}+1..b_{1}],[m+1..r],c)$ 
+     	  			\State \textbf{return} $(smaller + b_{0}-a_{0}, greater)$
+     		   \EndIf
+     	   \EndIf
+     
+    \EndFunction
+
+	\end{algorithmic}
+  \label{smaller & greater}	
+\end{algorithm}
 
 
 
