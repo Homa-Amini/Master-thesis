@@ -1204,25 +1204,18 @@ character up to specific position(OCC query) is $O(\log{}\mid\sum\mid)$.
 \subsubsection{Bi-directional Wavelet Index}
 
 A bi-directional Wavelet index of string S is consists of \cite{bidirectional}
-
-the backward index that supports backward search based on the wavelet tree of 
-the BWT string of S and
-
-the forward index that supports backward search on the Wavelet tree of the BWT
-string of the reverse string S ( denoted as $BWT^{rev}$ ).
-The main challenge is to do a synchronized search on the both indexes.
+the \emph{backward index} that supports backward search based on the wavelet tree of 
+the BWT string of S and the \emph{forward index} that supports backward search
+on the Wavelet tree of the BWT string of the reverse string S ( denoted as 
+$BWT^{rev}$ ). The main challenge is to do a synchronized search on the both indexes.
 To illustrate it, assume that we know the $\omega$-range [i..j] in the backward 
 index and $\omega^{rev}$-range [$i^{rev}$..$j^{rev}$] in the forward index 
 where $\omega$ is a substring of S.
 Given a character c and range [i..j], the backward search on the backward 
 index returns c$\omega$-range (by Algorithm \ref{backward search alg}), 
 but we need to find the corresponding range in the forward index and vice versa.
-
-Dealing with the first case, all of our information is that the suffixes 
-of $S^{rev}$ are lexicographically ordered. 
-For example, the Bi-directional Wavelet index of string S= barbara\$ is 
+The Bi-directional Wavelet index of string S= barbara\$ is 
 illustrated in Table \ref{bi-dir_barbara}.
-
 
 \begin{table}[h]
 \parbox{.45\linewidth}{
@@ -1265,53 +1258,48 @@ i&&$S^{rev}_{SA^{rev}[i]}$\\
 \end{table}
 
 
-The range for the substring   
+The range of the substring   
 $\omega$ = a = $\omega^{rev}$ in both indexes is [2..4].
 The ba-range is driven by backwardSearch(a,[2..4])=[5..6]  
 in the backward index and we want to find the ab-range in
 the forward index.But the only information we have is that 
-the suffixes of $S^{rev}$ are lexicographically ordered. 
-
-In other words
+the suffixes of $S^{rev}$ are lexicographically ordered. \\\\
+In other words\\\\
 $S^{rev}[SA^{rev}[k]+|\omega|] < c$ for all k in $i^{rev}  \leq k  < p$,\\
 $S^{rev}[SA^{rev}[k]+|\omega|] = c$ for all k in  $p  \leq  k  \leq  q $,\\
-$S^{rev}[SA^{rev}[k]+|\omega|] > c$ for all k in  $q <   k \leq   j^{rev}$.\\
-
-
-In our example of Table \ref{bi-dir_barbara},\\
+$S^{rev}[SA^{rev}[k]+|\omega|] > c$ for all k in  $q <   k \leq   j^{rev}$.\\\\
+In our example of Table \ref{bi-dir_barbara},\\\\
 $S^{rev}[SA^{rev}[k]+1] < b $ for NO  k in $ 2 \leq k  < 5 $,\\
 $S^{rev}[SA^{rev}[k]+1] = b $ for all k in $ 2  \leq  k  \leq  3 $,\\
-$S^{rev}[SA^{rev}[k]+1] = r > b $ for all k in $ 3   < k  \leq  4 $.\\
-
-
-
-In order to have this information we need the number of smaller
+$S^{rev}[SA^{rev}[k]+1] = r > b $ for all k in $ 3   < k  \leq  4 $.\\\\
+In order to achieve this information, we need the number of smaller
 and greater of all occurrence of characters in $S^{BWT}[i..j]$ 
-that follow c in $\sum$. The Pseudo-code of Algorithm \ref{smaller-greater} 
-shows the procedure for calculating the number of all occurrences 
+that follow c in $\sum$. The Algorithm \ref{smaller-greater} 
+shows  the Pseudo-code for calculating the number of all occurrences 
 of characters from the alphabet $\sum[l..r]$ in BWT[i..j] that 
-are greater ( smaller ) than character c.
-Calculating the smaller and greater values for the interval 
-[2..4] and character b. Following Algorithm \ref{smaller-greater} 
-and referring to Figure \ref{Wavlet-barbara}, as b belongs 
+are greater ( smaller ) than character c. In our example 
+we are willing to calculate the number of smaller and greater 
+characters in the range of [2..4] for character b.  
+Following the Algorithm \ref{smaller-greater} 
+and referring to Figure \ref{Wavlet-barbara}, character
+b is encoded as 1 in the bit string of the root note( character b belongs 
 to the second half $\sum[3..4]$ of lexicographically ordered 
-alphabet $\sum$, it corresponds to 1 at the root note.
-Willing to compute the number of occurrences of characters 
-in the interval [2..4] that belong to $\sum$[1..2] and since 
-they belong to the left child of the root note, we calculate
-$(a_{0}, b_{0})=(rank( 0 ,  2-1), rank (0 , 4)) = (1 , 1) $.
-%and $b_{0}$-$a_{0}$= 1-1=0 is our seeking value.
-Moving to the right child, lets call it $v_{1}$, we compute
-$(a_{1}, b_{1})=(rank( 1 ,  2-1), rank (0 , 4)) = (0 , 3) $.
-Proceeding recursively, character b belongs to the left child 
-calling it $v_{2}$. \\
-Therefore we compute
-$(a\prime_{0}, b\prime_{0})=(rank( 0 ,  1-1), rank (0 , 1)) = (0 , 1) $\\
-$(a\prime_{1}, b\prime_{1})=(rank( 1 ,  1-1), rank (1 , 1)) = (0 , 0) $.\\
-
-During top-down traversal, we found out that in the $S^{BWT}[2..4]$, 
-there is no character smaller than b (smaller = 0) and one character 
-greater than b (greater = 1).
+alphabet $\sum$).
+Finding the number of occurrences of characters 
+in the interval [2..4] that belong to $\sum$[1..2], knowing that 
+they belong to the left child of the root note, we calculate\\
+$$(a_{0}, b_{0})=(rank_{0} ( B^{1..4} ,  2-1), rank_{0} (B^[1..4] , 4)) = (1 , 1) $$
+Moving to the right child, we compute
+$$(a_{1}, b_{1})=(rank_{1} ( B^{1..4} ,  2-1), rank_{1} (B^[1..4] , 4)) = (0 , 3) $$
+since  $m=\lfloor \dfrac  {1+4}{2} \rfloor$= 2 and $b >\sum[2]$ then
+the new bounderies for next step is in the range of $[a_{1}+1..b_{1}]
+=[1,3]$ and for the alphabet range of $[m+1..r] = [3..4]$
+Proceeding recursively, we compute
+$$(a\prime_{0}, b\prime_{0})=(rank_{0} ( B^{3..4} ,  1-1), rank_{0} (B^[3..4] , 3)) = (0 , 2) $$
+$$(a\prime_{1}, b\prime_{1})=(rank_{1} ( B^{3..4} ,  1-1), rank_{1} (B^[3..4] , 3)) = (0 , 1) $$
+and find out that there are $b\prime_{1}-a\prime_{1}=1$ occurrence 
+of character r that is greater than b and $b\prime_{0}-a\prime_{0}=2 $ 
+characters that are the equal to character b.
 
 	\begin{algorithm}[H]
    \caption{}
