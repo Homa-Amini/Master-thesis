@@ -1207,11 +1207,11 @@ A common way to speed up the alignment process is to index the reference string.
 Although the original BWT is a space and time efficient indexing technique for 
 pattern matching problem, but it only allows  searching of a pattern in one 
 direction( \emph{backward} from right to the left of a pattern). 
-However for the case of ancient DNA reads with a high rate of damage at the 
-reads's terminates, we need a data structure that gives us the ability to start 
-at the middle part of a pattern, search in either directions (\emph{forward} and 
-\emph{backward} ) and switch between them or vice versa.  
-The Bi-directional Wavelet index is a data structure that solves this problem.
+However for efficient inexact pattern matching, a data structure that gives us 
+the ability to search for a pattern in both direction (\emph{forward} and \emph{backward}) 
+starting from the middle part of a pattern and switch between directions would 
+be helpful. The Bi-directional Wavelet index is a data structure that solves 
+this problem.
 
 A Bi-directional Wavelet index of string S is consists of \cite{bidirectional}
 the \emph{backward index} that supports backward search based on the wavelet tree of 
