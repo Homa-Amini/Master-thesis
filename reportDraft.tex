@@ -312,6 +312,8 @@ There are some key issues for an ideal alignment that needs to be considered:
 \end{itemize}
 
 
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
 \subsubsection{The Scoring Model} \label{The Scoring Model}
 
 Comparing two sequences, we need a score to measure their similarity.
@@ -359,7 +361,9 @@ If $\delta$=1 then the total score of following alignment is:
 -0.5 + 1 + 1 - 1 - 1 + 1 - 1 + 1 = 0.5
 
 
+
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
 \subsubsection{Alignment Algorithms} \label{Alignment Algorithms}
 Having the scoring system, we need an algorithm for finding the 
 optimal alignment between a pair of sequences. 
@@ -434,7 +438,10 @@ the cell F(0,0) and in this point the optimal alignment is completely
 reconstructed \cite{eddydynamic}.
 
 
+
+
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
 \paragraph{ Local alignment ( Smith-Waterman algorithm ) }
 
 Compute the maximum scoring alignment of $L(S_{1}, S_{2})$ over all 
@@ -459,7 +466,10 @@ To find the actual local alignment:
 
 
 
+
+
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
 \paragraph{Semi-global alignment}
 
 Semi-global or "glocal" (short for global-local) algorithm is a combination of global
@@ -603,7 +613,10 @@ calculated score so far plus insertion score(penalty) pair with insertion
 operation and CIGAR field for insertion.
 The same procedure applied to deletion operation.
 
- 
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% 
+
 \paragraph{Scoring} \label{Scoring}
 
 %\textbf{\emph{Going to rewrite this section, not my voice.}}
@@ -681,7 +694,13 @@ Some of the main data structures used by our new aligner(R-Candy) for indexing a
 mapping process plus fundamental concepts required for better understanding of this 
 thesis are described in this section. 
 
-\subsubsection{Introductory} \label{Introductory}
+
+
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\subsubsection{Preliminaries} \label{Preliminaries}
 
 \begin{table}[h]
  \centering
@@ -703,7 +722,7 @@ the $i_{th}$ character of the S.
 The string's index starts from 0 and S[0,N-1] represents the whole string S while 
 S[i..k] shows the substring of S from the position i to k inclusive with $i < k < N$. 
 S[i..N-1] is the i\textsuperscript{th} suffix of So the 2th suffix of above example is S[2..7]='arbara\$' and
- S[0..i] is defined as i\textsuperscript{th} prefix, so the 7\textsuperscript{th} of table 2 is 'barbara\$'.
+S[0..i] is defined as i\textsuperscript{th} prefix, so the 7\textsuperscript{th} of table 2 is 'barbara\$'.
  
 The pattern that we will be searching for is P.
 
@@ -940,73 +959,83 @@ Figure \ref{Lemma1} illustrates Lemma 1\\
  \label{Lemma1}
 \end{figure}
 
-To apply LF-mapping in efficient time of \emph{O(1}), a \emph{sum table} and an \emph{occurrence function }is needed.\\
+To apply LF-mapping in efficient time of \emph{O(1}), 
+a \emph{sum table} and an \emph{occurrence function }is needed.\\
 
 
 \begin{itemize}
 
-	\item C[c] is a table that for each character in the alphabet contains the total number of text characters that are alphabetically smaller than \emph{c} \cite{fmindex}.
+	\item C[c] is a table that for each character in 
+	the alphabet contains the total number of text 
+	characters that are alphabetically smaller than
+	 \emph{c} \cite{fmindex}.
 
 	
-	\item OCC(c,q) denotes:  The total number of occurrences of character c in the prefix L[1..q]\cite{fmindex}.It is possible to compute OCC(c, q) in constant time.
-	%\item LF(.): Stands for Last-to-First column mapping.
+	\item OCC(c,q) denotes:  The total number of 
+	occurrences of character c in the prefix 
+	L[1..q]\cite{fmindex}.It is possible to 
+	compute OCC(c, q) in constant time.
 	
 \end{itemize}
 
-Using \emph{OCC} and \emph{C}, the LF-mapping can be defined as 
+Using \emph{OCC} and \emph{C}, the LF-mapping 
+can be defined as 
 \emph{LF(i) = C[L[i]] + OCC(L[i], i)} \\\\
 
 \paragraph{Reversing}
 
 
 
-We can use the First-Last property of BWT to reconstruct the original 
-string. Start with \$ symbol on the first row and knowing if we go backward the 
-character before \$ is $a_1$ and also using last to first property 
-information. We know  $a_1$ has the same position as $a_1$ in the first 
-column of the second row. Continue backward (if go backward in cyclic 
-rotation) hit $r_1$. Apply the First-Last principle again and say this is 
-the first occurrence of r, then we go to the  $r_1$ in the first column of 
-$7^{th}$ row and continue using the First-Last property and then walk back 
-one step and so on. We reconstructed the original string in reverse. By the 
-knowledge of \$ ends the string, we walk clockwise in the cyclic rotation 
-and have the original string.
- %LF(i)=C[T$^{bwt}$[i]]+Occ($T^{bwt}$[i],i).\\\\
+We can use the First-Last property of BWT to reconstruct
+the original string. Start with \$ symbol on the first 
+row and knowing if we go backward the character before 
+\$ is $a_1$ and also using last to first property information. 
+We know  $a_1$ has the same position as $a_1$ in the first 
+column of the second row. Continue backward (if go backward 
+in cyclic rotation) hit $r_1$. Apply the First-Last principle 
+again and say this is the first occurrence of r, then we 
+go to the  $r_1$ in the first column of $7^{th}$ row and 
+continue using the First-Last property and then walk back 
+one step and so on. We reconstructed the original string 
+in reverse. By the knowledge of \$ ends the string, we 
+walk clockwise in the cyclic rotation and have the original 
+string.
 BWT decompression Memory =  $\mathcal{O}(\lvert S \rvert)$ \\
 
 
-%make tables if you had time%%%%%%%%%%%%%%%
 
 \paragraph{Searching}
-A search algorithm called backward search will be used for pattern recognition using $S^{BWT}$.\\
+A search algorithm called backward search will be used 
+for pattern recognition using $S^{BWT}$.\\
 
-The BWT matrix is constructed by sorting all the cyclic rotations of a string,therefore
-if a pattern \emph{P} appears in the string it will be a prefix in $M_{T}$ and if \emph {P} 
-appears in multiple positions, they will be successive.\\ 
-To search for a pattern using $S^{BWT}$, the backward search starts 
-from the end of a pattern.
-At first searches for an empty  pattern all over the BWT matrix. 
-Then looks for the last character of the desired pattern. 
-After finding the character, updates indexes and 
-search for the character before that last one among the updated indexes.
-Continues the process to find the pattern.Updating indexes is the 
-crucial part of this procedure (See Figure \ref{backwardSearch}).\\\\
-
-
+The BWT matrix is constructed by sorting all the cyclic
+rotations of a string,therefore if a pattern \emph{P} 
+appears in the string it will be a prefix in $M_{T}$ 
+and if \emph {P} appears in multiple positions, they 
+will be successive.\\ 
+To search for a pattern using $S^{BWT}$, the backward 
+search starts from the end of a pattern.
+At first searches for an empty  pattern all over the 
+BWT matrix. Then looks for the last character of the 
+desired pattern. After finding the character, updates 
+indexes and search for the character before that last 
+one among the updated indexes. Continues the process 
+to find the pattern.Updating indexes is the crucial 
+part of this procedure (See Figure \ref{backwardSearch}).\\\\
 
 
 \begin{algorithm}[H]
    \caption{BWT matching algorithm}
     \begin{algorithmic}[1]
-     % \Function{BWMatching}{$LastColumn,Pattern,FirstOccurance,Count$} 
       \Function{BWTMatching}{$LastColumn,Patterns,C,OCC$}
        	\State ${top} = 0$
         \State ${bottom} = \lvert LastColumn \rvert -1$
         \While{ ${top}\le{bottom}$}
-        	\If{$ Pattern  is  non  empty$}
-            	\State $symbol = last letter in Pattern$
-            	\State $remove last letter from Pattern$
-        			\If {positions from top to bottom in LastColumn contain at least one occurrence of symbol}
+        	\If{ Pattern  is  non  empty}
+            	\State {$symbol$ = last letter in Pattern}
+            	\State {remove last letter from Pattern}
+        			\If {positions from top to bottom in 
+        			LastColumn contain at least one occurrence of symbol}
         				\State $top = C(symbol)+ OCC(symbol,top-1)$
         				\State $bottom = C(symbol)+ OCC(Symbol,bottom)-1$
         			\Else
@@ -1020,6 +1049,29 @@ crucial part of this procedure (See Figure \ref{backwardSearch}).\\\\
     \EndFunction
 
 	\end{algorithmic}
+  \label{BWT matching alg}	
+\end{algorithm}
+
+
+
+
+
+\begin{algorithm}[H]
+   \caption{BWT backward search algorithm for a given character 
+   c $\in \sum $ and an $\omega$-range [i..j]}
+   
+    \begin{algorithmic}[1]
+      \Function{backwardSearch}{$c ,[i..j]$}
+       	\State ${i \leftarrow C[c] + OCC(c, i-1)+1}$
+        \State ${j \leftarrow C[c] + OCC(c,j)}$
+        	\If{$ i \leq j$} 
+        		\State \textbf{return} [i..j]
+        	\Else
+        		\State \textbf{return} $\perp$
+        	\EndIf 
+    \EndFunction
+
+	\end{algorithmic}
   \label{backward search alg}	
 \end{algorithm}
 
@@ -1029,8 +1081,10 @@ crucial part of this procedure (See Figure \ref{backwardSearch}).\\\\
 \begin{figure}[H]
 \centering
 \includegraphics[width=12cm]{pictures/bar_1.png}
-\caption{Backward search for pattern "bar" in string S using first and 
-last column of BWT matrix. Updating indexes iteratively.}
+\caption{Backward search for pattern "bar" in 
+string S using first and 
+last column of BWT matrix. Updating indexes 
+iteratively.}
 \label{backwardSearch}
 \end{figure}
 
@@ -1038,28 +1092,38 @@ last column of BWT matrix. Updating indexes iteratively.}
 
 \paragraph{Time Complexity}
 
-The running time of the backward search on BWT depends on three factors; 
-the length of the pattern P, the number of occurrence of P in the string and, 
-more importantly, the access time of P in the suffix array.\\
-The search algorithm consists of two phases, counting the number of occurrences of
-a pattern and localization of their positions in the string.
-The counting time is linear to the length of the P because at each iteration 
-only one character of P is processed and length of the string doesn't have any 
-impact on searching time which is one of the main reasons of using BWT for a l
-arge string like a genome.
-On the other hand, the localization time is more affected by the number of occurrences 
-of the pattern  because, for each occurrence of P, a look up at SA is needed.
+The running time of the backward search on BWT 
+depends on three factors; the length of the 
+pattern P, the number of occurrence of P in 
+the string and, more importantly, the access 
+time of P in the suffix array.\\
+The search algorithm consists of two phases, 
+counting the number of occurrences of a pattern 
+and localization of their positions in the string.
+The counting time is linear to the length of 
+the P because at each iteration only one character 
+of P is processed and length of the string doesn't 
+have any impact on searching time which is one 
+of the main reasons of using BWT for a large 
+string like a genome. On the other hand, the 
+localization time is more affected by the number 
+of occurrences of the pattern  because, for 
+each occurrence of P, a look up at SA is needed.
 \\\\
 
-After introducing BWT and its properties and emphasising on its important job 
-in pattern searching, in the following section the usage of BWT in an indexing
- data structure called FM-Index will be discussed\cite{fmindex}. 
+After introducing BWT and its properties and 
+emphasizing on its important job in pattern 
+searching, in the following section the usage 
+of BWT in an indexing data structure called 
+FM-Index will be discussed\cite{fmindex}. 
 
 
 
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-\subsubsection{FM-Index (Full-text index)}  \label{FM-Index (Full-text index)}
+
+\subsubsection{FM-Index (Full-text index)}  
+\label{FM-Index (Full-text index)}
 
 Paolo Ferragina and Giovanni Manzini in 2000, six years after BWT was 
 published invented a self-index data structure that combines BWT with some 
@@ -1147,24 +1211,110 @@ the BWT string of S and
 the forward index that supports backward search on the Wavelet tree of the BWT
 string of the reverse string S ( denoted as $BWT^{rev}$ ).
 The main challenge is to do a synchronized search on the both indexes.
-To illustrate it, assume that we know the $\omega$-interval [i..j] in the backward 
-index and $\omega^{rev}$-interval [$i^{rev}$..$j^{rev}$] in the forward index 
+To illustrate it, assume that we know the $\omega$-range [i..j] in the backward 
+index and $\omega^{rev}$-range [$i^{rev}$..$j^{rev}$] in the forward index 
 where $\omega$ is a substring of S.
-Given a character c and interval [i..j], the backward search on the backward 
-index returns c$\omega$-interval (by Algorithm \ref{backward search alg}), 
-but we need to find the corresponding interval in the forward index and vice versa.
-Dealing with the first case, all of our information is that the suffixes of 
-$S^{rev}$ are lexicographically ordered. \\\\
-In other words\\
-$S^{rev}[SA^{rev}[k]+|\omega|] < c for all k in i^{rev}  \leq k  < p$ ,\\
-$S^{rev}[SA^{rev}[k]+|\omega|] = c for all k in  p  \leq  k  \leq  q $,\\
-$S^{rev}[SA^{rev}[k]+|\omega|] > c for all k in  q  \leq  k <  j^{rev}$.
-\\\\
-As an example,\\\\\\\\
+Given a character c and range [i..j], the backward search on the backward 
+index returns c$\omega$-range (by Algorithm \ref{backward search alg}), 
+but we need to find the corresponding range in the forward index and vice versa.
+
+Dealing with the first case, all of our information is that the suffixes 
+of $S^{rev}$ are lexicographically ordered. 
+For example, the Bi-directional Wavelet index of string S= barbara\$ is 
+illustrated in Table \ref{bi-dir_barbara}.
 
 
-\begin{algorithm}[H]
-  % \caption{BWT matching algorithm}
+\begin{table}[h]
+\parbox{.45\linewidth}{
+\centering
+\begin{tabular}{ccl}
+%\hline
+i& &$S_{SA[i]}$\\
+\hline
+1 & a & \$ \\
+2 & r & a\$ \\
+3 & b & ara\$ \\
+4 & b & arbara\$ \\
+5 & r & bara\$ \\
+6 & \$ & barbara\$ \\
+7 & a & ra\$ \\
+8 & a & rbara\$ 
+\end{tabular}
+%\caption{Foo}
+}
+\hfill
+\parbox{.45\linewidth}{
+\centering
+\begin{tabular}{ccl}
+%\hline
+i&&$S^{rev}_{SA^{rev}[i]}$\\
+\hline
+1 & b & \$ \\
+2 & r & ab\$ \\
+3 & r & abrab\$ \\
+4 & \$ & arabrab\$ \\
+5 & a & b\$ \\
+6 & a & brab\$ \\
+7 & b & rab\$ \\
+8 & a & rabrab\$ 
+\end{tabular}
+}
+\caption{Bi-directional Wavelet index of S=barbara\$.}
+\label{bi-dir_barbara}
+
+\end{table}
+
+
+The range for the substring   
+$\omega$ = a = $\omega^{rev}$ in both indexes is [2..4].
+The ba-range is driven by backwardSearch(a,[2..4])=[5..6]  
+in the backward index and we want to find the ab-range in
+the forward index.But the only information we have is that 
+the suffixes of $S^{rev}$ are lexicographically ordered. 
+
+In other words
+$S^{rev}[SA^{rev}[k]+|\omega|] < c$ for all k in $i^{rev}  \leq k  < p$,\\
+$S^{rev}[SA^{rev}[k]+|\omega|] = c$ for all k in  $p  \leq  k  \leq  q $,\\
+$S^{rev}[SA^{rev}[k]+|\omega|] > c$ for all k in  $q <   k \leq   j^{rev}$.\\
+
+
+In our example of Table \ref{bi-dir_barbara},\\
+$S^{rev}[SA^{rev}[k]+1] < b $ for NO  k in $ 2 \leq k  < 5 $,\\
+$S^{rev}[SA^{rev}[k]+1] = b $ for all k in $ 2  \leq  k  \leq  3 $,\\
+$S^{rev}[SA^{rev}[k]+1] = r > b $ for all k in $ 3   < k  \leq  4 $.\\
+
+
+
+In order to have this information we need the number of smaller
+and greater of all occurrence of characters in $S^{BWT}[i..j]$ 
+that follow c in $\sum$. The Pseudo-code of Algorithm \ref{smaller-greater} 
+shows the procedure for calculating the number of all occurrences 
+of characters from the alphabet $\sum[l..r]$ in BWT[i..j] that 
+are greater ( smaller ) than character c.
+Calculating the smaller and greater values for the interval 
+[2..4] and character b. Following Algorithm \ref{smaller-greater} 
+and referring to Figure \ref{Wavlet-barbara}, as b belongs 
+to the second half $\sum[3..4]$ of lexicographically ordered 
+alphabet $\sum$, it corresponds to 1 at the root note.
+Willing to compute the number of occurrences of characters 
+in the interval [2..4] that belong to $\sum$[1..2] and since 
+they belong to the left child of the root note, we calculate
+$(a_{0}, b_{0})=(rank( 0 ,  2-1), rank (0 , 4)) = (1 , 1) $.
+%and $b_{0}$-$a_{0}$= 1-1=0 is our seeking value.
+Moving to the right child, lets call it $v_{1}$, we compute
+$(a_{1}, b_{1})=(rank( 1 ,  2-1), rank (0 , 4)) = (0 , 3) $.
+Proceeding recursively, character b belongs to the left child 
+calling it $v_{2}$. \\
+Therefore we compute
+$(a\prime_{0}, b\prime_{0})=(rank( 0 ,  1-1), rank (0 , 1)) = (0 , 1) $\\
+$(a\prime_{1}, b\prime_{1})=(rank( 1 ,  1-1), rank (1 , 1)) = (0 , 0) $.\\
+
+During top-down traversal, we found out that in the $S^{BWT}[2..4]$, 
+there is no character smaller than b (smaller = 0) and one character 
+greater than b (greater = 1).
+
+	\begin{algorithm}[H]
+   \caption{}
     \begin{algorithmic}[1] 
       \Function{getBounds}{$[i..j],[l..r],c $}
         	\If{$ l = r $}
@@ -1187,7 +1337,7 @@ As an example,\\\\\\\\
     \EndFunction
 
 	\end{algorithmic}
-  \label{smaller & greater}	
+  \label{smaller-greater}	
 \end{algorithm}
 
 
@@ -1252,7 +1402,7 @@ Construction of a Wavelet-Tree for $ S_{BWT} $ of string 'barbara':
 \begin{figure}[H]
 \centering
 \includegraphics[width=4.75cm]{pictures/WavletBarbara.png}
-\caption{Wavelet tree for "Rhabarberbarbara" string }
+\caption{Wavelet tree for "barbara" string }
 \label{Wavlet-barbara}
 \end{figure}
 
@@ -2224,26 +2374,26 @@ Notice that the time required for building the genome index is
 not included in the reported time.\\
 
 
-\begin{table}[H]
- \begin{tabular}{ |  p{2cm} | p{2cm} | p{2cm} | p{2cm} |p{2cm} | }
-  \hline
-  	\textbf{Type} & \textbf{Read length }&\textbf{Speed BWA 
-  	default\hspace{35pt}(no. of reads/s) } 	 
-  	&\textbf{Speed BWA ancient)\hspace{35pt}(no. of reads/s)} 
-  	& \textbf{Speed R-Candy ancient \hspace{35pt}(no. of reads/s)}\\ \hline
- 	  Genomic    & 25  & 0.0045 &  0.0291   &  0.5564 \\ \hline
-      Genomic    & 30  & 0.0019 &  0.0191   &  0.4502 \\ \hline
-      Genomic    & 35  & 0.0016 &  0.0023   &  0.4410 \\ \hline
- 	  Genomic	 & 40  & 0.0020 &  0.0028   &  0.4072 \\ \hline
- 	  Microbial  & 25  & 0.0068 &  0.0720   &  0.5927 \\ \hline
-      Microbial  & 30  & 0.0046 &  0.0236   &  0.4548 \\ \hline
- 	  Microbial  & 35  & 0.0043 &  0.0065   &  0.5961 \\ \hline
- 	  Microbial  & 40  & 0.0056 &  0.0069   &  0.3222 \\ \hline
-   \end{tabular}
-\caption{The alignment speed for ancient reads aligned to 
-the human reference genome.}
-\label{speed-RG}
-\end{table}
+%\begin{table}[H]
+% \begin{tabular}{ |  p{2cm} | p{2cm} | p{2cm} | p{2cm} |p{2cm} | }
+%  \hline
+%  	\textbf{Type} & \textbf{Read length }&\textbf{Speed BWA 
+ % 	default\hspace{35pt}(no. of reads/s) } 	 
+ % 	&\textbf{Speed BWA ancient)\hspace{35pt}(no. of reads/s)} 
+  %	& \textbf{Speed R-Candy ancient \hspace{35pt}(no. of reads/s)}\\ \hline
+% 	  Genomic    & 25  & 0.0045 &  0.0291   &  0.5564 \\ \hline
+%      Genomic    & 30  & 0.0019 &  0.0191   &  0.4502 \\ \hline
+ %     Genomic    & 35  & 0.0016 &  0.0023   &  0.4410 \\ \hline
+% 	  Genomic	 & 40  & 0.0020 &  0.0028   &  0.4072 \\ \hline
+% 	  Microbial  & 25  & 0.0068 &  0.0720   &  0.5927 \\ \hline
+%      Microbial  & 30  & 0.0046 &  0.0236   &  0.4548 \\ \hline
+% 	  Microbial  & 35  & 0.0043 &  0.0065   &  0.5961 \\ \hline
+% 	  Microbial  & 40  & 0.0056 &  0.0069   &  0.3222 \\ \hline
+%   \end{tabular}
+%\caption{The alignment speed for ancient reads aligned to 
+%the human reference genome.}
+%\label{speed-RG}
+%\end{table}
 
 \begin{table}[H]
   \begin{tabular}{ |  p{2cm} | p{2cm} | p{2cm} | p{2cm} |p{2cm} | }
