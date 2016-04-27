@@ -1203,7 +1203,17 @@ character up to specific position(OCC query) is $O(\log{}\mid\sum\mid)$.
 
 \subsubsection{Bi-directional Wavelet Index}
 
-A bi-directional Wavelet index of string S is consists of \cite{bidirectional}
+A common way to speed up the alignment process is to index the reference string. 
+Although the original BWT is a space and time efficient indexing technique for 
+pattern matching problem, but it only allows  searching of a pattern in one 
+direction( \emph{backward} from right to the left of a pattern). 
+However for the case of ancient DNA reads with a high rate of damage at the 
+reads's terminates, we need a data structure that gives us the ability to start 
+at the middle part of a pattern, search in either directions (\emph{forward} and 
+\emph{backward} ) and switch between them or vice versa.  
+The Bi-directional Wavelet index is a data structure that solves this problem.
+
+A Bi-directional Wavelet index of string S is consists of \cite{bidirectional}
 the \emph{backward index} that supports backward search based on the wavelet tree of 
 the BWT string of S and the \emph{forward index} that supports backward search
 on the Wavelet tree of the BWT string of the reverse string S ( denoted as 
@@ -1264,7 +1274,7 @@ The ba-range is driven by backwardSearch(a,[2..4])=[5..6]
 in the backward index and we want to find the ab-range in
 the forward index.But the only information we have is that 
 the suffixes of $S^{rev}$ are lexicographically ordered. \\\\
-In other words\\\\
+In other words \cite{bidirectional}\\\\
 $S^{rev}[SA^{rev}[k]+|\omega|] < c$ for all k in $i^{rev}  \leq k  < p$,\\
 $S^{rev}[SA^{rev}[k]+|\omega|] = c$ for all k in  $p  \leq  k  \leq  q $,\\
 $S^{rev}[SA^{rev}[k]+|\omega|] > c$ for all k in  $q <   k \leq   j^{rev}$.\\\\
@@ -1280,7 +1290,7 @@ of characters from the alphabet $\sum[l..r]$ in BWT[i..j] that
 are greater ( smaller ) than character c. In our example 
 we are willing to calculate the number of smaller and greater 
 characters in the range of [2..4] for character b.  
-Following the Algorithm \ref{smaller-greater} 
+Following the Algorithm \ref{smaller-greater} \cite{bidirectional} 
 and referring to Figure \ref{Wavlet-barbara}, character
 b is encoded as 1 in the bit string of the root note( character b belongs 
 to the second half $\sum[3..4]$ of lexicographically ordered 
