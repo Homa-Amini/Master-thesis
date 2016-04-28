@@ -389,14 +389,21 @@ types of dynamic programming algorithms (alignment algorithms).\\\\
 The four essential steps in all dynamic programming algorithms are:
 
 \begin{itemize} 
-	\item Define a recursive structure for the optimal score\cite{eddydynamic}.
-	\item  Create a  matrix for remembering the optimal score of subproblems \cite{eddydynamic}.	
-	\item Fill the matrix by solving the  subproblems in a bottom-up approach\cite{eddydynamic}.
-	\item Reconstruct the optimal approach that led us to the optimal score by a traceback on the matrix\cite{eddydynamic}.
+	\item Define a recursive structure for the optimal score
+	\cite{eddydynamic}.
+	\item  Create a  matrix for remembering the optimal score 
+	of subproblems \cite{eddydynamic}.	
+	\item Fill the matrix by solving the  subproblems in a 
+	bottom-up approach\cite{eddydynamic}.
+	\item Reconstruct the optimal approach that led us to the 
+	optimal score by a traceback on the matrix\cite{eddydynamic}.
 \end{itemize}
 
 In the following part I will describe the two more basic alignment 
 algorithms that easily can be expanded to the more complex versions.
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 \paragraph{ Global alignment ( Needleman-Wunsch algorithm) }
 
@@ -472,13 +479,14 @@ To find the actual local alignment:
 
 \paragraph{Semi-global alignment}
 
-Semi-global or "glocal" (short for global-local) algorithm is a combination of global
-and local alignments. 
+Semi-global or "glocal" (short for global-local) algorithm is a combination 
+of global and local alignments. 
 It is a practical strategy in the case of ancient DNA.
 Aligning two sequences, one short ( an ancient DNA read) and the 
 other one long( a chromosome sequence). In this case, neither global 
-nor local alignment is completely applicable. The best solution here is to globally 
-align the short sequence while only a local alignment is appropriate for the long sequence.
+nor local alignment is completely applicable. The best solution here 
+is to globally align the short sequence while only a local alignment
+is appropriate for the long sequence.
 
 
 Having two sequences  $S_{1}$ and $S_{2}$, want to optimally align them.
@@ -533,88 +541,35 @@ T =\left
  \end{array} 
 \right]
 $\\\\\\
-The red path corresponds to the local alignment of the two sequences $S_{1}$ and $S_{2}$: 
-
+The red path corresponds to the semi-global alignment of the two 
+sequences $S_{1}$ and $S_{2}$: 
 $$S_{1}:A-CACAC\enskip TACCG$$
 $$S_{2}:A\enskip G CACAC-A\enskip\enskip\enskip\enskip\enskip $$
 
 
 
 
-Semi-global \footnote{Reads are globally aligned(fully aligned)where the reference is
-locally aligned (with some gaps at the end of the reference string)} alignment results
-have been produced by R-Candy as a result of mapping sets of short strings against 
-long reference (for instance, strings of length $\geq 25$ bp aligned to a refernce of length 3.2 Gbs).
-To calculate the highest similarity score(lowest Levenshtein distance) between two strings, 
-we fill out the desirable and reference in the Y-axis and X-axis respectively.
-Starting from the top left with score zero the score matrix leads us to the 
-maximum score in the bottom right position.
+Semi-global \footnote{Reads are globally aligned(fully aligned) 
+where the reference is locally aligned (with some gaps at the 
+end of the reference string)} alignment results are produced 
+by R-Candy as a result of mapping sets of short queries against 
+a long reference sequence (for instance, queries of length 25-50 
+bps getting aligned to a human reference genome of length 3.2 Gbps.
+Determining the highest similarity score (lowest Levenshtein 
+distance) between the two strings, putting the query and the 
+reference genome sequence in the Y-axis and X-axis respectively. 
+Filling the scoring matrix the entry with the highest score is 
+our optimal score. A trace back from that entity reveals the 
+optimal alignment.
 
-Comparing every individual string with a corresponding-length reference is not feasible in
-terms of memory consumption(exponential to the number of insertion and deletion allowance) 
-therefore alternative heuristic which takes the following characteristics into account is needed: 
-
-
-\begin{itemize}
-
-\item Dealing with ancient DNA, we have very short reads and we do not allow for 
-more than one INDEL, which reduces the memory usage.\\
-
-\item 
-In our case, the reference is a tree, not a sequence as our genome sequence is 
-converted to a Wavelet Tree data structure.
-We simply say that we split the reference into branches for reference. So we have
-a reference that gives for any tree the outgoing edges from the root which all have 
-letters  as a label and then an attached tree.
-We will be able to start from the beginning (tree's root) and look for the query in 
-branches which uses the Depth First Search(DFS) algorithm. 
-It also is cheaper in terms of memory because using a tree as a reference makes
-it reusable.
-All needs to be done is to backtrack one step and look at another branch, so most
-of the matrix is reused.\\
+But dynamic programming is not feasible by the fact that the reference
+genome is so long and filling the scoring matrix would be costly 
+( the time complexity would be proportional to the length of the 
+reference genome ). Therefore, a Full-Text index is used instead 
+of dynamic programming. 
 
 
-\item
-As we always start from the root note:
-\begin{enumerate}
- \item When we are done with the query it does not matter if its corresponding 
- reference if not finished yet.
- 
- \item Not to end up at the leaf while the query has not finished yet,
-we run down all the queries that are as long as our query.
-
-\end{enumerate}
-
- \item Following the Branch and Bound heuristic, we increase the lower bound of the 
- introduced score that we are willing to endure. In the case of not finding anything 
- below that limit, no alignment found gets report.
- 
-\end{itemize}
-Given a non-empty sequence $q\in (q_{1}..q_{n})$, we want to align it to 
-another non-empty sequence (reference)$r\in (r_{1}..r_{n})$:\\\\
-
-
-
-\begin{figure}[H]
-\centering
-\includegraphics[width=15cm]{pictures/A_HS.png}
-%\caption{ROC curve for simulated reads with deamination damage aligned to the simulated genome
- %        with deamination parameters.}
-\label{formula}
-\end{figure}
-
-
-We take the minimal score of three options match/mismatch, insertion and 
-deletions, as described in the above code.
-The score that we have so far plus match score between q and r and pair it 
-with Match operation (M) in the CIGAR field \cite{samtools}.\\
-In the case of insertion (I) in the MD field \cite{samtools}: 
-calculated score so far plus insertion score(penalty) pair with insertion
-operation and CIGAR field for insertion.
-The same procedure applied to deletion operation.
-
-
-
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% 
 
 \paragraph{Scoring} \label{Scoring}
@@ -690,23 +645,24 @@ per inserted or deleted base, where $G$ is a free parameter again.
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \subsection{Data Structures}  \label{Data Structures}
 
-Some of the main data structures used by our new aligner(R-Candy) for indexing and 
-mapping process plus fundamental concepts required for better understanding of this 
-thesis are described in this section. 
-
+Some of the main data structures used by our new aligner(R-Candy)
+for indexing and mapping process plus fundamental concepts required
+for better understanding of this thesis are described in this section. 
 
 
 
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
-\subsubsection{Preliminaries} \label{Preliminaries}
+\subsubsection{Suffix Trees} \label{Suffix Trees}
 
 \begin{table}[h]
  \centering
-  \begin{tabular}{ | p{0.5cm} | p{0.5cm} | p{0.5cm} |p{0.5cm} |p{0.5cm} |p{0.5cm} |p{0.5cm} |p{0.5cm} |}
+  \begin{tabular}{ | p{0.5cm} | p{0.5cm} | p{0.5cm} 
+  |p{0.5cm} |p{0.5cm} |p{0.5cm} |p{0.5cm} |p{0.5cm} |}
     \hline
-  \textbf{b} & \textbf{a } &\textbf{r}  &\textbf{b} &\textbf{a} &\textbf{r} &\textbf{a} &\textbf{\$}\\ \hline
+  \textbf{b} & \textbf{a } &\textbf{r}  &\textbf{b} 
+  &\textbf{a} &\textbf{r} &\textbf{a} &\textbf{\$}\\ \hline
        0 & 1 &2&3&4&5&6&7 \\ \hline
       
    \end{tabular}
@@ -717,30 +673,28 @@ thesis are described in this section.
 
 
 A string \emph{S} is concatenation of \emph{N} characters. 
-The length of the \emph{S} is denoted as $\lvert S \rvert$ = N and S[i] represents 
-the $i_{th}$ character of the S.
-The string's index starts from 0 and S[0,N-1] represents the whole string S while 
-S[i..k] shows the substring of S from the position i to k inclusive with $i < k < N$. 
-S[i..N-1] is the i\textsuperscript{th} suffix of So the 2th suffix of above example is S[2..7]='arbara\$' and
-S[0..i] is defined as i\textsuperscript{th} prefix, so the 7\textsuperscript{th} of table 2 is 'barbara\$'.
+The length of the \emph{S} is denoted as $\lvert S \rvert$ 
+= N and S[i] represents the $i_{th}$ character of the S.
+The string's index starts from 0 and S[0,N-1] represents 
+the whole string S while S[i..k] shows the substring of S 
+from the position i to k inclusive with $i < k < N$. 
+S[i..N-1] is the i\textsuperscript{th} suffix of So the 
+2th suffix of above example is S[2..7]='arbara\$' and
+S[0..i] is defined as i\textsuperscript{th} prefix, so 
+the 7\textsuperscript{th} of table 2 is 'barbara\$'.
  
 The pattern that we will be searching for is P.
 
 
-$ \sum $  denotes the alphabet that all the characters of S belong to it And  
-$ c_{i} < c_{k}$ means $c_{i}$ appears before $c_{k}$ in lexicographic ordering.
+$ \sum $  denotes the alphabet that all the characters of 
+S belong to it And $ c_{i} < c_{k}$ means $c_{i}$ appears 
+before $c_{k}$ in lexicographic ordering.
 
-A genome is presented by four letters $\left\{ 'A', 'C', 'G' and 'T'\right\}$, 
-which corresponds to adenine, cytosine, guanine and thymine nucleotides. 
-The character ('N') usually represents positions that are unknown in a genome.
-
-
-A bit string is a string of characters called bits which are characters of a 
-special alphabet  $ \sum = \left\{ 0, 1 \right\}$.
+A genome is presented by four letters $\left\{ 'A', 'C', 
+'G' and 'T'\right\}$, which corresponds to adenine, cytosine, 
+guanine and thymine nucleotides. The character ('N') usually 
+represents positions that are unknown in a genome.
 \\\\
-%Since tree is another elementary data structure used in this thesis, I am going to explain it in more details.
-
-
 A Trie is a rooted tree data structure with labeled edges by letters in the 
 alphabet and nodes with concatenated characters from the root\cite{trie}. 
 
@@ -835,7 +789,8 @@ following steps \cite{bwt}:
 \end{itemize}
 
 
-For example, the BWT of string "barbara" is "arbbr\$aa", as shown in Figure \ref{barbaraBWT}.\\
+For example, the BWT of string "barbara" is "arbbr\$aa", as shown in Figure 
+\ref{barbaraBWT}.\\
 
 
 
@@ -887,9 +842,11 @@ rbara\$b\textcolor{red}{a}
 
 \begin{table}[h]
  \centering
-  \begin{tabular}{ | p{0.5cm} | p{0.5cm} | p{0.5cm} |p{0.5cm} |p{0.5cm} |p{0.5cm} |p{0.5cm} |p{0.5cm} |}
+  \begin{tabular}{ | p{0.5cm} | p{0.5cm} | p{0.5cm} |p{0.5cm} 
+  |p{0.5cm} |p{0.5cm} |p{0.5cm} |p{0.5cm} |}
     \hline
-  \textbf{a} & \textbf{r} &\textbf{b}  &\textbf{b} &\textbf{r} &\textbf{\$} &\textbf{a} &\textbf{a}\\ \hline
+  \textbf{a} & \textbf{r} &\textbf{b}  &\textbf{b} &\textbf{r} 
+  &\textbf{\$} &\textbf{a} &\textbf{a}\\ \hline
        0 & 1 &2&3&4&5&6&7 \\ \hline
       
    \end{tabular}
@@ -898,11 +855,15 @@ rbara\$b\textcolor{red}{a}
 \end{table}
 
 
-A key property of BWT is its special relationship with Suffix Array which is described below: \\
-Adding a special terminating character \$ to the end of a string, all the $M^T$ rows will be suffixes of S. 
-It makes a strong relation between suffix array built on S and the BWT matrix of S.\\
-Let SA[i] denote the suffix at 0-based offset \emph{i} in SA(S) and BWT[i] denote the character 
-at 0-based offset \emph{i} in BWT(S)\cite{bwt}, as can be seen in Table \ref{BWT&SA}.
+A key property of BWT is its special relationship with Suffix 
+Array which is described below: \\
+Adding a special terminating character \$ to the end of a string,
+all the $M^T$ rows will be suffixes of S. 
+It makes a strong relation between suffix array built on S and 
+the BWT matrix of S.\\
+Let SA[i] denote the suffix at 0-based offset \emph{i} in SA(S)
+and BWT[i] denote the character at 0-based offset \emph{i} in 
+BWT(S)\cite{bwt}, as can be seen in Table \ref{BWT&SA}.
 
 
 
@@ -936,7 +897,7 @@ at 0-based offset \emph{i} in BWT(S)\cite{bwt}, as can be seen in Table \ref{BWT
 \end{table}
 
 
-The other fascinating property of BWT that I describe here is called 
+The other useful property of BWT that I describe here is called 
 LF-mapping (last to first mapping).\\\\
 \textbf{LF-mapping}  Last to first mapping describes the relation 
 between the last(L) and first(F) column of $M_{T}$\cite{bwt}.\\\\
@@ -982,9 +943,11 @@ Using \emph{OCC} and \emph{C}, the LF-mapping
 can be defined as 
 \emph{LF(i) = C[L[i]] + OCC(L[i], i)} \\\\
 
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
 \paragraph{Reversing}
-
-
 
 We can use the First-Last property of BWT to reconstruct
 the original string. Start with \$ symbol on the first 
@@ -997,12 +960,12 @@ again and say this is the first occurrence of r, then we
 go to the  $r_1$ in the first column of $7^{th}$ row and 
 continue using the First-Last property and then walk back 
 one step and so on. We reconstructed the original string 
-in reverse. By the knowledge of \$ ends the string, we 
-walk clockwise in the cyclic rotation and have the original 
-string.
-BWT decompression Memory =  $\mathcal{O}(\lvert S \rvert)$ \\
+in reverse. 
+The memory requirement for BWT decompression is  
+$\mathcal{O}(\lvert 1 \rvert)$ \\
 
 
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 \paragraph{Searching}
 A search algorithm called backward search will be used 
@@ -1088,14 +1051,24 @@ iteratively.}
 \label{backwardSearch}
 \end{figure}
 
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\paragraph{Locating} \label{Locating}
 
 
-\paragraph{Time Complexity}
+
+
+
+
+
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\paragraph{Time Complexity} \label{Time Complexity}
 
 The running time of the backward search on BWT 
 depends on three factors; the length of the 
-pattern P, the number of occurrence of P in 
-the string and, more importantly, the access 
+pattern P, more importantly, the access 
 time of P in the suffix array.\\
 The search algorithm consists of two phases, 
 counting the number of occurrences of a pattern 
@@ -1130,7 +1103,8 @@ published invented a self-index data structure that combines BWT with some
 small auxiliary data structures. It allows to efficiently search for the 
 occurrences of an arbitrary pattern P as a substring of the string S as well 
 as locate the position of each occurrence. They named it FM-Index for Full-
-Text Index in minute space where minute space emphasises on memory efficiency.
+Text Index in minute space where minute space emphasises on memory efficiency
+of $\mathcal{O}(\lvert n \rvert)$ .
 The FM-Index is consist of two parts. The first part keeps the number of
 occurrence of a pattern in string S using the LF-mapping property of the BWT (Sum table \emph{C}). 
 And the second part stores the location of patterns in S ( in our case we used a Suffix Array)\cite{Wavthesis}.\\
@@ -1153,6 +1127,75 @@ it is more efficient to just save part of SA and recover the rest
 of it recursively to reach the saved positions at any time it is necessary \cite{Wavthesis}.\\
 
 
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\subsubsection{R-Candy's Alignment Algorithm}
+\label{R-Candy's Alignment Algorithm}
+
+\begin{itemize}
+
+\item Dealing with ancient DNA, we have very short reads and we do not allow for 
+more than one INDEL, which reduces the memory usage.\\
+
+\item 
+In our case, the reference is a tree, not a sequence as our genome sequence is 
+converted to a Wavelet Tree data structure.
+We simply say that we split the reference into branches. So we have
+a reference that gives for any tree the outgoing edges from the root note which all have 
+letters  as a label and then an attached tree.
+We will be able to start from the beginning (tree's root) and look for the query in 
+branches which uses the Depth First Search(DFS) algorithm. 
+It also is cheaper in terms of memory because using a tree as a reference makes
+it reusable.
+All needs to be done is to backtrack one step and look at another branch, so most
+of the matrix is reused.\\
+
+
+\item
+As we always start from the root note:
+\begin{enumerate}
+ \item When we are done with the query it does not matter if its corresponding 
+ reference if not finished yet.
+ 
+ \item Not to end up at the leaf while the query has not finished yet,
+we run down all the queries that are as long as our query.
+
+\end{enumerate}
+
+ \item Following the Branch and Bound heuristic, we increase the lower bound of the 
+ introduced score that we are willing to endure. In the case of not finding anything 
+ below that limit, no alignment found gets report.
+ 
+\end{itemize}
+Given a non-empty sequence $q\in (q_{1}..q_{n})$, we want to align it to 
+another non-empty sequence (reference)$r\in (r_{1}..r_{n})$:\\\\
+
+
+
+\begin{figure}[H]
+\centering
+\includegraphics[width=15cm]{pictures/A_HS.png}
+%\caption{ROC curve for simulated reads with deamination damage aligned to the simulated genome
+ %        with deamination parameters.}
+\label{formula}
+\end{figure}
+
+
+We take the minimal score of three options match/mismatch, 
+insertion and deletions, as described in the above code.
+The score that we have so far plus match score between q 
+and r and pair it with Match operation (M) in the CIGAR 
+field \cite{samtools}.\\
+In the case of insertion (I) in the MD field \cite{samtools}: 
+calculated score so far plus insertion score(penalty) pair 
+with insertion operation and CIGAR field for insertion.
+The same procedure applied to deletion operation.
+
+Notice that this algorithm is not DP and therefore will
+perform badly [if multiple gaps are necessary.
+
+
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 \subsubsection{A Wavelet Tree based FM-Index} \label{A Wavelet Tree based FM-Index}
@@ -1162,10 +1205,10 @@ a genome with efficient time complexity on pattern matching.\\
 
 %\paragraph{Wavelet Tree}
 
-A Wavelet Tree is a balanced binary tree to store strings as bit vectors in a 
+A Wavelet Tree is a binary tree to store strings as bit vectors in a 
 compressed space\cite{navarroWavelet}\cite{Wavthesis}\cite{AlexBowe}.\\\\
 Let s[0,n] be a binary sequence s[0,n] and $b \in {0,1}$ a finite alphabet. 
-let $ rank_{b}(S, i)$ be the count of binaries b up to position i in string S 
+let $ rank_{b}(S, i)$ be the count of bits b up to position i in string S 
 and $ select_{c}(S,i)$  the position of $j_{th}$ occurrence of c in S.\\
 The Wavelet tree is constructed recursively as follow:
 \begin{enumerate}
@@ -1549,7 +1592,7 @@ In this thesis I used a probabilistic model called \emph{Markov Chain} model
 \footnote{More specifically \nth{1} Order Markov Chain as my future state only 
 depends on my current state} to simulate a genome by generating stretch of 
 nucleotides (A, C, G, T bases) in a way that  keeps the base composition of the 
-real reference genome but not generates repeats.
+real reference genome.
  
  
 A Markov chain graphically can be drawn as a collection of states, 
@@ -1559,7 +1602,7 @@ between them like the following (Figure \ref{MC}).
 Having a set of states,  $ S= \{ A, C,  G, T \}$  and probability
 parameter  associated with arrows in the figure which determines the
 probability of transferring from one state to the next state (Transition)
-or staying on the same state (Emission).
+and what characters to generate.
 
 \begin{figure}
  \begin{center}
