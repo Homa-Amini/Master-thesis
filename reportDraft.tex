@@ -312,6 +312,8 @@ There are some key issues for an ideal alignment that needs to be considered:
 \end{itemize}
 
 
+
+
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 \subsubsection{The Scoring Model} \label{The Scoring Model}
@@ -401,6 +403,8 @@ The four essential steps in all dynamic programming algorithms are:
 
 In the following part I will describe the two more basic alignment 
 algorithms that easily can be expanded to the more complex versions.
+
+
 
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -574,22 +578,23 @@ of dynamic programming.
 
 \paragraph{Scoring} \label{Scoring}
 
-%\textbf{\emph{Going to rewrite this section, not my voice.}}
-%But, this na\"{\i}ve definition of the correctness of an alignment has some 
-%problems. For example after applying sequencing error and deamination damage on 
-%the reads, the read does not exactly match the original genomic position. And 
-%it would be a problem when the aligner chooses the location for a read with no or 
-%fewer mismatches over the original location. In this case, the result will be 
-%poorly judged as an incorrect mapping despite the more accurate matching position 
-%has been chosen. The problem has been managed using mapping quality/alignment 
-%score information. Such that a correct alignment of a read is defined as being 
-%to its original genomic location and having the alignment score/mapping quality 
-%lower/greater than a certain threshold. 
+
+Specifically, for ancient DNA, we treat damage by the following
+adaptations of the scoring scheme.\\
+A DNA molecule read is composed of two single-stranded parts at 
+the 3' and 5' terminals (named as overhang parts ) and a 
+double-stranded stem for non-overhang parts (the middle part of
+a read). By the chemistry knowledge of  DNA, high rates of 
+nucleotide misincorporation as a result of \emph{post-mortem} 
+deamination damage on the overhang parts of aDNA reads presumably
+geometrically distributed are assumed \cite{mapdamage2} . 
+
 Let $\sigma$ and $\delta$ be the single stranded and the double stranded
 deamination rates.  Let $l$ be the length of the read being aligned.  
 
 For double stranded library preparation, let $\lambda$ be overhang
-length parameter.  For every position $i \in [0..l-1]$ define
+length parameter.  For every position $i \in [0..l-1]$ define 
+%\cite{R-Candy git address}
 
 \begin{align*}
 p_{fwd} &= \lambda^{i+1} \\
@@ -645,7 +650,7 @@ per inserted or deleted base, where $G$ is a free parameter again.
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \subsection{Data Structures}  \label{Data Structures}
 
-Some of the main data structures used by our new aligner(R-Candy)
+Some of the main data structures used by our new aligner (R-Candy)
 for indexing and mapping process plus fundamental concepts required
 for better understanding of this thesis are described in this section. 
 
@@ -681,29 +686,31 @@ from the position i to k inclusive with $i < k < N$.
 S[i..N-1] is the i\textsuperscript{th} suffix of So the 
 2th suffix of above example is S[2..7]='arbara\$' and
 S[0..i] is defined as i\textsuperscript{th} prefix, so 
-the 7\textsuperscript{th} of table 2 is 'barbara\$'.
- 
-The pattern that we will be searching for is P.
-
-
+the 7\textsuperscript{th} of table 2 is 'barbara\$'.\\
+The pattern that we will be searching for is P.\\
 $ \sum $  denotes the alphabet that all the characters of 
 S belong to it And $ c_{i} < c_{k}$ means $c_{i}$ appears 
-before $c_{k}$ in lexicographic ordering.
-
+before $c_{k}$ in lexicographic ordering.\\
 A genome is presented by four letters $\left\{ 'A', 'C', 
 'G' and 'T'\right\}$, which corresponds to adenine, cytosine, 
 guanine and thymine nucleotides. The character ('N') usually 
 represents positions that are unknown in a genome.
 \\\\
-A Trie is a rooted tree data structure with labeled edges by letters in the 
-alphabet and nodes with concatenated characters from the root\cite{trie}. 
+A Trie is a rooted tree data structure with labeled edges 
+by letters in the alphabet and nodes with concatenated 
+characters from the root\cite{trie}.\\ 
+A Trie of all the suffixes of string S is called a Suffix 
+Trie where each path from the root to a leaf is a suffix 
+\cite{gusfield1997algorithms}.
+The memory consumption of a Suffix Trie at the worst case 
+for a genome of length n is  $O (n^{2})$.
 
-A Trie of all the suffixes of string S is called a Suffix Trie where each path
- from the root to a leaf is a suffix \cite{gusfield1997algorithms}.
-
-Coalescing each non-branching path of a Suffix Trie into a single edge, labeled 
-by the string of that path generates another kind of tree called Suffix Tree 
-\cite{gusfield1997algorithms}.\\
+Coalescing each non-branching path of a Suffix Trie into 
+a single edge, labeled by the string of that path, namely 
+Suffix Tree reduces the memory complexity to $O(n)$.
+But the big-O notation ignores a big constant overhead 
+of \~20 of the best known implementation of a Suffix Tree
+\cite{gusfield1997algorithms}.\\ 
 
 
 Suffix Array was developed by Manber and Myers(1990) in order to reduce the 
@@ -761,29 +768,36 @@ Figure 4 shows the construction of suffix array for string "barbara".
 
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-\subsubsection{The Burrows-Wheeler Transform} \label{The Burrows-Wheeler Transform}
+\subsubsection{The Burrows-Wheeler Transform} 
+\label{The Burrows-Wheeler Transform}
 
-To index a reference genome in order to accelerate the process of finding the 
-location of each read in the reference genome while aligning a read as well as
-using memory efficiently especially while working with a big data like human 
-genome of ~3.2 Gbp (giga-basepairs), R-Candy uses Burrows-Wheeler Transform 
-data structure.
+%To index a reference genome in order to accelerate the process of finding the 
+%location of each read in the reference genome while aligning a read as well as
+%using memory efficiently especially while working with a big data like human 
+%genome of ~3.2 Gbp (giga-basepairs), R-Candy uses Burrows-Wheeler Transform 
+%data structure.
 
-The important role of BWT in pattern matching and indexing forced me to pay a 
-special attention to BWT and its properties.Therefore, In this section, I 
-describe the construction scheme of BWT and its special relation with Suffix Array.\\
+The Burrows-Wheeler Transform (BWT) is a text transformation data structure, 
+with fast search query times and efficient memory consumption, which makes 
+it a very special at data compression topic.
+Therefore, in this section, the construction scheme of BWT and its relation 
+with Suffix Array is described.\\
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 \paragraph{Construction and Properties}
 
 A Burrows-Wheelers transformation for a string S[0..L] is s special rearrangement 
-of its characters into runs of similar called $S^{BWT}$ and consists of the 
-following steps \cite{bwt}:
+of its characters into substrings of the same characters (run) called $S^{BWT}$ 
+and consists of the following steps \cite{bwt}:
 
 \begin{itemize} 
 	\item Append special character \$ as a terminator symbol to the end of S 
-	which is lexicographically smaller than any other alphabet characters.
+	which assume to be lexicographically smaller than any other alphabet 
+	characters.
 	\item  Construct all the cyclic rotations of S.
-	\item  Lexicographically sort all these strings.
+	\item  Sort them Lexicographically.
 	\item The last column of this conceptual matrix \emph{$M_{T}$}, is called 
 	BWT ( transformed text $S^{BWT}$ ).
 \end{itemize}
@@ -855,17 +869,12 @@ rbara\$b\textcolor{red}{a}
 \end{table}
 
 
-A key property of BWT is its special relationship with Suffix 
-Array which is described below: \\
-Adding a special terminating character \$ to the end of a string,
-all the $M^T$ rows will be suffixes of S. 
-It makes a strong relation between suffix array built on S and 
-the BWT matrix of S.\\
+
+The first property of BWT is its special relationship with Suffix 
+Array as described below: \\\\
 Let SA[i] denote the suffix at 0-based offset \emph{i} in SA(S)
 and BWT[i] denote the character at 0-based offset \emph{i} in 
-BWT(S)\cite{bwt}, as can be seen in Table \ref{BWT&SA}.
-
-
+BWT(S), as can be seen in Table \ref{BWT&SA}\cite{bwt}.\\
 
 
 \[ f(n)
@@ -896,9 +905,13 @@ BWT(S)\cite{bwt}, as can be seen in Table \ref{BWT&SA}.
 \label{BWT&SA}
 \end{table}
 
-
-The other useful property of BWT that I describe here is called 
-LF-mapping (last to first mapping).\\\\
+Constructing all the cyclic rotations of a string S and sorting 
+them is time and memory consuming. 
+Therefore by using this property (the relation between SA and 
+$S^{BWT}$ ), is possible to construct the $S^{BWT}$ directly 
+from the SA of S.
+\\\\
+The second useful property of BWT is the last to first mapping.\\\\
 \textbf{LF-mapping}  Last to first mapping describes the relation 
 between the last(L) and first(F) column of $M_{T}$\cite{bwt}.\\\\
 \textbf{Lemma 1:}\emph{the $i^{th}$ occurrence of c in the first 
@@ -920,9 +933,9 @@ Figure \ref{Lemma1} illustrates Lemma 1\\
  \label{Lemma1}
 \end{figure}
 
-To apply LF-mapping in efficient time of \emph{O(1}), 
-a \emph{sum table} and an \emph{occurrence function }is needed.\\
-
+A \emph{prefix\_sum table}(C) and an \emph{occurrence table}
+(OCC) are required to comprehend LF-mapping in an efficient time 
+complexity of \emph{O(1}).\\
 
 \begin{itemize}
 
@@ -940,27 +953,41 @@ a \emph{sum table} and an \emph{occurrence function }is needed.\\
 \end{itemize}
 
 Using \emph{OCC} and \emph{C}, the LF-mapping 
-can be defined as 
-\emph{LF(i) = C[L[i]] + OCC(L[i], i)} \\\\
+is determined as follow
+$$\emph{LF(i) = C[L[i]] + OCC(L[i], i)}$$ \\\\
 
+As an example, for $S^{BWT}$ = "arbbr\$aa", the LF-mapping
+for the first 'a' is OCC('a',0)+C('a')= 0 + 1 = 1, which is 
+the position of 'a' in the first column (F).
 
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
-\paragraph{Reversing}
 
-We can use the First-Last property of BWT to reconstruct
-the original string. Start with \$ symbol on the first 
-row and knowing if we go backward the character before 
-\$ is $a_1$ and also using last to first property information. 
-We know  $a_1$ has the same position as $a_1$ in the first 
-column of the second row. Continue backward (if go backward 
-in cyclic rotation) hit $r_1$. Apply the First-Last principle 
-again and say this is the first occurrence of r, then we 
-go to the  $r_1$ in the first column of $7^{th}$ row and 
-continue using the First-Last property and then walk back 
-one step and so on. We reconstructed the original string 
-in reverse. 
+\paragraph{Reversing} \label{Reversing}
+
+We can use the LF-mapping on $S^{ BWT}$ to reconstruct
+the original string. 
+
+Reconstructing the original string using the 
+described features and prefix-sum and 
+occurrence tables is feasible by a backward 
+reconstruction.
+
+As an example, retrieving the S="barbara"
+using its $S^{BWT}$= "arbbr\$aa" using Figure 
+\ref {Lemma 1} is achieved as follow.Starting
+with \$ symbol on the first row, knowing if 
+we go backward the character before \$ is 
+$a_1$ and also using LF-mapping. We know  
+$a_1$ has the same position as $a_1$ in 
+the first column of the second row. Continuing 
+backward hit $r_1$. Apply the LF-mapping principle 
+again and say this is the first occurrence of r, 
+then we go to the  $r_1$ in the first column of 
+$7^{th}$ row and continue using the LF-mapping 
+and then walk back one step and so on. We 
+reconstructed the original string in reverse. 
 The memory requirement for BWT decompression is  
 $\mathcal{O}(\lvert 1 \rvert)$ \\
 
@@ -968,9 +995,17 @@ $\mathcal{O}(\lvert 1 \rvert)$ \\
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 \paragraph{Searching}
-A search algorithm called backward search will be used 
-for pattern recognition using $S^{BWT}$.\\
 
+Generally, the searching algorithm for a pattern using
+ $S^{BWT}$ is so close to the reversing procedure 
+explained in the last Section.\\
+Recalling that suffixes with the same prefix are adjust
+in the SA of S, we divide the searching procedure into
+two parts, the counting and localizing.\\\\
+
+\textbf{Counting}
+%A search algorithm called backward search will be used 
+%for pattern recognition using $S^{BWT}$.\\
 The BWT matrix is constructed by sorting all the cyclic
 rotations of a string,therefore if a pattern \emph{P} 
 appears in the string it will be a prefix in $M_{T}$ 
@@ -986,42 +1021,43 @@ one among the updated indexes. Continues the process
 to find the pattern.Updating indexes is the crucial 
 part of this procedure (See Figure \ref{backwardSearch}).\\\\
 
+%Nodes in the prefix Trie correspond to the ranges of the BWT.
+%The backward search on the BWT, therefore, corresponds to a
+%top-down traversal of the prefix Trie.\\
 
-\begin{algorithm}[H]
-   \caption{BWT matching algorithm}
-    \begin{algorithmic}[1]
-      \Function{BWTMatching}{$LastColumn,Patterns,C,OCC$}
-       	\State ${top} = 0$
-        \State ${bottom} = \lvert LastColumn \rvert -1$
-        \While{ ${top}\le{bottom}$}
-        	\If{ Pattern  is  non  empty}
-            	\State {$symbol$ = last letter in Pattern}
-            	\State {remove last letter from Pattern}
-        			\If {positions from top to bottom in 
-        			LastColumn contain at least one occurrence of symbol}
-        				\State $top = C(symbol)+ OCC(symbol,top-1)$
-        				\State $bottom = C(symbol)+ OCC(Symbol,bottom)-1$
-        			\Else
-        				\State $output = 0 $
-        			\EndIf
-       		\Else 
-       			\State $output = bottom-top+1 $ 
-       \EndIf
+%\begin{algorithm}[H]
+%   \caption{BWT matching algorithm}
+%    \begin{algorithmic}[1]
+%      \Function{BWTMatching}{$LastColumn,Patterns,C,OCC$}
+%       	\State ${top} = 0$
+%        \State ${bottom} = \lvert LastColumn \rvert -1$
+%        \While{ ${top}\le{bottom}$}
+%        	\If{ Pattern  is  non  empty}
+%            	\State {$symbol$ = last letter in Pattern}
+%            	\State {remove last letter from Pattern}
+%        			\If {positions from top to bottom in 
+%        			LastColumn contain at least one occurrence of symbol}
+%        				\State $top = C(symbol)+ OCC(symbol,top-1)$
+%        				\State $bottom = C(symbol)+ OCC(Symbol,bottom)-1$
+%        			\Else
+%        				\State $output = 0 $
+%        			\EndIf
+%       		\Else 
+ %      			\State $output = bottom-top+1 $ 
+ %      \EndIf
      
-     \EndWhile 
-    \EndFunction
+%     \EndWhile 
+%    \EndFunction
 
-	\end{algorithmic}
-  \label{BWT matching alg}	
-\end{algorithm}
-
-
-
+%	\end{algorithmic}
+%  \label{BWT matching alg}	
+%\end{algorithm}
 
 
 \begin{algorithm}[H]
-   \caption{BWT backward search algorithm for a given character 
-   c $\in \sum $ and an $\omega$-range [i..j]}
+   \caption{BWT backward search algorithm for a 
+   given character c $\in \sum $ and an 
+   $\omega$-range [i..j]}
    
     \begin{algorithmic}[1]
       \Function{backwardSearch}{$c ,[i..j]$}
@@ -1053,36 +1089,36 @@ iteratively.}
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
-\paragraph{Locating} \label{Locating}
+\textbf{Locating} 
 
 
-
-
-
+In the counting process, using backward search, we determine
+a range in SA of S that points to the occurrences of a pattern
+in the string S. Hence these entries in the SA reveal the 
+matching position of a pattern in the string S.
 
 
 
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-\paragraph{Time Complexity} \label{Time Complexity}
+\textbf{Time Complexity} 
 
 The running time of the backward search on BWT 
-depends on three factors; the length of the 
-pattern P, more importantly, the access 
+depends on two factors; the length of the 
+pattern P and more importantly, the access 
 time of P in the suffix array.\\
 The search algorithm consists of two phases, 
 counting the number of occurrences of a pattern 
 and localization of their positions in the string.
 The counting time is linear to the length of 
-the P because at each iteration only one character 
-of P is processed and length of the string doesn't 
+the P , assuming OCC table is implemented in a 
+constant time and the length of the string doesn't 
 have any impact on searching time which is one 
 of the main reasons of using BWT for a large 
 string like a genome. On the other hand, the 
 localization time is more affected by the number 
 of occurrences of the pattern  because, for 
-each occurrence of P, a look up at SA is needed.
-\\\\
+each occurrence of P, a look up at SA is needed.\\
 
 After introducing BWT and its properties and 
 emphasizing on its important job in pattern 
@@ -1102,14 +1138,15 @@ Paolo Ferragina and Giovanni Manzini in 2000, six years after BWT was
 published invented a self-index data structure that combines BWT with some 
 small auxiliary data structures. It allows to efficiently search for the 
 occurrences of an arbitrary pattern P as a substring of the string S as well 
-as locate the position of each occurrence. They named it FM-Index for Full-
-Text Index in minute space where minute space emphasises on memory efficiency
+as localizing the position of each occurrence. They named it FM-Index for Full-
+Text Index in minute space where minute space emphasises on its memory efficiency
 of $\mathcal{O}(\lvert n \rvert)$ .
 The FM-Index is consist of two parts. The first part keeps the number of
-occurrence of a pattern in string S using the LF-mapping property of the BWT (Sum table \emph{C}). 
-And the second part stores the location of patterns in S ( in our case we used a Suffix Array)\cite{Wavthesis}.\\
+occurrence of a pattern in string S using the LF-mapping property of the 
+BWT ( Prefix-Sum table \emph{C}). And the second part stores the location 
+of patterns in S ( in our case we used a Suffix Array)\cite{Wavthesis}.\\
 
-\textbf{Sum Table}  The sum table must be stored completely because the frequency of characters
+\textbf{Prefix-Sum Table}  The sum table must be stored completely because the frequency of characters
 are independent of each other and can cause memory consumption problem \cite{Wavthesis}.
 But in  fact, the number of alphabets in a string are usually very small in comparison to
 the length of the string, especially in the case of a genome which is an alphabet size of 
@@ -1118,102 +1155,38 @@ four or five in contrast to a length of millions.
 
 \textbf{Occurance Table} The crucial part of FM-Index that needs to be 
 both time and memory efficient is occurrence data structure\cite{Wavthesis}.
-There are different implementations of occurrence data structure all aim toward making it faster and more memory efficient.
+There are different implementations of occurrence data structure all aim 
+toward making it faster and more memory efficient.
 \\
 
-\textbf{Partial Suffix Array} A suffix array is needed to determine the exact position of each pattern in the string S.
+\textbf{Partial Suffix Array} A suffix array is needed to determine the 
+exact position of each pattern in the string S.
 But saving the whole SA is very memory consuming , therefore,
 it is more efficient to just save part of SA and recover the rest
-of it recursively to reach the saved positions at any time it is necessary \cite{Wavthesis}.\\
+of it recursively to reach the saved positions at any time in demand
+\cite{Wavthesis}.\\
 
 
 
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
-\subsubsection{R-Candy's Alignment Algorithm}
-\label{R-Candy's Alignment Algorithm}
+\subsubsection{A Wavelet Tree based FM-Index}
+\label{A Wavelet Tree based FM-Index}
 
-\begin{itemize}
+A Wavelet Tree based FM-Index is used to create a simple and robust 
+index structure for a large sequence of a genome with an efficient
+time complexity on pattern matching.\\
 
-\item Dealing with ancient DNA, we have very short reads and we do not allow for 
-more than one INDEL, which reduces the memory usage.\\
-
-\item 
-In our case, the reference is a tree, not a sequence as our genome sequence is 
-converted to a Wavelet Tree data structure.
-We simply say that we split the reference into branches. So we have
-a reference that gives for any tree the outgoing edges from the root note which all have 
-letters  as a label and then an attached tree.
-We will be able to start from the beginning (tree's root) and look for the query in 
-branches which uses the Depth First Search(DFS) algorithm. 
-It also is cheaper in terms of memory because using a tree as a reference makes
-it reusable.
-All needs to be done is to backtrack one step and look at another branch, so most
-of the matrix is reused.\\
-
-
-\item
-As we always start from the root note:
-\begin{enumerate}
- \item When we are done with the query it does not matter if its corresponding 
- reference if not finished yet.
- 
- \item Not to end up at the leaf while the query has not finished yet,
-we run down all the queries that are as long as our query.
-
-\end{enumerate}
-
- \item Following the Branch and Bound heuristic, we increase the lower bound of the 
- introduced score that we are willing to endure. In the case of not finding anything 
- below that limit, no alignment found gets report.
- 
-\end{itemize}
-Given a non-empty sequence $q\in (q_{1}..q_{n})$, we want to align it to 
-another non-empty sequence (reference)$r\in (r_{1}..r_{n})$:\\\\
-
-
-
-\begin{figure}[H]
-\centering
-\includegraphics[width=15cm]{pictures/A_HS.png}
-%\caption{ROC curve for simulated reads with deamination damage aligned to the simulated genome
- %        with deamination parameters.}
-\label{formula}
-\end{figure}
-
-
-We take the minimal score of three options match/mismatch, 
-insertion and deletions, as described in the above code.
-The score that we have so far plus match score between q 
-and r and pair it with Match operation (M) in the CIGAR 
-field \cite{samtools}.\\
-In the case of insertion (I) in the MD field \cite{samtools}: 
-calculated score so far plus insertion score(penalty) pair 
-with insertion operation and CIGAR field for insertion.
-The same procedure applied to deletion operation.
-
-Notice that this algorithm is not DP and therefore will
-perform badly [if multiple gaps are necessary.
-
-
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-
-\subsubsection{A Wavelet Tree based FM-Index} \label{A Wavelet Tree based FM-Index}
-
-We used a Wavelet Tree based FM-Index to create a simple and robust index structure for 
-a genome with efficient time complexity on pattern matching.\\
-
-%\paragraph{Wavelet Tree}
-
-A Wavelet Tree is a binary tree to store strings as bit vectors in a 
+A Wavelet Tree is a binary tree for storing strings as bit vectors in a 
 compressed space\cite{navarroWavelet}\cite{Wavthesis}\cite{AlexBowe}.\\\\
-Let s[0,n] be a binary sequence s[0,n] and $b \in {0,1}$ a finite alphabet. 
+Let s[0,n] be a binary sequence and $b \in {0,1}$ a finite alphabet. 
 let $ rank_{b}(S, i)$ be the count of bits b up to position i in string S 
 and $ select_{c}(S,i)$  the position of $j_{th}$ occurrence of c in S.\\
 The Wavelet tree is constructed recursively as follow:
 \begin{enumerate}
     \item
-		Take the string's alphabets and encode the first half of the alphabets as 0, and the second half as 1\cite {AlexBowe}:
+		Take the string's alphabets and encode the first half of the 
+		alphabets as 0, and the second half as 1\cite {AlexBowe}:
     		$$\Sigma = \{ \$, a, b, r \}$$
 			$$enc(\Sigma) = \{ 0, 0, 1, 1 \}$$
     \item
@@ -1311,6 +1284,13 @@ i&&$S^{rev}_{SA^{rev}[i]}$\\
 \end{table}
 
 
+
+\begin{figure}[H]
+\centering
+\includegraphics[width=4.75cm]{pictures/WavletBarbara.png}
+\caption{Wavelet tree for "barbara" string }
+\label{Wavlet-barbara}
+\end{figure}
 The range of the substring   
 $\omega$ = a = $\omega^{rev}$ in both indexes is [2..4].
 The ba-range is driven by backwardSearch(a,[2..4])=[5..6]  
@@ -1353,6 +1333,9 @@ $$(a\prime_{1}, b\prime_{1})=(rank_{1} ( B^{3..4} ,  1-1), rank_{1} (B^[3..4] , 
 and find out that there are $b\prime_{1}-a\prime_{1}=1$ occurrence 
 of character r that is greater than b and $b\prime_{0}-a\prime_{0}=2 $ 
 characters that are the equal to character b.
+
+
+
 
 	\begin{algorithm}[H]
    \caption{}
@@ -1537,7 +1520,76 @@ For each block, we store:\\\\
 \end{cases}
 \]
 
+
+
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\subsubsection{R-Candy's Alignment Algorithm}
+\label{R-Candy's Alignment Algorithm}
+
+\begin{itemize}
+
+\item Dealing with ancient DNA, we have very short reads and we do not allow for 
+more than one INDEL, which reduces the memory usage.\\
+
+\item 
+In our case, the reference is a tree, not a sequence as our genome sequence is 
+converted to a Wavelet Tree data structure.
+We simply say that we split the reference into branches. So we have
+a reference that gives for any tree the outgoing edges from the root note which all have 
+letters  as a label and then an attached tree.
+We will be able to start from the beginning (tree's root) and look for the query in 
+branches which uses the Depth First Search(DFS) algorithm. 
+It also is cheaper in terms of memory because using a tree as a reference makes
+it reusable.
+All needs to be done is to backtrack one step and look at another branch, so most
+of the matrix is reused.\\
+
+
+\item
+As we always start from the root note:
+\begin{enumerate}
+ \item When we are done with the query it does not matter if its corresponding 
+ reference if not finished yet.
+ 
+ \item Not to end up at the leaf while the query has not finished yet,
+we run down all the queries that are as long as our query.
+
+\end{enumerate}
+
+ \item Following the Branch and Bound heuristic, we increase the lower bound of the 
+ introduced score that we are willing to endure. In the case of not finding anything 
+ below that limit, no alignment found gets report.
+ 
+\end{itemize}
+Given a non-empty sequence $q\in (q_{1}..q_{n})$, we want to align it to 
+another non-empty sequence (reference)$r\in (r_{1}..r_{n})$:\\\\
+
+
+
+\begin{figure}[H]
+\centering
+\includegraphics[width=15cm]{pictures/A_HS.png}
+%\caption{ROC curve for simulated reads with deamination damage aligned to the simulated genome
+ %        with deamination parameters.}
+\label{formula}
+\end{figure}
+
+
+We take the minimal score of three options match/mismatch, 
+insertion and deletions, as described in the above code.
+The score that we have so far plus match score between q 
+and r and pair it with Match operation (M) in the CIGAR 
+field \cite{samtools}.\\
+In the case of insertion (I) in the MD field \cite{samtools}: 
+calculated score so far plus insertion score(penalty) pair 
+with insertion operation and CIGAR field for insertion.
+The same procedure applied to deletion operation.
+
+Notice that this algorithm is not DP and therefore will
+perform badly [if multiple gaps are necessary.
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 \subsection{Seeding Heuristics}
 
@@ -2542,7 +2594,8 @@ the usefulness of R-Candy to longer reads.
 
 \section{Availability} \label{Availability}
 
-R-Candy's documentation and source code are freely available at\\
+R-Candy's documentation and source code as a Haskell program are freely
+available at\\
  (https://github.com/udo-stenzel/r-candy.git).
 \\\\
 Genome/read simulation program written in C++ is freely available at
