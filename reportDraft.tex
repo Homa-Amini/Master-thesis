@@ -705,9 +705,85 @@ Trie where each path from the root to a leaf is a suffix
 The memory consumption of a Suffix Trie at the worst case 
 for a genome of length n is  $O (n^{2})$.
 
+
+
+
+\textbf{R-Candy's Alignment Algorithm}
+%\label{R-Candy's Alignment Algorithm}
+
+\begin{itemize}
+
+\item Dealing with ancient DNA, we have very short reads and we do not allow for 
+more than one INDEL, which reduces the memory usage.\\
+
+\item 
+In our case, the reference is a tree, not a sequence as our genome sequence is 
+converted to a Wavelet Tree data structure.
+We simply say that we split the reference into branches. So we have
+a reference that gives for any tree the outgoing edges from the root note which all have 
+letters  as a label and then an attached tree.
+We will be able to start from the beginning (tree's root) and look for the query in 
+branches which uses the Depth First Search(DFS) algorithm. 
+It also is cheaper in terms of memory because using a tree as a reference makes
+it reusable.
+All needs to be done is to backtrack one step and look at another branch, so most
+of the matrix is reused.\\
+
+
+\item
+As we always start from the root note:
+\begin{enumerate}
+ \item When we are done with the query it does not matter if its corresponding 
+ reference if not finished yet.
+ 
+ \item Not to end up at the leaf while the query has not finished yet,
+we run down all the queries that are as long as our query.
+
+\end{enumerate}
+
+ \item Following the Branch and Bound heuristic, we increase the lower bound of the 
+ introduced score that we are willing to endure. In the case of not finding anything 
+ below that limit, no alignment found gets report.
+ 
+\end{itemize}
+Given a non-empty sequence $q\in (q_{1}..q_{n})$, we want to align it to 
+another non-empty sequence (reference)$r\in (r_{1}..r_{n})$:\\\\
+
+
+
+\begin{figure}[H]
+\centering
+\includegraphics[width=15cm]{pictures/A_HS.png}
+%\caption{ROC curve for simulated reads with deamination damage aligned to the simulated genome
+ %        with deamination parameters.}
+\label{formula}
+\end{figure}
+
+
+We take the minimal score of three options match/mismatch, 
+insertion and deletions, as described in the above code.
+The score that we have so far plus match score between q 
+and r and pair it with Match operation (M) in the CIGAR 
+field \cite{samtools}.\\
+In the case of insertion (I) in the MD field \cite{samtools}: 
+calculated score so far plus insertion score(penalty) pair 
+with insertion operation and CIGAR field for insertion.
+The same procedure applied to deletion operation.
+
+Notice that this algorithm is not DP and therefore will
+perform badly [if multiple gaps are necessary.\\
+
+R-Candy does not use suffix Trie, it simulates the BWT
+string of the reference genome sequence as a Tire as 
+is explained later .
+\\\\
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+
 Coalescing each non-branching path of a Suffix Trie into 
 a single edge, labeled by the string of that path, namely 
-Suffix Tree reduces the memory complexity to $O(n)$.
+Suffix Tree reduces the memory complexity to $\mathcal{O}n)$.
 But the big-O notation ignores a big constant overhead 
 of \~20 of the best known implementation of a Suffix Tree
 \cite{gusfield1997algorithms}.\\ 
@@ -959,21 +1035,15 @@ $$\emph{LF(i) = C[L[i]] + OCC(L[i], i)}$$ \\\\
 As an example, for $S^{BWT}$ = "arbbr\$aa", the LF-mapping
 for the first 'a' is OCC('a',0)+C('a')= 0 + 1 = 1, which is 
 the position of 'a' in the first column (F).
-
-
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-
-
 \paragraph{Reversing} \label{Reversing}
 
 We can use the LF-mapping on $S^{ BWT}$ to reconstruct
 the original string. 
-
 Reconstructing the original string using the 
 described features and prefix-sum and 
 occurrence tables is feasible by a backward 
 reconstruction.
-
 As an example, retrieving the S="barbara"
 using its $S^{BWT}$= "arbbr\$aa" using Figure 
 \ref {Lemma 1} is achieved as follow.Starting
@@ -991,26 +1061,20 @@ reconstructed the original string in reverse.
 The memory requirement for BWT decompression is  
 $\mathcal{O}(\lvert 1 \rvert)$ \\
 
-
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-
 \paragraph{Searching}
-
 Generally, the searching algorithm for a pattern using
  $S^{BWT}$ is so close to the reversing procedure 
-explained in the last Section.\\
+explained in the last Section.
 Recalling that suffixes with the same prefix are adjust
 in the SA of S, we divide the searching procedure into
-two parts, the counting and localizing.\\\\
+two parts, the counting and localizing.\\
 
 \textbf{Counting}
-%A search algorithm called backward search will be used 
-%for pattern recognition using $S^{BWT}$.\\
 The BWT matrix is constructed by sorting all the cyclic
 rotations of a string,therefore if a pattern \emph{P} 
 appears in the string it will be a prefix in $M_{T}$ 
 and if \emph {P} appears in multiple positions, they 
-will be successive.\\ 
+will be successive.
 To search for a pattern using $S^{BWT}$, the backward 
 search starts from the end of a pattern.
 At first searches for an empty  pattern all over the 
@@ -1020,38 +1084,6 @@ indexes and search for the character before that last
 one among the updated indexes. Continues the process 
 to find the pattern.Updating indexes is the crucial 
 part of this procedure (See Figure \ref{backwardSearch}).\\\\
-
-%Nodes in the prefix Trie correspond to the ranges of the BWT.
-%The backward search on the BWT, therefore, corresponds to a
-%top-down traversal of the prefix Trie.\\
-
-%\begin{algorithm}[H]
-%   \caption{BWT matching algorithm}
-%    \begin{algorithmic}[1]
-%      \Function{BWTMatching}{$LastColumn,Patterns,C,OCC$}
-%       	\State ${top} = 0$
-%        \State ${bottom} = \lvert LastColumn \rvert -1$
-%        \While{ ${top}\le{bottom}$}
-%        	\If{ Pattern  is  non  empty}
-%            	\State {$symbol$ = last letter in Pattern}
-%            	\State {remove last letter from Pattern}
-%        			\If {positions from top to bottom in 
-%        			LastColumn contain at least one occurrence of symbol}
-%        				\State $top = C(symbol)+ OCC(symbol,top-1)$
-%        				\State $bottom = C(symbol)+ OCC(Symbol,bottom)-1$
-%        			\Else
-%        				\State $output = 0 $
-%        			\EndIf
-%       		\Else 
- %      			\State $output = bottom-top+1 $ 
- %      \EndIf
-     
-%     \EndWhile 
-%    \EndFunction
-
-%	\end{algorithmic}
-%  \label{BWT matching alg}	
-%\end{algorithm}
 
 
 \begin{algorithm}[H]
@@ -1087,22 +1119,13 @@ iteratively.}
 \label{backwardSearch}
 \end{figure}
 
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-
-\textbf{Locating} 
-
-
+\textbf{Locating} \label{Locating}
 In the counting process, using backward search, we determine
 a range in SA of S that points to the occurrences of a pattern
 in the string S. Hence these entries in the SA reveal the 
-matching position of a pattern in the string S.
+matching position of a pattern in the string S.\\
 
-
-
-
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \textbf{Time Complexity} 
-
 The running time of the backward search on BWT 
 depends on two factors; the length of the 
 pattern P and more importantly, the access 
@@ -1135,22 +1158,24 @@ FM-Index will be discussed\cite{fmindex}.
 \label{FM-Index (Full-text index)}
 
 Paolo Ferragina and Giovanni Manzini in 2000, six years after BWT was 
-published invented a self-index data structure that combines BWT with some 
-small auxiliary data structures. It allows to efficiently search for the 
-occurrences of an arbitrary pattern P as a substring of the string S as well 
-as localizing the position of each occurrence. They named it FM-Index for Full-
-Text Index in minute space where minute space emphasises on its memory efficiency
-of $\mathcal{O}(\lvert n \rvert)$ .
-The FM-Index is consist of two parts. The first part keeps the number of
-occurrence of a pattern in string S using the LF-mapping property of the 
-BWT ( Prefix-Sum table \emph{C}). And the second part stores the location 
-of patterns in S ( in our case we used a Suffix Array)\cite{Wavthesis}.\\
+published invented a self-index data structure that combines BWT with 
+some small auxiliary data structures. It allows to efficiently search 
+for the occurrences of an arbitrary pattern P as a substring of the 
+string S as well as localizing the position of each occurrence. They 
+named it FM-Index for Full-Text Index in minute space where minute 
+space emphasises on its memory efficiency of $\mathcal{O}(\lvert n 
+\rvert)$ .The FM-Index is consist of two parts. The first part keeps 
+the number of occurrence of a pattern in string S using the LF-mapping 
+property of the BWT ( Prefix-Sum table \emph{C}). And the second part 
+stores the location of patterns in S ( in our case we used a Suffix 
+Array)\cite{Wavthesis}.\\
 
-\textbf{Prefix-Sum Table}  The sum table must be stored completely because the frequency of characters
-are independent of each other and can cause memory consumption problem \cite{Wavthesis}.
-But in  fact, the number of alphabets in a string are usually very small in comparison to
-the length of the string, especially in the case of a genome which is an alphabet size of 
-four or five in contrast to a length of millions.
+\textbf{Prefix-Sum Table}  The sum table must be stored completely because
+the frequency of characters are independent of each other and can cause 
+memory consumption problem \cite{Wavthesis}. But in  fact, the number of 
+alphabets in a string are usually very small in comparison to the length 
+of the string, especially in the case of a genome which is an alphabet size 
+of four or five in contrast to a length of millions.
 \\
 
 \textbf{Occurance Table} The crucial part of FM-Index that needs to be 
@@ -1160,10 +1185,10 @@ toward making it faster and more memory efficient.
 \\
 
 \textbf{Partial Suffix Array} A suffix array is needed to determine the 
-exact position of each pattern in the string S.
-But saving the whole SA is very memory consuming , therefore,
-it is more efficient to just save part of SA and recover the rest
-of it recursively to reach the saved positions at any time in demand
+exact position of each pattern in the string S. But saving the whole SA
+is very memory consuming $(\sim 4 * \lvert Genome \rvert)$, therefore, 
+it is more efficient to just save part of SA and recover the restof it 
+recursively to reach the saved positions at any time in demand 
 \cite{Wavthesis}.\\
 
 
@@ -1173,16 +1198,17 @@ of it recursively to reach the saved positions at any time in demand
 \subsubsection{A Wavelet Tree based FM-Index}
 \label{A Wavelet Tree based FM-Index}
 
+
 A Wavelet Tree based FM-Index is used to create a simple and robust 
 index structure for a large sequence of a genome with an efficient
 time complexity on pattern matching.\\
-
-A Wavelet Tree is a binary tree for storing strings as bit vectors in a 
-compressed space\cite{navarroWavelet}\cite{Wavthesis}\cite{AlexBowe}.\\\\
+A Wavelet Tree is a binary tree that stors strings as bit vectors in a 
+compressed space and provides fast rank queries \cite{navarroWavelet}
+\cite{Wavthesis}\cite{AlexBowe}.\\\\
 Let s[0,n] be a binary sequence and $b \in {0,1}$ a finite alphabet. 
-let $ rank_{b}(S, i)$ be the count of bits b up to position i in string S 
-and $ select_{c}(S,i)$  the position of $j_{th}$ occurrence of c in S.\\
-The Wavelet tree is constructed recursively as follow:
+let $ rank_{b}(s,i)$ be the number of bits b up to position i in string s 
+and $ select_{c}(s,j)$  the position of $j_{th}$ occurrence of c in s.
+A Wavelet tree of $S^{BWT}$ is constructed recursively as follow:
 \begin{enumerate}
     \item
 		Take the string's alphabets and encode the first half of the 
@@ -1196,23 +1222,140 @@ The Wavelet tree is constructed recursively as follow:
     \item
 		Repeat the procedure for each sub-tree until only one symbol has left.
 \end{enumerate}
-Wavelet tree for the string "Rhabarberbarbara" would look like this:
+
+Encoded binary root node for $S^{BWT}$ string of string S="barbara\$" 
+is illustrated in Figure \ref{binary-root}.
+			\begin{table}[h]
+			\centering
+			  \begin{tabular}{ c c c c c c c c}
+				   a  & r & b & b & r & \$ & a & a \\ 
+				  \hline
+				   0 &	1 &	1 & 1 & 1 & 0 & 0 & 0\\  
+				  \hline
+			  \end{tabular}
+			\caption{The Wavelet tree binary encoded root node for "barbara" BWT.}
+			\label{binary-root}
+			\end{table}
+
+Wavelet tree for the string "arbbr\$aa" is shown in Figure \ref{Wavlet-barbara}
 \begin{figure}[H]
 \centering
-\includegraphics[width=9cm]{pictures/wavelet.png}
-%\includegraphics[width=0.75\textwidth, inner]{wavelet.png}
-\caption{Wavelet tree for string "Rhabarberbarbara"}
-\label{fig:barbWavlet}
+\includegraphics[width=5cm]{pictures/barbara-wavlet2.png}
+\caption{Wavelet tree for "barbara" string }
+\label{Wavlet-barbara}
 \end{figure}
 
-Construct the left subtree by taking all the 0-encoded symbols {\$,R,a,b} and
-then divide them to new subtrees by re-encoding alphabet{0,0,1,1}.
-Notice on the first level an "a" is encoded as a 0, but it is encoded as a 
-1 on the second level and it becomes a 0 again at the leaf node.\\\\
-The time complexity of Wavelet Tree to look for number of occurrences of a 
-character up to specific position(OCC query) is $O(\log{}\mid\sum\mid)$.
+The Waveket Tree construction is done by first building 
+up the left subtree by taking all the 0-encoded symbols 
+${\$,a}$ and then divide them to new subtrees by re-encoding 
+alphabet ${0,1,1,1}$. Notice on the first level an 'a' is 
+encoded as a 0, but it is encoded as a 1 on the second 
+level and at the leaf node.\\
+The time complexity of Wavelet Tree for finding the number
+of occurrences of a character up to specific position (rank 
+query) is $\mathcal{O}\log{}\mid\sum\mid)$.\\
+A rank query can be done on  $\mathcal{O}\log{}\mid\sum\mid)$ time 
+as is explained in the following.
+After constructing the Wavelet tree (see Figure 12), an 
+rank query on the Wavelet Tree can be done on it. 
+\\
+In order to calculate \emph{rank(7, b)} we use the following 
+procedure (illustration by Figure \ref{rank1}.\\
+We know that \emph{enc(b)= 1} at the root level by 
+constructing wavelet tree for the alphabet of "barbara\$"
+string.
+
+\begin{enumerate}
+
+    \item
+		 Count the number of 1s in the range[1..7], at the root node, 
+		 given by \emph{rank(7,1)= 4 }. This is the index for query in 
+		 0-child. 
+		 
+    \item
+		As 'b' is encoded as 0 at the second level, calculating \emph
+		{rank(4,0)= 2}. 
+
+    \item
+		Since we are at the leaf node the result of \emph{rank(7,b)} is
+		equal to 2.
+\end{enumerate}
+
+\begin{figure}[H]
+\centering
+\includegraphics[width=3.75cm]{pictures/rank74.png}
+\caption{The rank(7,a) over Wavelet tree for "Rhabarberbarbara" string }
+\label{rank1}
+\end{figure}
+
+The space usage given Wavelet Tree structure, bits proportional to the 
+depth of  Wavelet tree are needed to encode each character giving memory 
+usage proportional to $\mathcal{O}(H_{0}+1)$ (Huffman coding).\\
+
+We define \emph{$rank(n,0)= n- rank(n,1)$} and implement 
+\emph{$rank(n,1)$} using the Rank9 structure \cite{rank9} 
+described in Section \ref{The rank9 Data Structure}.
 
 
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\subsubsection{The rank9 Data Structure} 
+\label{The rank9 Data Structure}
+
+%In this part, the layout of our data structure will be introduced.\\	
+
+The rank9 data structure which was first proposed by Vigna, 
+Sebastiano \cite{rank9} turns a bit sequence into a bit 
+string that supports rank queries in $\mathcal{O}(1)$ time.
+
+Consider an array of 64-bit words represented as bit array 
+\emph{b}. The bit at position p is stored in bit (\emph{p} 
+mod 64) of $ [p \backslash 64]$ \cite{rank9}. Let a \emph
+{basic block} be a subsequence of eight words starting at 
+bit position \emph{p}. To construct the rank9  we divide 
+the bit string into several basic blocks and then divide 
+these blocks further, into words of 64 bits. We store the 
+512 bits in a \emph{basic block} and two additional words 
+(as described in \cite{rank9}):
+
+\begin{enumerate}
+
+	\item The first word (first-level count) contains the 
+	total number of 1s till that position \emph{(rank(p)}).
+	
+	\item The second one contains the seven 9-bit values 
+	(second-level counts) \emph{rank(p + 64k)- rank(p)}, 
+	for 1 $\leq$ k $\leq$ 7, each shifted left by \emph
+	{9(k-1)} bits.
+	
+\end{enumerate}
+
+To construct the rank9  we divide the bit string into 
+several basic blocks. For each basic block boundary, 
+a sum of previous ranks (first-level rank) and the 
+address of stored offset values(second-level rank) 
+are stored which gives us an efficient rank query 
+time. \\
+
+For each block, we store:\\\\
+\centerline{$ block[i].total= rank(i*512)$}\\\\
+\centerline{$ block[i].subtotal[j]= rank(i*512 + (j+1)*64)-block[i].total$}\\\\
+\centerline{$ b[i*8]=raw[i*512..i*512+(k+1)*64)] $}\\\\
+\centerline{$ OCC_{1}(x)=block[i].total+block[i].subtotal[j-1]+popcount(b[i*8 + j],0,k)$}
+
+
+
+\[ where
+\begin{cases}
+	i=[ x \backslash 512 ]\\
+	j=[(x \% 512 )\backslash 64 ]\\
+	k=[ x \% 64  ]\\
+\end{cases}
+\]
+
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
@@ -1284,13 +1427,6 @@ i&&$S^{rev}_{SA^{rev}[i]}$\\
 \end{table}
 
 
-
-\begin{figure}[H]
-\centering
-\includegraphics[width=4.75cm]{pictures/WavletBarbara.png}
-\caption{Wavelet tree for "barbara" string }
-\label{Wavlet-barbara}
-\end{figure}
 The range of the substring   
 $\omega$ = a = $\omega^{rev}$ in both indexes is [2..4].
 The ba-range is driven by backwardSearch(a,[2..4])=[5..6]  
@@ -1333,11 +1469,7 @@ $$(a\prime_{1}, b\prime_{1})=(rank_{1} ( B^{3..4} ,  1-1), rank_{1} (B^[3..4] , 
 and find out that there are $b\prime_{1}-a\prime_{1}=1$ occurrence 
 of character r that is greater than b and $b\prime_{0}-a\prime_{0}=2 $ 
 characters that are the equal to character b.
-
-
-
-
-	\begin{algorithm}[H]
+\begin{algorithm}[H]
    \caption{}
     \begin{algorithmic}[1] 
       \Function{getBounds}{$[i..j],[l..r],c $}
@@ -1365,21 +1497,39 @@ characters that are the equal to character b.
 \end{algorithm}
 
 
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 
+\subsection{R-Candy's Index Structure} 
+\label{R-Candy's Index Structure}
 
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-\subsection{R-Candy's Index Structure} \label{R-Candy's Index Structure}
+Aligning billions of short reads to an enormous genome 
+(human genome of size about 3,200 Mbp), calls for an 
+efficient algorithm with optimal query time and memory 
+space.\\ Where indexing the reference genome would 
+speed up the alignment process. R-Candy uses a robust 
+index structure called Wavelet tree based FM-Index to 
+lesson the time and memory complexity of its alignment 
+process.
 
-There are some challenges on the mapping of short reads\\
-The first challenge is time and memory consumption: aligning billions of short
-reads to an enormous genome (human genome of size about 3,200 Mbp), 
-calls for an efficient algorithm with optimal query time and memory space.\\
-Therefore, R-Candy builds a robust index structure with 
-the efficient time complexity for pattern matching in a long sequence of a genome
-called a Wavelet Tree based FM-Index that lessens its time complexity and memory footprint for mapping . 
-\\\\
-An overview of R-Candy's data structure is presented in Figure \ref{DSOverview}\cite{Wavthesis}.\\
+An overview of R-Candy's data structure is presented 
+in Figure \ref{DSOverview}\cite{Wavthesis}.
+The whole algorithm of R-Candy is a backward search on the 
+BWT of the reference string. The backward uses the LF-mapping 
+of BWT which requires a prefix-sum table and an assurance table.
+The prefix-sum table could easily be calculated and saved in memory. 
+But counting a given character in a prefix of the reference string
+is time-consuming. Therefore to accelerate this process, reduce it 
+to bits using a  Wavelet Tree.
+Specifically, R-Candy keeps the concatenation of the 
+reference genome index of the genome's
+reverse complement index.
+And at the end a bit string of   length \~ 6billion are stored
+in memory by rank9 data structure as blocks of  64-bit words
+that makes the OCC table calculation very fast ($\mathcal{O}(1)$).
+And then a  compressed Suffix Array is used to recover
+the position of patterns in the reference genome.
+
 
 \begin{figure}[H]
 \centering
@@ -1387,212 +1537,12 @@ An overview of R-Candy's data structure is presented in Figure \ref{DSOverview}\
 \caption{Overview of R-Candy's data structure }
 \label{DSOverview}
 \end{figure}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
+\subsection{Seed Strategy} \label{Seed Strategy}
 
-\subsubsection{Compressed Suffix Array} \label{Compressed Suffix Array}
-The suffix array is needed to recover the position of patterns in the string
-but storing the whole array is memory consuming, therefore, we used a
-compressed version of SA to store some entries of SA.
-The non-stored entries get retrieved by using LF-mapping.
-
-\subsubsection{Prefix-Sum Table} \label{Prefix-Sum Table}
-Prefix-Sum Table is a data structure used in FM-Index to store for every 
-character c in string S the number of characters alphabetically smaller than c.
-
-For the small alphabets of a genome, Prefix-Sum Table is stored
-as a small array of alphabet size.
-
-\subsubsection{Wavelet Tree}  \label{Wavelet Tree}
-A Wavelet Tree data structure encodes a character string to a
-binary tree recall Section 2.4.4.1.\\
-
-Construction of a Wavelet-Tree for $ S_{BWT} $ of string 'barbara':
-
-\begin{table}[h]
-\centering
-  \begin{tabular}{ c c c c c c c c}
-%  \begin{tabular}{| m{23pt} | m{23pt}| m{23pt}|}
-   a  & r & b & b & r & \$ & a & a \\ 
-  \hline
-   0 &	1 &	1 & 1 & 1 & 0 & 0 & 0\\  
-  \hline
-%  0 & 1  & 2 & 3 & 4 & 5 & 6 & 7   
-  \end{tabular}
-\caption{The Wavelet tree binary encoded root node for "barbara" BWT.}
-\label{wavlet-binary-barbara}
-\end{table}
-
-
-\begin{figure}[H]
-\centering
-\includegraphics[width=4.75cm]{pictures/WavletBarbara.png}
-\caption{Wavelet tree for "barbara" string }
-\label{Wavlet-barbara}
-\end{figure}
-
-
-A rank query can be done on  $O(\log{}\mid\sum\mid)$ time as is described below.
-%After constructing the Wavelet tree (find at Figure 12), an rank query can be done on it. 
-
-In order to calculate \emph{rank(5, a)} we use the following procedure
-as illustrated in \ref{rank1}.\\
-We know that \emph{enc(a)=1} at the root level by constructing wavelet
-tree for the alphabet of  "Rhabarberbarbara" string.
-
-\begin{enumerate}
-
-    \item
-		 Count the number of 1s in the range[1..7], at the root node, 
-		 given by \emph{rank(7,0)=5 }. This is the index to query in 0-child.
-		 
-    \item
-		As 'a' is encoded as 1 at this child, calculate \emph{rank(5,1)=4}. 
-		We use 4 as an index for next branch.
-
-    \item
-		\emph{rank(4,0)=2} as 'a' is encoded as 0 here and return 2 as our
-		 result since we are at the leaf node.
-
-\end{enumerate}
-
-\begin{figure}[H]
-\centering
-\includegraphics[width=7cm]{pictures/rank1.png}
-\caption{The rank(7,a) over Wavelet tree for "Rhabarberbarbara" string }
-\label{rank1}
-\end{figure}
-
-The space usage is given by this structure.
-Bits proportional to the depth of  Wavelet tree are needed to encode
-each character giving memory usage proportional to $H_{0}$(empirical entropy)\cite{entropy}.\\
-
-We define \emph{$rank(n,0)= n- rank(n,1)$} and implement \emph{$rank(. , 1)$}
-using the Rank9 structure described below.
-
-
-
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-
-\subsubsection{The rank9 Data Structure} \label{The rank9 Data Structure}
-
-%In this part, the layout of our data structure will be introduced.\\	
-
-The rank9 data structure was first proposed by Vigna, Sebastiano \cite{rank9}.
-The main idea is to turn a bit sequence into a bit string that supports
-rank queries in $O(1)$ time.\\
-
-Consider an array of 64-bit words represented as bit array \emph{b}.
-The bit at position p is stored in bit (\emph{p} mod 64) of
-$ [p \backslash 64]$ \cite{rank9}.\\ 
-Let a \emph{basic block} be a subsequence of eight words 
-starting at bit position \emph{p}.\\
-To construct the rank9  we divide the bit string into several basic
-blocks and then divide these blocks further, into words of 64 bits.\\
-We store the 512 bits in a \emph{basic block} and two words (as described in \cite{rank9}):
-
-\begin{enumerate}
-
-	\item The first word (first-level count) contains the total number of
-	 1s till that position \emph{(rank(p)});
-	
-	\item The second one contains the seven 9-bit values (second-level counts)
-	 \emph{rank(p + 64k)- rank(p)} , for 1 $\leq$ k $\leq$ 7,each shifted left by \emph{9(k-1)} bits.
-	
-\end{enumerate}
-
-To construct the rank9  we divide the bit string into several basic blocks.
-For each basic block boundary, a sum of previous ranks (first-level rank) and the address of  
-stored offset values(second-level rank) are stored which gives us an efficient rank query time. \\
-
-For each block, we store:\\\\
-\centerline{$ block[i].total= rank(i*512)$}\\\\
-\centerline{$ block[i].subtotal[j]= rank(i*512 + (j+1)*64)-block[i].total$}\\\\
-\centerline{$ b[i*8]=raw[i*512..i*512+(k+1)*64)] $}\\\\
-\centerline{$ OCC_{1}(x)=block[i].total+block[i].subtotal[j-1]+popcount(b[i*8 + j],0,k)$}
-
-
-
-\[ where
-\begin{cases}
-	i=[ x \backslash 512 ]\\
-	j=[(x \% 512 )\backslash 64 ]\\
-	k=[ x \% 64  ]\\
-\end{cases}
-\]
-
-
-
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-
-\subsubsection{R-Candy's Alignment Algorithm}
-\label{R-Candy's Alignment Algorithm}
-
-\begin{itemize}
-
-\item Dealing with ancient DNA, we have very short reads and we do not allow for 
-more than one INDEL, which reduces the memory usage.\\
-
-\item 
-In our case, the reference is a tree, not a sequence as our genome sequence is 
-converted to a Wavelet Tree data structure.
-We simply say that we split the reference into branches. So we have
-a reference that gives for any tree the outgoing edges from the root note which all have 
-letters  as a label and then an attached tree.
-We will be able to start from the beginning (tree's root) and look for the query in 
-branches which uses the Depth First Search(DFS) algorithm. 
-It also is cheaper in terms of memory because using a tree as a reference makes
-it reusable.
-All needs to be done is to backtrack one step and look at another branch, so most
-of the matrix is reused.\\
-
-
-\item
-As we always start from the root note:
-\begin{enumerate}
- \item When we are done with the query it does not matter if its corresponding 
- reference if not finished yet.
- 
- \item Not to end up at the leaf while the query has not finished yet,
-we run down all the queries that are as long as our query.
-
-\end{enumerate}
-
- \item Following the Branch and Bound heuristic, we increase the lower bound of the 
- introduced score that we are willing to endure. In the case of not finding anything 
- below that limit, no alignment found gets report.
- 
-\end{itemize}
-Given a non-empty sequence $q\in (q_{1}..q_{n})$, we want to align it to 
-another non-empty sequence (reference)$r\in (r_{1}..r_{n})$:\\\\
-
-
-
-\begin{figure}[H]
-\centering
-\includegraphics[width=15cm]{pictures/A_HS.png}
-%\caption{ROC curve for simulated reads with deamination damage aligned to the simulated genome
- %        with deamination parameters.}
-\label{formula}
-\end{figure}
-
-
-We take the minimal score of three options match/mismatch, 
-insertion and deletions, as described in the above code.
-The score that we have so far plus match score between q 
-and r and pair it with Match operation (M) in the CIGAR 
-field \cite{samtools}.\\
-In the case of insertion (I) in the MD field \cite{samtools}: 
-calculated score so far plus insertion score(penalty) pair 
-with insertion operation and CIGAR field for insertion.
-The same procedure applied to deletion operation.
-
-Notice that this algorithm is not DP and therefore will
-perform badly [if multiple gaps are necessary.
-
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-
-\subsection{Seeding Heuristics}
-
+BWT is perfect for exact matching but not for inexact matching.
+Seeding is  
 Set a limit on the number of allowed mismatches in the first few tens of bases
 on a read sequence, calling it the \emph{seed} sequence.
 By default, BWA uses the first 32 bp of a read sequence as a seed, allowing 
