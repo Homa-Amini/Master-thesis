@@ -557,8 +557,8 @@ Semi-global \footnote{Reads are globally aligned(fully aligned)
 where the reference is locally aligned (with some gaps at the 
 end of the reference string)} alignment results are produced 
 by R-Candy as a result of mapping sets of short queries against 
-a long reference sequence (for instance, queries of length 25-50 
-bps getting aligned to a human reference genome of length 3.2 Gbps.
+a long reference sequence (for instance, aligning queries of 
+length 25-50 bps to the human reference genome of length 3.2 Gbps).
 Determining the highest similarity score (lowest Levenshtein 
 distance) between the two strings, putting the query and the 
 reference genome sequence in the Y-axis and X-axis respectively. 
@@ -566,11 +566,12 @@ Filling the scoring matrix the entry with the highest score is
 our optimal score. A trace back from that entity reveals the 
 optimal alignment.
 
-But dynamic programming is not feasible by the fact that the reference
-genome is so long and filling the scoring matrix would be costly 
-( the time complexity would be proportional to the length of the 
-reference genome ). Therefore, a Full-Text index is used instead 
-of dynamic programming. 
+But filling the dynamic programming  scoring matrix for a 
+reference sequence of mammalian size genome is costly with
+the time complexity proportional to the length of the 
+reference genome ). Therefore, R-Candy uses a Full-Text 
+index for its alignment strategy instead of dynamic 
+programming. 
 
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -658,8 +659,7 @@ for better understanding of this thesis are described in this section.
 
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-
-\subsubsection{Suffix Trees} \label{Suffix Trees}
+\subsubsection{Preliminaries} \label{Preliminaries}
 
 \begin{table}[h]
  \centering
@@ -695,7 +695,13 @@ A genome is presented by four letters $\left\{ 'A', 'C',
 'G' and 'T'\right\}$, which corresponds to adenine, cytosine, 
 guanine and thymine nucleotides. The character ('N') usually 
 represents positions that are unknown in a genome.
-\\\\
+
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+
+\subsubsection{Suffix Trie} \label{Suffix Trie}
 A Trie is a rooted tree data structure with labeled edges 
 by letters in the alphabet and nodes with concatenated 
 characters from the root\cite{trie}.\\ 
@@ -704,13 +710,8 @@ Trie where each path from the root to a leaf is a suffix
 \cite{gusfield1997algorithms}.
 The memory consumption of a Suffix Trie at the worst case 
 for a genome of length n is  $O (n^{2})$.
-
-
-
-
-\textbf{R-Candy's Alignment Algorithm}
-%\label{R-Candy's Alignment Algorithm}
-
+\\
+\textbf{R-Candy's alignment algorithm}
 \begin{itemize}
 
 \item Dealing with ancient DNA, we have very short reads and we do not allow for 
@@ -779,11 +780,12 @@ is explained later .
 \\\\
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-
+\subsubsection{Suffix Tree and Suffix Array}
+\label{Suffix Tree and Suffix Array}
 
 Coalescing each non-branching path of a Suffix Trie into 
 a single edge, labeled by the string of that path, namely 
-Suffix Tree reduces the memory complexity to $\mathcal{O}n)$.
+Suffix Tree reduces the memory complexity to $\mathcal{O}(n)$.
 But the big-O notation ignores a big constant overhead 
 of \~20 of the best known implementation of a Suffix Tree
 \cite{gusfield1997algorithms}.\\ 
