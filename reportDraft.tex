@@ -567,9 +567,9 @@ our optimal score. A trace back from that entity reveals the
 optimal alignment.
 
 But filling the dynamic programming  scoring matrix for a 
-reference sequence of mammalian size genome is costly with
-the time complexity proportional to the length of the 
-reference genome ). Therefore, R-Candy uses a Full-Text 
+reference sequence of mammalian size genome is costly as 
+the time complexity is proportional to the length of the 
+reference genome. Therefore, R-Candy uses a Full-Text 
 index for its alignment strategy instead of dynamic 
 programming. 
 
@@ -686,11 +686,13 @@ from the position i to k inclusive with $i < k < N$.
 S[i..N-1] is the i\textsuperscript{th} suffix of So the 
 2th suffix of above example is S[2..7]='arbara\$' and
 S[0..i] is defined as i\textsuperscript{th} prefix, so 
-the 7\textsuperscript{th} of table 2 is 'barbara\$'.\\
-The pattern that we will be searching for is P.\\
+the 7\textsuperscript{th} of table 2 is 'barbara\$'.
+The pattern that we will be searching for is P.
+
 $ \sum $  denotes the alphabet that all the characters of 
 S belong to it And $ c_{i} < c_{k}$ means $c_{i}$ appears 
-before $c_{k}$ in lexicographic ordering.\\
+before $c_{k}$ in lexicographic ordering.
+
 A genome is presented by four letters $\left\{ 'A', 'C', 
 'G' and 'T'\right\}$, which corresponds to adenine, cytosine, 
 guanine and thymine nucleotides. The character ('N') usually 
@@ -701,7 +703,9 @@ represents positions that are unknown in a genome.
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 
-\subsubsection{Suffix Trie} \label{Suffix Trie}
+\subsubsection{Suffix Trie and R-Candy's Alignment Algorithm} 
+\label{Suffix Trie and R-Candy's Alignment Algorithm}
+
 A Trie is a rooted tree data structure with labeled edges 
 by letters in the alphabet and nodes with concatenated 
 characters from the root\cite{trie}.\\ 
@@ -709,75 +713,80 @@ A Trie of all the suffixes of string S is called a Suffix
 Trie where each path from the root to a leaf is a suffix 
 \cite{gusfield1997algorithms}.
 The memory consumption of a Suffix Trie at the worst case 
-for a genome of length n is  $O (n^{2})$.
-\\
-\textbf{R-Candy's alignment algorithm}
-\begin{itemize}
-
-\item Dealing with ancient DNA, we have very short reads and we do not allow for 
-more than one INDEL, which reduces the memory usage.\\
-
-\item 
-In our case, the reference is a tree, not a sequence as our genome sequence is 
-converted to a Wavelet Tree data structure.
-We simply say that we split the reference into branches. So we have
-a reference that gives for any tree the outgoing edges from the root note which all have 
-letters  as a label and then an attached tree.
-We will be able to start from the beginning (tree's root) and look for the query in 
-branches which uses the Depth First Search(DFS) algorithm. 
-It also is cheaper in terms of memory because using a tree as a reference makes
-it reusable.
-All needs to be done is to backtrack one step and look at another branch, so most
-of the matrix is reused.\\
-
-
-\item
-As we always start from the root note:
-\begin{enumerate}
- \item When we are done with the query it does not matter if its corresponding 
- reference if not finished yet.
- 
- \item Not to end up at the leaf while the query has not finished yet,
-we run down all the queries that are as long as our query.
-
-\end{enumerate}
-
- \item Following the Branch and Bound heuristic, we increase the lower bound of the 
- introduced score that we are willing to endure. In the case of not finding anything 
- below that limit, no alignment found gets report.
- 
-\end{itemize}
+for a genome of length n is  $\mathcal{O} (n^{2})$.
+\\\\
+R-Candy's alignment algorithm is Depth First Search
+(DFS) and its abstract search algorithm data structure
+ is a suffix Trie.  Although its index structure is an FM-Index 
+but it is simulated as a Trie.
+A query gets align to a reference tree where a 
+ top-down traversal of the tree's branches is a Depth
+First Search of a query alignment.
+R-Candy does a semi-global alignment, where queries 
+align globally and  references locally.
+R-Candy's BWT index is simulated as a Trie  
+and in top-traversal of the Trie's branches for every 
+character, it chooses the minimum number of the scores between
+the three options of match or mismatch, insertion and deletion.
+It means trying a different branch for every INDEL, 
+which yields a very big number. Facing this problem 
+R-Candy allows just one INDEL per each alignment which
+in the case of aDNA with very short reads is very practical
+and saves a lot of time and memory.
+It tries one branch that runs down all the suffixes that are
+at least as long as the query even though it has a big 
+number of mismatches which is pointless and that's a
+bound which is the maximum score that we are willing 
+to endure and puts a filter on branching which is a cutoff 
+value based on practical reasons and gets into the program
+as an alignment score parameter. In practice, it starts with 
+the AS limit if searches for an alignment, if can not reports 
+no alignment found and if finds some alignments lowers the 
+limit and repeats the process calling it branch and bound
+algorithm.
+ When the query is totally aligned, the alignment is 
+done, no matter just a small part of the reference is aligned.
+\\\\
 Given a non-empty sequence $q\in (q_{1}..q_{n})$, we want to align it to 
-another non-empty sequence (reference)$r\in (r_{1}..r_{n})$:\\\\
-
+another non-empty sequence (reference)$r\in (r_{1}..r_{n})$.\\
+In the top-down traversal of tree branches for each character 
+of queries ($q_{i}$) the minimum score of three options match or mismatch, 
+insertion and deletions, of $q_{i}$  and the labeled character ($r_{i}$)
+on the tree branch calculate as is described in the following pseudocode.
+For each new alignment of ($q_{i}$) and ($r_{i}$), the score will be the
+computed score so far plus match score  with Match operation (M) in the 
+CIGAR field \cite{samtools} for match case. In the case of insertion (I) 
+it will be the calculated score so far plus insertion score (penalty) pair 
+with insertion operation and CIGAR field for insertion.
+The same procedure applies to the case of deletion .
+Notice that this algorithm is not DP and therefore will
+perform badly if multiple gaps are necessary.\\
 
 
 \begin{figure}[H]
 \centering
 \includegraphics[width=15cm]{pictures/A_HS.png}
-%\caption{ROC curve for simulated reads with deamination damage aligned to the simulated genome
- %        with deamination parameters.}
+%\caption{}
 \label{formula}
 \end{figure}
 
+But the alignment can be much faster by using seed 
+heuristic. 
+Many programs (e.g. BWA) reduce the amount of backtracking  
+by dedicating the first part of the read as a seed 
+\footnote{ Set a limit on the number of allowed mismatches 
+in the first few tens of bases on a read sequence, is called
+the \emph{seed} sequence.}and allowing fewer mismatches in 
+the seed portion \cite{bwa}. By default, BWA uses the first 
+32 bp of a read sequence as a seed, allowing maximum two 
+mismatches in order to increase the overall speed of the 
+alignment (for reads that are shorter than 32 bp, the seed 
+is disabled)\cite{bwa}. 
 
-We take the minimal score of three options match/mismatch, 
-insertion and deletions, as described in the above code.
-The score that we have so far plus match score between q 
-and r and pair it with Match operation (M) in the CIGAR 
-field \cite{samtools}.\\
-In the case of insertion (I) in the MD field \cite{samtools}: 
-calculated score so far plus insertion score(penalty) pair 
-with insertion operation and CIGAR field for insertion.
-The same procedure applied to deletion operation.
-
-Notice that this algorithm is not DP and therefore will
-perform badly [if multiple gaps are necessary.\\
-
-R-Candy does not use suffix Trie, it simulates the BWT
-string of the reference genome sequence as a Tire as 
-is explained later .
-\\\\
+But the beginning part of the read can not serve as a seed
+because the beginning part of aDNA reads are damaged,
+but the middle part could if a middle-out mapping strategy
+was implemented.
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \subsubsection{Suffix Tree and Suffix Array}
@@ -1540,21 +1549,6 @@ the position of patterns in the reference genome.
 \label{DSOverview}
 \end{figure}
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-
-\subsection{Seed Strategy} \label{Seed Strategy}
-
-BWT is perfect for exact matching but not for inexact matching.
-Seeding is  
-Set a limit on the number of allowed mismatches in the first few tens of bases
-on a read sequence, calling it the \emph{seed} sequence.
-By default, BWA uses the first 32 bp of a read sequence as a seed, allowing 
-maximum two mismatches in order to increase the overall speed of the alignment 
-(for reads that are shorter than 32 bp, the seed is disabled)\cite{bwa}. 
-In the case of ancient DNA with high rates of mismatches at the 5-termini' and 
-3'-termini due to the post-mortem deamination of cytosine, as well as also short 
-read fragments, could limit the performance of seed-based alignment approaches 
-to determine the genuine alignment .
-The current version of R-Candy does not support the seeding strategy.
 
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
