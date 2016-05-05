@@ -228,11 +228,11 @@ the whole process is known as \emph{shotgun sequencing} \cite{algorithmDesign}.
 
 
 The human genome sequence is made up of 3 billion DNA base pairs.
+It is CpG poor and repeat-rich, 50\% of the human genome is consists 
+of repetitive DNA sequences. The CpG sites are regions of DNA where 
+a cytosine nucleotide is followed by a guanine nucleotide which are 
+four folders under-represented in the human genome. 
 Although it is completely sequenced but is not yet fully understood. 
-The CpG sites are regions of DNA where a cytosine nucleotide is followed by 
-a guanine nucleotide which are four folders under-represented in the human genome. 
-The human genome is CpG poor and repeat-rich, 50\% of the human genome is consists 
-of repetitive DNA sequences.
 
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -585,10 +585,11 @@ adaptations of the scoring scheme.\\
 A DNA molecule read is composed of two single-stranded parts at 
 the 3' and 5' terminals (named as overhang parts ) and a 
 double-stranded stem for non-overhang parts (the middle part of
-a read). By the chemistry knowledge of  DNA, high rates of 
-nucleotide misincorporation as a result of \emph{post-mortem} 
-deamination damage on the overhang parts of aDNA reads presumably
-geometrically distributed are assumed \cite{mapdamage2} . 
+a read). By the chemistry knowledge \cite{DNAchemistry} of DNA, 
+high rates of nucleotide misincorporation as a result of 
+\emph{post-mortem} deamination damage on the overhang parts of 
+aDNA reads presumably geometrically distributed are assumed 
+\cite{mapdamage2} . 
 
 Let $\sigma$ and $\delta$ be the single stranded and the double stranded
 deamination rates.  Let $l$ be the length of the read being aligned.  
@@ -788,7 +789,10 @@ because the beginning part of aDNA reads are damaged,
 but the middle part could if a middle-out mapping strategy
 was implemented.
 
+
+
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
 \subsubsection{Suffix Tree and Suffix Array}
 \label{Suffix Tree and Suffix Array}
 
@@ -871,7 +875,9 @@ Therefore, in this section, the construction scheme of BWT and its relation
 with Suffix Array is described.\\
 
 
+
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
 
 \paragraph{Construction and Properties}
 
@@ -933,10 +939,6 @@ rbara\$b\textcolor{red}{a}
 \caption{Burrows-Wheeler transform for "barbara" string.}
 \label{barbaraBWT}
 \end{figure}
-
-
-
-
 
 
 
@@ -1046,7 +1048,12 @@ $$\emph{LF(i) = C[L[i]] + OCC(L[i], i)}$$ \\\\
 As an example, for $S^{BWT}$ = "arbbr\$aa", the LF-mapping
 for the first 'a' is OCC('a',0)+C('a')= 0 + 1 = 1, which is 
 the position of 'a' in the first column (F).
+
+
+
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+
 \paragraph{Reversing} \label{Reversing}
 
 We can use the LF-mapping on $S^{ BWT}$ to reconstruct
@@ -1071,6 +1078,10 @@ and then walk back one step and so on. We
 reconstructed the original string in reverse. 
 The memory requirement for BWT decompression is  
 $\mathcal{O}(\lvert 1 \rvert)$ \\
+
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 \paragraph{Searching}
 Generally, the searching algorithm for a pattern using
@@ -1365,9 +1376,6 @@ For each block, we store:\\\\
 \]
 
 
-
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 
@@ -1548,10 +1556,8 @@ the position of patterns in the reference genome.
 \caption{Overview of R-Candy's data structure }
 \label{DSOverview}
 \end{figure}
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 
@@ -1577,34 +1583,30 @@ the performance of R-Candy in different cases.
 \subsection{Genome Simulation} 
 \label{ Genome Simulation }
 
-Generally, every genome consists of some repeated stretch of sequences which make 
-the alignment of short reads from these repetitive parts very difficult due to 
-finding the true alignment between the same repeated sequences.
 
-In order to make the software evaluation more informative, we decided to first 
-test the aligner with a simulated genome that has no short repeated sequences 
-and check its accuracy and performance where we know the true alignment of each 
-read.
+In order to make the software evaluation more informative, we decided to
+first test the aligner with a simulated genome where we have a clear 
+expectation and knowledge of the true alignment of reads in comparison 
+to the real genome.
 
-In this thesis I used a probabilistic model called \emph{Markov Chain} model 
-\footnote{More specifically \nth{1} Order Markov Chain as my future state only 
-depends on my current state} to simulate a genome by generating stretch of 
-nucleotides (A, C, G, T bases) in a way that  keeps the base composition of the 
-real reference genome.
- 
+I used a probabilistic model called \emph{  \nth{1} Order Markov Chain} model 
+\footnote{In \nth{1} Order Markov Chain the probability of moving to the next 
+state only depends on the current state} to simulate a genome by generating 
+stretch of nucleotides (A, C, G, T bases) in a way that  keeps the base 
+composition and the poor CpG portion of the reference genome.
  
 A Markov chain graphically can be drawn as a collection of states, 
 each corresponds to a particular nucleotide (A, C, G, T) with arrows
 between them like the following (Figure \ref{MC}). 
-\\\\ 
+
 Having a set of states,  $ S= \{ A, C,  G, T \}$  and probability
 parameter  associated with arrows in the figure which determines the
 probability of transferring from one state to the next state (Transition)
 and what characters to generate.
 
-\begin{figure}
+\begin{figure}[H]
  \begin{center}
-  \begin{tikzpicture}[->,>=stealth',shorten >=1pt,auto,node distance=2.8cm,
+	  \begin{tikzpicture}[->,>=stealth',shorten >=1pt,auto,node distance=2.8cm,
                     semithick,bend angle=5]
    \tikzstyle{every state}=[fill=white,draw=black,text=black]
 
@@ -1636,11 +1638,8 @@ and what characters to generate.
 \end{figure}
 
 
-
-
-
-As mentioned above these probabilities are called \emph{transition or emission 
-probabilities}, which are calculated by counting the number of state given its 
+As mentioned above these probabilities are called \emph{transition}, which are 
+calculated by counting the number of state given its 
 previous state ($ A \rightarrow A, A\rightarrow C, A \rightarrow T, A \rightarrow 
 G, C \rightarrow C,$ ...) in the genome of interest; see the Table \ref{transition-table}
 (Filled with human reference genome bases consistency).And then create a 
@@ -1688,14 +1687,24 @@ T =
  \label{transition-matrix}
 \end{figure}
 
+
 Besides specifying the transition probabilities, the probability of starting 
-state( state \emph{S} in the graph) is required. In our case as we don't have
-special interest on starting from particular state all four state are equally 
-probable to get started. And no specific probability for an end state defined as 
-E because the sequence can end anywhere (Figure \ref{MC_SE}).
+state( state \emph{S} in the graph) is required. 
+Therefore, a steady-state probability for the start state is calculated.
+ as in following. 
+Let P be the steady state vector and T the transition matrix.
 
+$$p . T = p$$ 
+$$ ( T - I ) p = 0 $$
 
-\begin{figure}
+By solving the equation we have steady probabilities for all four bases
+(A, C, G, T). 
+And no specific probability for an end state is defined as the 
+E state because the generated sequence can end with any character, 
+in other words the \emph{Mrkov} model can terminate in any state. 
+(Figure \ref{MC_SE}).
+
+\begin{figure}[H]
  \begin{center}
  \begin{tikzpicture}[->,>=stealth',shorten >=1pt,auto,node distance=2.8cm,
                     semithick,bend angle=5]
@@ -1728,24 +1737,24 @@ E because the sequence can end anywhere (Figure \ref{MC_SE}).
         	edge [gray, bend left]  node {\tiny 0.29} (A)
             edge [gray, bend left]  node {\tiny 0.25} (T)
             edge   			  node {\tiny 0.00} (E)
-        (S) edge   			  node {\tiny 0.25} (A)
-       	    edge   			  node {\tiny 0.25} (C)
-        	edge [bend right=80]  node {\tiny 0.25} (G)
-            edge [bend left=80]  node {\tiny 0.25} (T)
+        (S) edge   			  node {\tiny } (A)
+       	    edge   			  node {\tiny } (C)
+        	edge [bend right=80]  node {\tiny } (G)
+            edge [bend left=80]  node {\tiny } (T)
        
             ;
 ;
  \end{tikzpicture}
- \caption{Trained \nth{1} Order Markov-Chain based on human reference genome with start and end state}
+ \caption{Trained \nth{1} Order Markov-Chain based on the human reference
+  genome with start and end states}
  \label{MC_SE}
  \end{center}
 \end{figure}
 
-
 The simulation program asks for the length of the genome and then the Markov chain 
-model starts randomly from one of the states and continuously walk between states 
-based on their probabilities on transition matrix till the number of visited stateds 
-is reached the given genome length which could equally be at any state. \\\\
+model starts at one of the states weighted by the steady state probabilities and 
+continuously walks between states based on their probabilities on transition matrix 
+till the number of visited states is reached, given the genome length. 
 
 
 
@@ -1764,19 +1773,16 @@ sequenced by Illumina machine.
 
 By definition \emph{\quotes{ divergence is the separation
 of a population's gene pool from the gene pools of other populations 
-due to mutation, genetic drift, and selection \cite{divergence1}.}}\\
+due to mutation, genetic drift, and selection \cite{divergence1}.}}
 
-Introducing divergence property which also is used in R-Candy's mapping strategy 
-is on top of simulated reads before any other source of substitution in my workflow. 
+By biological reasons \ref{}, we expect some divergence between
+the aligned reads and reference genome due to aligning an individual 
+to  its closely related species genome.
 
-To understand how much divergence impedes mapping, I simulated reads with (0..N) 
-number of absolute mismatches \footnote {These fix number of differences depends 
-on the length of the read are representing different divergence rate. As an example 
-2 mismatches on the sequence length 25 and 40 are showing the divergance rate of 8\% 
-and 5\% respectively} to the reference genome.
-And ran R-Candy with a default value for different data sets of reads with a 
-different number of divergence substitution rates to evaluate the accurate of its 
-alignment while aligning reads to close or far genomes.
+To test the performance , different divergence rates are simulated by 
+a fixed number of mismatches per read. Therefore, an expect performance 
+number for real world situation for certain substitution rate due to 
+divergence can be extrapolated from that.
  
  
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% 
@@ -1785,13 +1791,24 @@ alignment while aligning reads to close or far genomes.
  
 
 A sequencing error is an incorrect identification of a nucleotide base resulting 
-to an inaccurate machine read. Due to the error in the base calling, there is no 
-precise DNA sequencing. \\
+to an inaccurate machine read. Due to the error in the base calling, generally 
+there is no precise DNA sequencing. 
+
 A quality score indicating the confidence level of correctly seeing a base is 
-assigned to each base of a read sequence.\\
+assigned to each base of a read sequence.
+
+Sequencing error rates are higher than divergence 
+on this model sequence and are not uniformly distributed.
+Therefore, sequencing machines report the quality 
+of the sequenced reads which is an estimation of
+error rate per base. In other words a quality score 
+indicating the confidence level of correctly 
+seeing a base is assigned to each base of a read sequence.
+
 Different sequencing platform have different quality score leading to variable 
 sequencing error. These errors become visible when aligning a read to a reference 
-string as substitutions or mismatches.\\
+string as substitutions or mismatches.
+
 The main sequencing error for Illumina platform is base substitution due to 
 reading out one base at a time \cite{art}.The substitution error probability is 
 calculated by the base quality score along with the called base.\\
@@ -1847,9 +1864,6 @@ quality frequency of each base with all quality bases before it (Figure \ref{CDF
 reads}
 \label{CDF}
 \end{figure}
-
-The quality score of each bases in a read, determined by a random number compare to 
-its corresponding value in given CDF.
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
