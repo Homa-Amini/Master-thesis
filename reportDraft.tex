@@ -1791,11 +1791,13 @@ The following workflow is used by readSim to simulate fresh DNA
  \item Uniformly sample reads from the reference genome.
 
  \item Introducing a given number of differences to 
- reads in order to simulate different divergence rates.
+ reads in order to simulate different divergence rates
+ (see Section ref{Divergence}).
 
 
  \item Adding the specific types of errors coming from sequencing 
- machine based on empirical cumulative distribution or ART\cite{art} .
+ machine based on empirical cumulative distribution or ART\cite{art} 
+ (see Section \ref{Sequencing Error}).
 \end{enumerate}
 
 
@@ -1814,7 +1816,8 @@ The workflow for simulating ancient DNA reads follows the
  
 \item Simulating \emph{post-mortem} deamination damage based on 
 deamination parameters (e.g overhang and non-overhang deamination 
-rate in addition to the probability of being in overhang) by users. 
+rate in addition to the probability of being in overhang) by users
+(see Section \ref{Deamination}). 
 
 \end{itemize}
 
@@ -1839,6 +1842,7 @@ simulating ancient DNA reads with different starting as is described
 in the following 
 
 \begin{enumerate}
+
  \item Generating a totally random string of DNA nucleotides (A, C, G, T) 
  for a given length (Chance of seeing each nucleotide is the same as the
   other one and equal to 0.25).
@@ -1849,6 +1853,7 @@ in the following
 
  \item Adding the specific types of errors coming from sequencing machine 
  based on empirical cumulative distribution or ART\cite{art} .
+
 \end{enumerate}
 
 
