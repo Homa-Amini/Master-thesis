@@ -1558,6 +1558,8 @@ the position of patterns in the reference genome.
 \end{figure}
 
 
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 
@@ -1572,12 +1574,15 @@ simulated data is essential to guide the new software development and
 evaluating their performance.
 
 Therefore, simulating data that captures the most crucial characteristics 
-of real data is the key point in the evaluation of the new software.\\
+of real data is the key point in the evaluation of the new software.
 
-To satisfy this, I developed a genome and NGS read simulation program to evaluate 
-the performance of R-Candy in different cases.
+To satisfy this, I developed a genome and NGS read simulation program, named
+readSim to evaluate the performance of R-Candy in different scenarios.
 
-
+A simulated and real genome plus fresh and ancient reads
+simulated from the simulated and the real genome as well 
+as simulated microbial reads are the test data used in this 
+evaluation. 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 \subsection{Genome Simulation} 
@@ -1760,10 +1765,92 @@ till the number of visited states is reached, given the genome length.
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
+
+
 \subsection{Read Simulation} \label{Read Simulation}
 
-The second part of my test data preparation is about simulating ancient DNA reads 
-sequenced by Illumina machine.
+Simulating reads that capture different characteristics
+of DNA reads are the second part of my test data in this
+evaluation .
+
+Three types of reads simulating different properties of
+a genome used in this evaluation are
+
+\begin{itemize}
+	\item fresh DNA reads
+	\item ancient DNA reads
+	\item Microbial reads
+\end{itemize}
+
+\textbf{Fresh DNA Simulation}\\
+
+The following workflow is used by readSim to simulate fresh DNA
+ reads:
+
+\begin{enumerate}
+ \item Uniformly sample reads from the reference genome.
+
+ \item Introducing a given number of differences to 
+ reads in order to simulate different divergence rates.
+
+
+ \item Adding the specific types of errors coming from sequencing 
+ machine based on empirical cumulative distribution or ART\cite{art} .
+\end{enumerate}
+
+
+\textbf{Ancient DNA Simulation} \\
+
+Ancient DNA extracts consist of a low amount of endogenous 
+DNA which used to be a big problem at evolution studies until 
+the technology of sequencing polymerase chain reaction (PCR) 
+\cite{PCR} made it possible to amplify DNA sequences and produce 
+high coverage data for deeper studies on human origins.
+\\
+The workflow for simulating ancient DNA reads follows the
+ workflow used for simulating fresh DNA reads with one extra step
+
+\begin{itemize}
+ 
+\item Simulating \emph{post-mortem} deamination damage based on 
+deamination parameters (e.g overhang and non-overhang deamination 
+rate in addition to the probability of being in overhang) by users. 
+
+\end{itemize}
+
+as the third step in the workflow and adding sequencing error will be
+the fourth step in simulation aDNA reads workflow.\\
+
+\textbf{Simulation of Microbial Reads }\\
+
+Ancient DNA extracts are highly contaminated by 
+mostly environmental microbes that always make the 
+recognition of endogenous and exogenous DNA hard for aligners.
+Although there is a database of known bacteria DNAs that could help 
+us to detect bacterial sequences and don't mix them with endogenous 
+DNA sequences but still there are a lot of unknown bacterial contamination.
+\\\\
+In order to have a realistic simulation of ancient DNA, we decided to
+simulate microbial DNA sequences, in addition to, our genomic DNA 
+reads simulations.
+\\\\
+The microbial reads simulation workflow follows the workflow for 
+simulating ancient DNA reads with different starting as is described 
+in the following 
+
+\begin{enumerate}
+ \item Generating a totally random string of DNA nucleotides (A, C, G, T) 
+ for a given length (Chance of seeing each nucleotide is the same as the
+  other one and equal to 0.25).
+
+\item Simulating \emph{post-mortem} deamination damage based on deamination
+ parameters (e.g overhang and non-overhang deamination rate in addition to 
+ the probability of being in overhang) by users. 
+
+ \item Adding the specific types of errors coming from sequencing machine 
+ based on empirical cumulative distribution or ART\cite{art} .
+\end{enumerate}
+
 
 
 
@@ -1865,20 +1952,6 @@ reads}
 \label{CDF}
 \end{figure}
 
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-
-\subsubsection{Fresh DNA Reads Simulation} \label{Fresh DNA Reads Simulation}
-
-
-Simulation of fresh DNA reads is done by extracting reads of given length from a 
-reference genome and introducing a massive number differences to reads due to 
-simulating different divergence (see also Section \ref{Divergence}) rate and on 
-top of it sequencing errors of Illumina platform using empirical error profile 
-is simulated (see Section \ref{Sequencing Error}).
-
-
-
-
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 \subsubsection{Deamination} \label{Deamination}
@@ -1940,65 +2013,6 @@ and $\sigma' $,  are used for substitution of the $ C \rightarrow T$
 in overhangs. The deamination substitution  in non-overhang parts is 
 applied with substitution ratio of $\delta$.
 
-
-
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-
-\subsubsection{Ancient DNA Reads Simulation }  
-\label{ Ancient DNA Reads Simulation}
-
-Ancient DNA extracts consist of a low amount of endogenous DNA which used to be 
-a big problem at evolution researchers until the recent technology of sequencing 
-polymerase chain reaction (PCR) \cite{PCR} made it possible to amplify DNA 
-sequences and produce high coverage data for deeper studies on human origins.
-\\\\
-readSim uses the following workfllow to simulate endogenous reads:
-\begin{itemize}
- \item Uniformly sampled reads over the reference genome.
-
- \item Introducing a given number of differences to 
- reads in order to simulate different divergence rates.
-
- \item Simulating \emph{post-mortem} deamination damage based on deamination 
-parameters (e.g overhang and non-overhang deamination rate in addition to 
-probability of being in overhange) by users. 
-
- \item Adding the specific types of errors coming from sequencing machine based
-on empirical cumulative distribution or ART .
-\end{itemize}
-
-
-
-
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-
-\subsubsection{Simulation of Microbial Reads } \label{Simulation of Microbial Reads }
-
-Ancient DNA extracts are highly contaminated by mostly environmental microbes 
-that always make the recognition of endogenous and exogenous DNA hard for aligners.
-Although there is a database of known bacteria DNAs that could help us to detect 
-bacterial sequences and don't mix them with endogenous DNA sequences but still 
-there are a lot of unknown bacterial contamination.
-\\\\
-In order to have a realistic simulation of ancient DNA, we decided to simulate 
-microbial DNA sequences besides our genomic DNA reads simulations.
-\\\\
-The microbial reads simulation process consist of:
-
-\begin{itemize}
-
- \item Generating a totally random string of DNA nucleotides (A, C, G, T) for a 
-given length (Chance of seeing each nucleotides is the same as the other one and 
-eaqual to 0.25).
-
- \item Add the \emph{post-mortem} deamination damage to the reads which is the 
-substitution of base Cytosine to base Thymine, given deamination parameters 
-to simulate ancient damage on microbial sequences.
-
-
- \item Introducing sequencing errors to the simulated read.
-
-\end{itemize}
 
 
 
