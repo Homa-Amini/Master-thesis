@@ -1883,23 +1883,23 @@ is simulated (see Section \ref{Sequencing Error}).
 
 \subsubsection{Deamination} \label{Deamination}
 
-A high nucleotide misincorporation rate of  deamination of cytosine(C) to uracil, 
-code as thymine(T) are the unique characteristics of ancient DNA as the result 
-of \emph{post-mortem} DNA damage\cite{mapdamage2}\cite{damagepattern}.\\ 
+A high nucleotide misincorporation rate  of cytosine(C) to uracil, 
+code as thymine(T) called deamination is the unique characteristic 
+of ancient DNA as the result of \emph{post-mortem} DNA damage
+\cite{mapdamage2}\cite{damagepattern}.
 
-Observation in the recently introduced single-stranded library preparation protocol
-has shown a significant increase in C to T substitution rates at the read terminals
-\cite{mapdamage2}.\\
-
-A computational model developed by Philip Jonson \cite{mapdamage2} is used to model
-\emph{post-mortem} deamination behaviour as the followings:
+In order to simulate the deamination  property of aDNA, 
+Philip Jonson deamination model \cite{mapdamage2}  
+with small tweaks for single-stranded reads is used.
 
 For single stranded library preparation,
-let $\sigma$ and $\sigma\prime $ be deamination rate in the 5' and 3' overhangs 
-respectively and $\lambda$ be overhang length parameter. 
+let $\sigma$ and $\sigma\prime $ be deamination rate in the 5' 
+and 3' overhangs respectively assuming different deamination rate 
+in the two overhang as being sequenced using UDG treatment
+\cite{UDG} and $\lambda$ be the overhang length. 
+Let  $\delta$ be the deamination rate in non-overhang parts 
+where $l$ is the read length.
 
-Let  $\delta$ and $l$ be the deamination rate at the middle(non-overhang) parts 
-and the length of the read being aligned.\\
 
 The DNA damage transition matrix is defined as:
 
@@ -1911,31 +1911,34 @@ $$ P_{dam} =
   0 & 0 & 0 & 1 
  \end{pmatrix}$$
  
-Which columns and rows representing substitution rate between bases in reference 
-and read respectivly.\\
-The probability of damage for each base is defined as\cite{mapdamage2}:\\
-%Where the base-specific damage probabilities are defined as\cite{mapdamage2}:\\
-$$ p_{ct}(\sigma, \delta, \lambda, i) = ( \lambda_{i} \sigma + \delta(1 - \lambda_{i})) $$
- 
-It uses a geometric distribution to calculate the length of the overhang at both 
-ends of a sequence based on certain deamination parameters.
+Where columns and rows representing substitution rate between 
+bases in the reference sequence and a read respectively.\\
+The probability of damage for each base is defined as 
 
-The probability of being in overhang is provided by the user as the \emph{success 
-fraction} value in the geometric cumulative distribution function (CDF).
+\[ P_{ct}(i, \sigma, \sigma' , \delta, l, \lambda ) 
+\begin{cases}
+    i= \sigma  \quad if \quad i < \lambda  \\
+    j= \sigma' \quad if \quad i \geq l-\lambda \\
+    k= \delta \quad otherwise  \\
+\end{cases}
+\]
 
-Also for the simplicity we assume the probability of each base being in overhang 
-and has the chance to be damaged is independent of the other bases. In other 
+The probability of being in overhang is provided by the user as the 
+\emph{success fraction} value in the geometric cumulative distribution 
+function (CDF). Also for the simplicity, we assume the damage probability 
+of each base  in an overhang is independent of the other bases. In other 
 words, deaminating of one base has no influence on the other bases.\\
 
-$$Pr( X=k ) = 1 - (1 - p)^{k}$$
+$$Pr( \lambda = k ) = 1 - (1 - p)^{k}$$
 $$ k = 1, 2, 3, ... $$
 
-
-The simulation program first calculates the overhang length given the user-specified 
-success fraction value.And then uses the user-specified substitution ratio numbers,
- $ \sigma $ and $\sigma\prime $, for substitution of the $ C \rightarrow T $ in 
-overhangs which usually is higher than the deamination substitution ratio, $delta$, 
-in non-overhang parts of aDNA reads.
+In the simulation, half of the reads have highly deamination overhangs
+with geometrically distributed lengths. The simulation program calculates 
+the overhang length given the user-specified success fraction value.
+And then the user-specified substitution ratio numbers of $ \sigma $ 
+and $\sigma' $,  are used for substitution of the $ C \rightarrow T$ 
+in overhangs. The deamination substitution  in non-overhang parts is 
+applied with substitution ratio of $\delta$.
 
 
 
