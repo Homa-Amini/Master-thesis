@@ -1579,10 +1579,9 @@ of real data is the key point in the evaluation of the new software.
 To satisfy this, I developed a genome and NGS read simulation program, named
 readSim to evaluate the performance of R-Candy in different scenarios.
 
-A simulated and real genome plus fresh and ancient reads
-simulated from the simulated and the real genome as well 
-as simulated microbial reads are the test data used in this 
-evaluation. 
+R-Cndy will be run on simulated reads originating from both a simulated
+genome with simple structure and the human reference genome.
+ 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 \subsection{Genome Simulation} 
@@ -2033,23 +2032,19 @@ the mapping accuracy, the throughput and memory footprint.
  \item The mapping accuracy: mapping accuracy is divided into two parts, 
  sensitivity (true positive rate) and specificity (false positive rate).
 
- Reported sensitivity on simulated genome is the number of correctly mapped
- (mapped to the read's original position in the reference genome) 
+Reported sensitivity on simulated genome is the number of correctly mapped
+(mapped to the read's original position in the reference genome) 
 endogenous genomic reads divided by the total of simulated endogenous reads 
 knowing the true alignment of the reads and clear structure in the genome.
 Sensitivity on the human genome which contains some repetitive elements,
-all the multiple alignments are reported by R-Candy.
-In the case of multiple hits, we chose one arbitrarily from the set of 
-multiple best hits(reads with the best alignment score) otherwise 
-an aligner could easily achieve a high TPR by reporting all the multiple 
-hits with the best AS where the true alignment will definitely be among them.
-Then check if the picked alignment hits the read's true genomic location.
+all the multiple alignments are reported by R-Candy. In the case of the real 
+genome (human genome) with some repetitive elements, R-Candy's output
+for such reads will be multiple alignments. Therefore, in the case of multiple 
+hits, an arbitrary alignment from the set of multiple best hits(reads with 
+the best alignment score) is chosen and evaluated by checking the aligned 
+position given the known true position of the read.\\
 
-Then the arbitrarily picked alignment is evaluated 
-by aligned position given the known true position of the read.\\
-
-
-Specificity is the number of aligned  microbial reads 
+Specificity value is defined as the number of aligned  microbial reads 
 divided by the total number of  microbial reads.
 
  \item The aligner's throughput: the number of mapped reads per second(bp/sec).
@@ -2091,50 +2086,39 @@ particularly well-suited for alignment of very short reads.
 
 \subsubsection{Evaluation Scenarios} \label{Evaluation Scenarios}
 
-A simulated genome is used for evaluation due to its structure and
-clear expectations and results. 
+A simulated genome is used for evaluation due to its simple structure 
+and clear expectations and results. 
 
-Evaluation on a real genome is used to 
-confirm the R-candy's behavior on simulated genome despite the 
-differences between the two genomes.
+Evaluation on a real genome is used to confirm the R-candy's behavior 
+on simulated genome despite the differences between the two genomes.
 
 The accuracy of the aligners is evaluated as explained in Section
  \ref{Evaluation Criteria}.
 
-To simulate a genome we used the human reference genome, version hg19,
-as a training dataset and the \nth{1} Order Markov chain as a training 
-model. The reads are sampled from the simulated genome and the human genome. 
+Simulated reads extracted from both simulated and the human genome
+(version hg19) are in 4 different short lengths of 25, 30, 35, and 
+40 base pairs typical of ancient DNA getting aligned back to the 
+reference genome by BWA and R-Candy (as is described in Table 
+\ref{test-scenarios}).
 
-Using the reference genome (simulated or the human genome) I simulated 
-reads of lengths 25, 30, 35, and 40 with and without the deamination 
-typical of ancient DNA, and aligned these back to its reference genome
-(either a simulated genome or to the human genome) using BWA and R-Candy (as 
-described in Table \ref{test-scenarios}).
-
-The results show R-Candy's performance on a different range of alignment
-score cutoffs from 1 to 20.
-
-In addition to deamination, I also added a massive divergence rate in
-the form of 0-6 mismatches and sequencing error (using empirical error profile).  
-
-I also tested the accuracy of alignment in the presence of microbial reads of 
-lengths 25, 30, 35 and 40 with and without the deamination typical of ancient DNA, 
-and aligned these to the simulated genome or the human reference genome.
+The results show R-Candy's performance on a different range of 
+alignment scores cutoffs from 1 to 20.
 
 
 
 \begin{table}[H]
-  \begin{tabular}{ | c| l |}
+  \begin{tabular}{ | c| p{9cm}  |}
     \hline
- 		                           &  \textbf{Description} \\\\ \hline
-       \textbf{  Scenario 1 }  &  Simulated fresh DNA sequences extracted from a simulated \\
-                               &  genome, aligned with default parameters. \\ \hline
-       \textbf{  Scenario 2 }  &  Simulated fresh DNA sequences extracted from the human \\
-                               &  genome and aligned with default parameters \\  \hline
-       \textbf{  Scenario 3 }  &  Simulated ancient DNA sequences extracted from a simulated \\
-                               &  genome and aligned without damage parameters. \\  \hline
-       \textbf{  Scenario 4 }  &  Simulated ancient DNA sequences extracted from the human \\
-                               &   genome and aligned with damage parameters. \\  \hline
+ 		                           &  \textbf{Description} \\
+ 		                           &						\\ \hline
+       \textbf{  Scenario 1 }  &  Simulated fresh DNA sequences extracted from a  \\
+                               &  simulated genome, aligned with default parameters. \\ \hline
+       \textbf{  Scenario 2 }  &  Simulated fresh DNA sequences extracted from the \\
+                               &  human genome and aligned with default parameters \\  \hline
+       \textbf{  Scenario 3 }  &  Simulated ancient DNA sequences extracted from a  \\
+                               &  simulated genome and aligned without damage parameters. \\  \hline
+       \textbf{  Scenario 4 }  &  Simulated ancient DNA sequences extracted from the  \\
+                               &  human genome and aligned with damage parameters. \\  \hline
        
     \end{tabular}
  %\caption{Evaluation scenarios}
@@ -2265,8 +2249,8 @@ and BWA by increasing the number of  mismatches (divergence rate) per read.
    
     \item \textbf{Data:} Simulated ancient DNA 
      with the following damage parameters $ \sigma = 0.9$, 
-    $ \sigma\prime = 0.93 $, $\delta = 0.02 $,  and $\lambda = 0.3 $ and 
-    between 0 and 6 substitutions to allow increasing sequence divergence
+    $ \sigma\prime = 0.93 $, $\delta = 0.02 $,  and $\lambda = 0.3 $ \cite{mapdamage2}
+    and between 0 and 6 substitutions to allow increasing sequence divergence
     including sequencing error generated from empirical quality distribution data
     extracted from a simulated genome.
   
@@ -2330,8 +2314,8 @@ No difference in specificity for reads longer than 35 bp is observed
 (no microbial reads alignment).
 
 
-BWA provides more accurate alignments of short 
-ancient reads when using the ancient parameters. 
+BWA provides higher sensitivity of short 
+ancient reads alignments when using the ancient parameters. 
 However, with the inclusion of the deamination parameters R-Candy 
 outperforms BWA in all cases.
 
