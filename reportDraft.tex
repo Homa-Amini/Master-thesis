@@ -2425,42 +2425,20 @@ The speed evaluation was done on small data sets of 3500 simulated ancient
 genomic and 1000 simulated ancient microbial read sequences extracted from
 the human genome and aligned back to the human reference genome of size 3.2 
 Gbp by R-Candy and BWA aligners.
-
-Tables \ref{speed-RG} shows the speed of 
-the two aligners ran on a single CPU with R-Candy's alignment score cutoff 
-of 12 and 4 maximum output number of hits per read.
+Table \ref{speed-RG} shows the speed of memory usage of R-Candy and BWA on 
+the small data set. Both aligners ran on a single CPU. 
+R-Candy ran with alignment score cutoff of 12 and 4 maximum output number of 
+hits per read. BWA also reports four alignments and one as a best hit.
 Notice that the time required for building the genome index is 
 not included in the reported time.\\
-
-
-%\begin{table}[H]
-% \begin{tabular}{ |  p{2cm} | p{2cm} | p{2cm} | p{2cm} |p{2cm} | }
-%  \hline
-%  	\textbf{Type} & \textbf{Read length }&\textbf{Speed BWA 
- % 	default\hspace{35pt}(no. of reads/s) } 	 
- % 	&\textbf{Speed BWA ancient)\hspace{35pt}(no. of reads/s)} 
-  %	& \textbf{Speed R-Candy ancient \hspace{35pt}(no. of reads/s)}\\ \hline
-% 	  Genomic    & 25  & 0.0045 &  0.0291   &  0.5564 \\ \hline
-%      Genomic    & 30  & 0.0019 &  0.0191   &  0.4502 \\ \hline
- %     Genomic    & 35  & 0.0016 &  0.0023   &  0.4410 \\ \hline
-% 	  Genomic	 & 40  & 0.0020 &  0.0028   &  0.4072 \\ \hline
-% 	  Microbial  & 25  & 0.0068 &  0.0720   &  0.5927 \\ \hline
-%      Microbial  & 30  & 0.0046 &  0.0236   &  0.4548 \\ \hline
-% 	  Microbial  & 35  & 0.0043 &  0.0065   &  0.5961 \\ \hline
-% 	  Microbial  & 40  & 0.0056 &  0.0069   &  0.3222 \\ \hline
-%   \end{tabular}
-%\caption{The alignment speed for ancient reads aligned to 
-%the human reference genome.}
-%\label{speed-RG}
-%\end{table}
 
 \begin{table}[H]
   \begin{tabular}{ |  p{2cm} | p{2cm} | p{2cm} | p{2cm} |p{2cm} | }
     \hline
-  	\textbf{Type} & \textbf{Read length }&\textbf{Speed BWA 
-  	default\hspace{35pt}(no. of reads/s) } 	 
-  	&\textbf{Speed BWA ancient \hspace{35pt}(no. of reads/s)} 
-  	& \textbf{Speed R-Candy ancient \hspace{35pt}(no. of reads/s)}\\ \hline
+  	\textbf{Type} & \textbf{Read length }&\textbf{Speed BWA  
+  		default (no. of reads/s) }
+  	&\textbf{Speed BWA ancient (no. of reads/s)} 
+  	& \textbf{Speed R-Candy ancient (no. of reads/s)}\\ \hline
  	  Genomic    & 25  & 222 &  34   &  1.79 \\ \hline
       Genomic    & 30  & 526 &  52   &  2.22 \\ \hline
       Genomic    & 35  & 625 &  434   &  2.26 \\ \hline
@@ -2483,8 +2461,29 @@ The speed performance reveals on data sets of the size generated
 during ancient human studies projects is not practical.
 
 
-On memory, R-Candy uses 2.5G for single-end mapping and BWA ???.\\
+%On memory, R-Candy uses 2.5G for single-end mapping and BWA ???.\\
 
+
+\begin{table}[H]
+  \begin{tabular}{ |  p{2cm} | p{2cm} | p{2cm} | p{2cm} |p{2cm} | }
+    \hline
+  	\textbf{Type} & \textbf{Read length }&\textbf{ BWA  
+  		default memory usage (MB) }
+  	&\textbf{ BWA ancient memory usage (MB) )} 
+  	& \textbf{R-Candy memory usage (MB) }\\ \hline
+ 	  Genomic    & 25  & 945 &  947   &  1181 \\ \hline
+      Genomic    & 30  & 945 &  949  &  1182 \\ \hline
+      Genomic    & 35  & 945 &  945   &  1183 \\ \hline
+ 	  Genomic	 & 40  & 945 &  945   &  1181 \\ \hline
+ 	  Microbial  & 25  & 945 &  947   &  814 \\ \hline
+      Microbial  & 30  & 945 &  947   &  815 \\ \hline
+ 	  Microbial  & 35  & 945 &  945   &  825 \\ \hline
+ 	  Microbial  & 40  & 945 &  945   &  828 \\ \hline
+   \end{tabular}
+\caption{The alignment speed for ancient reads aligned to 
+the human reference genome.}
+\label{speed-RG}
+\end{table}
 The current version of R-Candy does not support multi-threading 
 to increase the speed and reduce the memory usage on multi-core 
 computers.\\\\
@@ -2503,10 +2502,10 @@ computers.\\\\
 \section{Conclusions} \label{Conclusions}
 
 
-We have presented R-Candy, a novel method for aligning ancient DNA sequences.
+We have evaluated R-Candy, a novel method for aligning ancient DNA sequences.
 The algorithm for scoring is based on a probabilistic model that takes into account 
 the specific characteristics of ancient data, post-mortem deamination damage, as 
-well as the other probabilities specific to the data, sequencing error, and species
+well as the other properties specific to the data, sequencing error, and species
 divergence rate. 
 \\
 For the both evaluated aligners, varying the cutoff (number of mismatches for BWA 
