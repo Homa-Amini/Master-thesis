@@ -31,6 +31,7 @@
 \usepackage[square,sort,comma,numbers]{natbib}
 \usepackage[super,negative]{nth}
 \usepackage{url}
+
                   
 \usetikzlibrary{arrows, automata}
 
@@ -55,6 +56,8 @@
 %\setcounter{secnumdepth}{5}
 \counterwithin{paragraph}{subsubsection}
 \counterwithin{subparagraph}{paragraph}
+
+%\lstset{frame=shadowbox, rulesepcolor=\color{blue}}
 
 
 \begin{document}
@@ -755,21 +758,46 @@ of queries ($q_{i}$) the minimum score of three options match or mismatch,
 insertion and deletions, of $q_{i}$  and the labeled character ($r_{i}$)
 on the tree branch calculate as is described in the following pseudocode.
 For each new alignment of ($q_{i}$) and ($r_{i}$), the score will be the
-computed score so far plus match score  with Match operation (M) in the 
+computed score so far plus match score with Match operation (M) in the 
 CIGAR field \cite{samtools} for match case. In the case of insertion (I) 
 it will be the calculated score so far plus insertion score (penalty) pair 
 with insertion operation and CIGAR field for insertion.
-The same procedure applies to the case of deletion .
+The same procedure applies to the case of deletion.
 Notice that this algorithm is not DP and therefore will
 perform badly if multiple gaps are necessary.\\
 
 
-\begin{figure}[H]
-\centering
-\includegraphics[width=15cm]{pictures/A_HS.png}
-%\caption{}
-\label{formula}
-\end{figure}
+
+
+
+%\lstinputlisting[language=Haskell, firstline=203, lastline=220]{r-candy.hs}
+
+\begin{lstlisting}[language=Haskell, basicstyle=\ttfamily\scriptsize, 
+keywordstyle=\color{red}, 
+frame=single ]
+
+go !lim !score  _ !nd k  _ | score > lim || isNull nd = k lim
+    go !lim !score md !nd k [] = (nd, score, md) : k (min lim 
+    score)
+
+    go !lim !score md !nd k (pp:pps) = go' lim $ sortBy (comparing 
+    fst) $ ( conf_gap, \l' s' k' -> go l' s' (I:md) nd k' pps ) :                   
+        [ r | (sym,nd') <- huffAssocs $ children conf_database nd
+            , not (isNull nd')
+            , let difscore = V.unsafeIndex pp (fromIntegral sym)
+            , difscore > 0
+            , r <- [ ( difscore, \l' s' k' -> go l' s' (M (prj 
+            sym):md) nd' k' pps )            
+            , ( conf_gap, \l' s' k' -> go l' s' (D (prj sym):md) 
+            nd' k' (pp:pps) ) ] ]   
+      where
+        go' l [          ] = k l
+        go' l ((ds,k'):xs) =
+            let s' = score + ds                 -- new score
+            in if s' > l then k l               
+               else k' l s' (\l' -> go' l' xs)   -- recurse
+
+\end{lstlisting}
 
 But the alignment can be much faster by using seed 
 heuristic. 
@@ -1802,12 +1830,12 @@ The following workflow is used by readSim to simulate fresh DNA
 
 \textbf{Ancient DNA Simulation} \\
 
-Ancient DNA extracts consist of a low amount of endogenous 
-DNA which used to be a big problem at evolution studies until 
-the technology of sequencing polymerase chain reaction (PCR) 
-\cite{PCR} made it possible to amplify DNA sequences and produce 
-high coverage data for deeper studies on human origins.
-\\
+%Ancient DNA extracts consist of a low amount of endogenous 
+%DNA which used to be a big problem at evolution studies until 
+%the technology of sequencing polymerase chain reaction (PCR) 
+%\cite{PCR} made it possible to amplify DNA sequences and produce 
+%high coverage data for deeper studies on human origins.
+%\\
 The workflow for simulating ancient DNA reads follows the
  workflow used for simulating fresh DNA reads with one extra step
 
@@ -1972,8 +2000,7 @@ with small tweaks for single-stranded reads is used.
 For single stranded library preparation,
 let $\sigma$ and $\sigma\prime $ be deamination rate in the 5' 
 and 3' overhangs respectively assuming different deamination rate 
-in the two overhang as being sequenced using UDG treatment
-\cite{UDG} and $\lambda$ be the overhang length. 
+in the two overhang and $\lambda$ be the overhang length. 
 Let  $\delta$ be the deamination rate in non-overhang parts 
 where $l$ is the read length.
 
@@ -2251,7 +2278,7 @@ and BWA by increasing the number of  mismatches (divergence rate) per read.
      with the following damage parameters $ \sigma = 0.9$, 
     $ \sigma\prime = 0.93 $, $\delta = 0.02 $,  and $\lambda = 0.3 $ \cite{mapdamage2}
     and between 0 and 6 substitutions to allow increasing sequence divergence
-    including sequencing error generated from empirical quality distribution data
+    and on top of them sequencing error generated from empirical quality distribution data
     extracted from a simulated genome.
   
  
@@ -2385,7 +2412,7 @@ ultra-short reads.
 So increasing the length of the reads leads to lower spurious alignment 
 of exogenous read data.
 
-The plots show no spurious alignments of  contaminant bacterial reads of 
+The plots show no spurious alignments of contaminant bacterial reads of 
 lengths bigger than 35 bp with specificity value of zero.
 
 R-Candy with deamination parameters outperforms BWA in aligning ancient 
@@ -2401,7 +2428,8 @@ ancient reads when using the ancient parameters.
 \label{Suitable Alignment Score}
 
 We are looking for the best alignment score cutoff to achieve the 
-highest accuracy while speeding up R-Candy's alignment process.
+highest accuracy(high sensitivity and low specificity) while speeding 
+up R-Candy's alignment process.
 
 Using our simulation, we were looking for an alignment score that 
 gives us a higher sensitivity than BWA with 'ancient' parameters 
@@ -2412,8 +2440,9 @@ alignments is achievable.
 Using the test scenario number 4, aligning ancient reads to the human
 genome for the read of length 30bp and one mismatch (due to 4\% 
 divergence rate), at alignment score of range 12-13 of R-Candy 
-achieves the highest accuracy compare two BWA with either default
-or 'ancient' parameters.
+achieves the highest accuracy(highest sensitivity and lowest 
+specificity) compare two BWA with either default or 'ancient' 
+parameters.
 
 We picked alignment score 12 as a suitable cutoff R-Candy aligner. 
 
@@ -2453,15 +2482,19 @@ the human reference genome.}
 \label{speed-RG}
 \end{table}
 
+
 Throughput number on both aligners is affected by the read length.
+The longer the reads get the faster alignment we get.
 For instance, alignment of genomic reads of length 30 bp aligning
 by BWA ancient parameters is 23 times faster than alignment R-Candy
 with ancient parameters.
+But BWA speed decrease at length 40bps as BWA allows one more mismatch
+at this length
+
 The speed performance reveals on data sets of the size generated 
-during ancient human studies projects is not practical.
-
-
-%On memory, R-Candy uses 2.5G for single-end mapping and BWA ???.\\
+during ancient human studies projects (e.g. to align a run of one 
+billion ancient reads of length 35bps, R-Candy needs $\simeq $ 28 years while 
+BWT ancient requires $\simeq 21$ days) R-Candy is not practical.
 
 
 \begin{table}[H]
@@ -2484,10 +2517,8 @@ during ancient human studies projects is not practical.
 the human reference genome.}
 \label{speed-RG}
 \end{table}
-The current version of R-Candy does not support multi-threading 
-to increase the speed and reduce the memory usage on multi-core 
-computers.\\\\
 
+Both aligners show a very efficient memory footprint.
 
 
 
