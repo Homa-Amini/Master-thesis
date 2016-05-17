@@ -785,29 +785,23 @@ perform badly if multiple gaps are necessary.\\
 %\lstinputlisting[language=Haskell, firstline=203, lastline=220]{r-candy.hs}
 
 \begin{lstlisting}[language=Haskell, basicstyle=\ttfamily\scriptsize, 
-keywordstyle=\color{red}, 
-frame=single ]
+keywordstyle=\color{red}, frame=single ]
 
-go !lim !score  _ !nd k  _ | score > lim || isNull nd = k lim
-    go !lim !score md !nd k [] = (nd, score, md) : k (min lim 
-    score)
-
-    go !lim !score md !nd k (pp:pps) = go' lim $ sortBy (comparing 
-    fst) $ ( conf_gap, \l' s' k' -> go l' s' (I:md) nd k' pps ) :                   
-        [ r | (sym,nd') <- huffAssocs $ children conf_database nd
-            , not (isNull nd')
-            , let difscore = V.unsafeIndex pp (fromIntegral sym)
-            , difscore > 0
-            , r <- [ ( difscore, \l' s' k' -> go l' s' (M (prj 
-            sym):md) nd' k' pps )            
-            , ( conf_gap, \l' s' k' -> go l' s' (D (prj sym):md) 
-            nd' k' (pp:pps) ) ] ]   
-      where
-        go' l [          ] = k l
-        go' l ((ds,k'):xs) =
-            let s' = score + ds                 -- new score
-            in if s' > l then k l               
-               else k' l s' (\l' -> go' l' xs)   -- recurse
+go lim score node k _ | score > lim = k lim
+go lim score node k [      ] = (node, score) : k (min lim score)
+go lim score node k (pp:pps) =
+    go' lim $ sortBy (comparing fst) $
+        ( gapscore, \l' s' k' -> go l' s' node k' pps ) :                   
+        [ ( pp ! sym, \l' s' k' -> go l' s' node' k'     pps  )
+            | (sym,node') <- children node ] ++
+        [ ( gapscore, \l' s' k' -> go l' s' node' k' (pp:pps) ) 
+            | (sym,node') <- children node ]
+  where
+    go' l [          ] = k l
+    go' l ((ds,k'):xs)
+        | score' > l = k l               
+        | otherwise  = k' l score' (\l' -> go' l' xs)
+      where score' = score + ds
 
 \end{lstlisting}
 
