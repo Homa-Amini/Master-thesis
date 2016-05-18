@@ -564,22 +564,12 @@ by R-Candy as a result of mapping sets of short queries against
 a long reference sequence (for instance, aligning queries of 
 length 25-50 bps to the human reference genome of length 3.2 Gbps).
 
-% XXX   I don't know what you're trying to say here, it's garbled.
-Determining the highest similarity score (lowest Levenshtein 
-distance) between the two strings, putting the query and the 
-reference genome sequence in the Y-axis and X-axis respectively. 
-Filling the scoring matrix the entry with the highest score is 
-our optimal score. A trace back from that entity reveals the 
-optimal alignment.
-% XXX  Is it something like "It would be possible to determine the best
-% alignment by filling a scoring matrix and tracing it back, however..."
-% and then go into the impractical cost?
-
-But filling the dynamic programming  scoring matrix for a 
-reference sequence of mammalian size genome is costly as 
-the time complexity is proportional to the length of the 
-reference genome. Therefore, R-Candy uses a Full-Text 
-index for its alignment strategy instead of dynamic 
+It would be possible to determine the best alignment by filling a 
+scoring matrix and tracing it back, however filling the dynamic 
+programming scoring matrix for a reference sequence of mammalian 
+size genome is costly as the time complexity is proportional to 
+the length of the reference genome. Therefore, R-Candy uses a 
+Full-Text index for its alignment strategy instead of dynamic 
 programming. 
 
 
@@ -602,20 +592,6 @@ geometrically distributed\cite{mapdamage2}.
 
 Let $\sigma$ and $\delta$ be the single stranded and the double stranded
 deamination rates.  Let $l$ be the length of the read being aligned.  
-
-% XXX  Yikes.  The library preparation was never mentioned (or I don't
-% remember).  I think
-% (I'm also drunk, but nm that) it's easiest to ignore different library
-% preps and assume single stranded prep.  You assumed it anyway in the
-% simulations.
-For double stranded library preparation, let $\lambda$ be overhang
-length parameter.  For every position $i \in [0..l-1]$ define 
-%\cite{R-Candy git address}
-
-\begin{align*}
-p_{\mbox{fwd}} &= \lambda^{i+1} \\
-p_{\mbox{rev}} &= \lambda^{l-i} 
-\end{align*}
 
 For single stranded library preparation, let $\lambda_s$, $\kappa_s$ be
 the 5' overhang length parameter and the 3' overhang parameter.  Let $l$
@@ -778,11 +754,6 @@ The same procedure applies to the case of deletion.
 Notice that this algorithm is not DP and therefore will
 perform badly if multiple gaps are necessary.\\
 
-
-
-
-
-%\lstinputlisting[language=Haskell, firstline=203, lastline=220]{r-candy.hs}
 
 \begin{lstlisting}[language=Haskell, basicstyle=\ttfamily\scriptsize, 
 keywordstyle=\color{red}, frame=single ]
@@ -1628,17 +1599,11 @@ first test the aligner with a simulated genome where we have a clear
 expectation and knowledge of the true alignment of reads.
 
 I used a probabilistic model called \emph{\nth{1} Order Markov Chain}
-model\footnote{In \nth{1} Order Markov Chain the probability of moving to the next 
-state only depends on the current state} to simulate a genome by generating 
+model \footnote{In \nth{1} order refers to the property
+that the expected probabilities to /be/ in any state depend on 1
+previously emitted character.} to simulate a genome by generating 
 stretch of nucleotides (A, C, G, T bases) in a way that  keeps the base 
 composition and the poor CpG portion of the reference genome.
-
-% XXX  The transition and emission probabilities in /all/ Marmov Models
-% depend only on the current state.  1st oder refers to the property
-% that the expected probabilities to /be/ in any state depend on 1
-% previously emitted character.  (No 0th order==no memory, 2nd
-% order==probabilities depend on previous two charcters, etc.)  The
-% footnote above needs to be changing accordingly.
 
 A Markov chain graphically can be drawn as a collection of states, 
 each corresponds to a particular nucleotide (A, C, G, T) with arrows
@@ -1661,18 +1626,18 @@ and what characters to generate (emission).
    \node[state]         (G) [below of=T] {$G$};
   
    \path (A) edge [bend left]  node {\tiny 0.26} (T)
-  			edge [loop above] node {\tiny 0.33} (A)
+  			edge [loop left] node {\tiny 0.33} (A)
             edge [bend left]  node {\tiny 0.17} (C)
             edge [bend left]  node {\tiny 0.24} (G)
-        (T) edge [loop above] node {\tiny 0.33} (T)
+        (T) edge [loop right] node {\tiny 0.33} (T)
             edge [bend left]  node {\tiny 0.22} (A)
             edge [bend left]  node {\tiny 0.20} (C)
             edge [bend left]  node {\tiny 0.25} (G)
         (C) edge [bend left]  node {\tiny 0.34} (T)
-            edge [loop below] node {\tiny 0.26} (C)
+            edge [loop left] node {\tiny 0.26} (C)
             edge [bend left]  node {\tiny 0.05} (G)
             edge [bend left]  node {\tiny 0.35} (A)
-        (G) edge [loop below] node {\tiny 0.25} (G)
+        (G) edge [loop right] node {\tiny 0.25} (G)
        	    edge [bend left]  node {\tiny 0.21} (C)
         	edge [bend left]  node {\tiny 0.29} (A)
             edge [bend left]  node {\tiny 0.25} (T);
@@ -1681,9 +1646,6 @@ and what characters to generate (emission).
   \label{MC}
  \end{center}
 \end{figure}
-
-% XXX  Draw the loops on the sides instead of above/below?  Should look
-% more even.
 
 
 As mentioned above, these probabilities are called \emph{transition}, which are 
@@ -2158,10 +2120,7 @@ alignment scores cutoffs from 1 to 20.
        \textbf{  Scenario 2 }  &  Simulated fresh DNA sequences extracted from the \\
                                &  human genome and aligned with default parameters \\  \hline
        \textbf{  Scenario 3 }  &  Simulated ancient DNA sequences extracted from a  \\
-                               &  simulated genome and aligned default parameters. \\  \hline
-% XXX  "default" and "without damage parameters" mean the same, do they
-% not?  Then switching between the ways to express it only confuses the
-% reader.
+                               &  simulated genome and aligned with damage parameters. \\  \hline
        \textbf{  Scenario 4 }  &  Simulated ancient DNA sequences extracted from the  \\
                                &  human genome and aligned with damage parameters. \\  \hline
        
@@ -2305,7 +2264,7 @@ and BWA by increasing the number of  mismatches (divergence rate) per read.
 length 1 Gb.
 
 
-  \item \textbf{Aligners:} R-Candy with deamination parameters 
+  \item \textbf{Aligners:} R-Candy with damage parameters 
   (-l left overhang parameter= 0.3, -r right overhang parameter= 0.3 , 
 -d deamination rate in double stranded section = 0.02 , 
 -s deamination rate in single stranded section = 0.9 )
@@ -2384,7 +2343,7 @@ outperforms BWA in all cases.
 
  
     \item \textbf{Aligners:} 
-R-Candy with ancient parameters 
+R-Candy with damage parameters 
 (-l left overhang parameter= 0.3, -r right overhang parameter= 0.3 , 
 -d deamination rate in double stranded section = 0.02 , 
 -s deamination rate in single stranded section = 0.9 )
@@ -2453,10 +2412,8 @@ up R-Candy's alignment process.
 Using our simulation, we were looking for an alignment score that 
 gives us a higher sensitivity than BWA with \quotes{ancient} parameters 
 and better specificity than BWA with default parameters.
-
-%  XXX  What was that?  Not a sentence:
-% where a there is a full recall and complete benefit of rejecting
-% microbial alignments is achievable.
+Which gives us the full sensitivity and complete benefit of rejecting
+microbial reads. 
 
 Using the test scenario 4, aligning ancient reads to the human
 genome for reads of length 30bp and one mismatch (equivalent to 4\% 
@@ -2465,7 +2422,7 @@ achieves the higher accuracy (both higher sensitivity and
 specificity) compared to BWA with either default or \quotes{ancient} 
 parameters.
 
-We picked alignment score 12 as a suitable cutoff R-Candy aligner. 
+Alignment score 12 is picked up as a suitable cutoff for R-Candy aligner. 
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
