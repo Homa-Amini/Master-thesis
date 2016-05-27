@@ -2239,25 +2239,79 @@ R-Candy with default parameters and alignments score cut-off of 20. \\
 BWA version 0.5.10-evan.10 with default parameters and ancient
 parameters (the mismatch parameter set to 0.01 and the number of gap
 opens to 2)\cite{green2010draft}.
-
-
+	
+ \end{itemize}
+	
+	
 Here we aim to evaluate the performance of R-Candy on fresh DNA reads, 
 aligned to the human reference genome without using the deamination parameters  
 (R-Candy's default parameters).
 
 
+%\begin{figure}[H]
+%\centering
+%\includegraphics[width=12cm]{pictures/bROC_DS6_emp.pdf}
+%\caption{ 
+%ROC curve for the alignment to the human reference genome of simulated 
+%fresh sequence reads. See \ref{Evaluation Scenarios} for details.
+%}
+%\label{DS6_emp}
+%\end{figure}
+
+
 \begin{figure}[H]
 \centering
-\includegraphics[width=12cm]{pictures/bROC_DS6_emp.pdf}
+\includegraphics[width=11cm]{pictures/DS6_25_21_5_emp.pdf}
 \caption{ 
 ROC curve for the alignment to the human reference genome of simulated 
-fresh sequence reads. See \ref{Evaluation Scenarios} for details.
+fresh sequence reads of length 25. See Section \ref{Evaluation Scenarios} 
+for more details.
 }
-\label{DS6_emp}
+\label{DS6_25_emp}
 \end{figure}
-  \end{itemize}
+ 
 
 
+
+
+
+\begin{figure}[H]
+\centering
+\includegraphics[width=11cm]{pictures/DS6_30_21_54_emp.pdf}
+\caption{ 
+ROC curve for the alignment to the human reference genome of simulated 
+fresh sequence reads of length 30. See Section \ref{Evaluation Scenarios} 
+for more details.
+}
+\label{DS6_30_emp}
+\end{figure}
+ 
+ 
+
+\begin{figure}[H]
+\centering
+\includegraphics[width=11cm]{pictures/DS6_35_20_emp.pdf}
+\caption{ 
+ROC curve for the alignment to the human reference genome of simulated 
+fresh sequence reads of length 35. See Section \ref{Evaluation Scenarios} 
+for more details.
+}
+\label{DS6_35_emp}
+\end{figure}
+ 
+ 
+
+\begin{figure}[H]
+\centering
+\includegraphics[width=11cm]{pictures/DS6_40_20_emp.pdf}
+\caption{ 
+ROC curve for the alignment to the human reference genome of simulated 
+fresh sequence reads of length 40. See Section \ref{Evaluation Scenarios} 
+for more details.
+}
+\label{DS6_40_emp}
+\end{figure}
+  
 
 The result of aligning fresh DNA reads extracted from the human genome
 and aligned back to it confirms the result of the similar test on the
