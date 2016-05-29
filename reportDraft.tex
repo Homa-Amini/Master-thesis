@@ -126,7 +126,7 @@ R-Candy is compared to BWA, which is currently the most-commonly used aligner fo
 Tests on simulated data showed that R-Candy outperforms BWA (run using default 
 and customized parameters), correctly aligning more endogenous reads correctly even
 in the presence of extensive deamination, as well as incorrectly aligning fewer
-microbial reads.
+exogenous reads.
 
 The current version of R-Candy compared to other aligners (e.g. BWA) does not have a good 
 throughput rate due to its simplistic search algorithm and missing
@@ -192,7 +192,7 @@ number of reasons.
 First given the mammalian genome size - random alignments of shorter 
 sequences become increasingly likely as the length decreases. 
 This means that an increasing number of incorrect alignments can be 
-found (and this is true for both endogenous and microbial DNA).
+found (and this is true for both endogenous and exogenous DNA).
 
 Second, standard aligners don't include a model of chemical damage that 
 is specific to ancient DNA, and, therefore, penalise reads with mismatches
@@ -260,7 +260,7 @@ The extracted DNA from long-dead organisms has significantly different character
        Length &  100 bp  & $\leq$  35 bp \\ \hline
        Post-Morten substitutions & No  & Deamination of C$\to$T
 (more likely near the end of a read) \\ \hline
-  Contaminated & negligible & Microbial+Modern human\\ \hline
+  Contaminated & negligible & exogenous+Modern human\\ \hline
     \end{tabular}
 \caption{Comparison between modern DNA and ancient DNA}
 \label{aDNAchar}
@@ -1784,7 +1784,7 @@ a genome used in this evaluation are
 \begin{itemize}
 	\item fresh DNA reads
 	\item ancient DNA reads
-	\item microbial reads
+	\item exogenous reads
 \end{itemize}
 
 \textbf{Fresh DNA Simulation}\\
@@ -1828,20 +1828,20 @@ rate in addition to the probability of being in overhang) by users
 as the third step in the workflow and adding sequencing error will be
 the fourth step in simulation aDNA reads workflow.\\
 
-\textbf{Simulation of Microbial Reads }\\
+\textbf{Simulation of exogenous Reads }\\
 
 Ancient DNA extracts are highly contaminated by 
 mostly environmental microbes that always make the 
 recognition of endogenous and exogenous DNA hard for aligners.
-Although there is a database of known bacterial DNAs that could help 
-us to detect bacterial sequences and don't mix them with endogenous 
+Although there is a database of known exogenous DNAs that could help 
+us to detect exogenous sequences and don't mix them with endogenous 
 DNA sequences, there are still a lot of unknown contaminants.
 \\\\
 In order to have a realistic simulation of ancient DNA, we decided to
-simulate microbial DNA sequences, in addition to, our genomic DNA 
+simulate exogenous DNA sequences, in addition to, our genomic DNA 
 read simulations.
 \\\\
-The microbial read simulation workflow follows the workflow for 
+The exogenous read simulation workflow follows the workflow for 
 simulating ancient DNA reads, but starts differently as described 
 in the following 
 
@@ -2049,8 +2049,8 @@ hits, an arbitrary alignment from the set of multiple best hits (reads with
 the best alignment score) is chosen and evaluated by checking the aligned 
 position given the known true position of the read.\\
 
-The false positive rate is defined as the number of aligned microbial reads 
-divided by the total number of microbial reads.
+The false positive rate is defined as the number of aligned exogenous reads 
+divided by the total number of exogenous reads.
 
  \item The aligner's throughput: the number of mapped reads per second(bp/sec).
 
@@ -2215,7 +2215,7 @@ however for some AS cutoffs R-Candy shows a moderately higher sensitivity
 compared to BWA with ancient parameters.
 
 Increasing the length of the reads improves the specificity (higher
-specificity means lower rate of spurious alignments of microbial reads)
+specificity means lower rate of spurious alignments of exogenous reads)
 of both BWA with ancient parameters and R-Candy for lower cutoff values.
 
 
@@ -2321,9 +2321,9 @@ compared to the same test on the simulated genome.
 
 Results show a big difference in specificity between length 25 and 30, where 
 increasing the length decreases the rate of spurious alignments of
-microbial reads.
+exogenous reads.
 
-The plots show no spurious alignments of contaminant microbial reads of 
+The plots show no spurious alignments of contaminant exogenous reads of 
 length 35 and 40, by both the aligners.
 
 The other observation on the plots, shows lower sensitivity value for R-Candy 
@@ -2401,11 +2401,11 @@ the sensitivity of both aligners.
 
 The huge decrease in the false positive rates between reads of length 
 25 and 30 show that even five bases difference can make a huge 
-difference in the number of mapped microbial reads.
+difference in the number of mapped exogenous reads.
 
 
 No difference in specificity for reads longer than 35~bp is observed
-(no microbial reads align).
+(no exogenous reads align).
 
 
 BWA achieves higher sensitivity for short 
@@ -2479,7 +2479,7 @@ ultra-short reads.
 So increasing the length of the reads leads to lower spurious alignment 
 of exogenous read data.
 
-The plots show no spurious alignments of contaminant bacterial reads of 
+The plots show no spurious alignments of contaminant exogenous reads of 
 lengths bigger than 35 bp with specificity value of zero.
 
 R-Candy with deamination parameters outperforms BWA in aligning ancient 
@@ -2502,7 +2502,7 @@ Using our simulation, we were looking for an alignment score that
 gives us a higher sensitivity than BWA with \quotes{ancient} parameters 
 and better specificity than BWA with default parameters.
 Which gives us the full sensitivity and complete benefit of rejecting
-microbial reads. 
+exogenous reads. 
 
 Using the test scenario 4, aligning ancient reads to the human
 genome for reads of length 30bp and one mismatch (equivalent to 4\% 
@@ -2518,7 +2518,7 @@ Alignment score 12 is picked up as a suitable cutoff for R-Candy aligner.
 \subsection{Performance} \label{Performance}
 
 The speed evaluation was done on small data sets of 3500 simulated ancient 
-genomic and 1000 simulated ancient microbial read sequences extracted from
+genomic and 1000 simulated ancient exogenous read sequences extracted from
 the human genome and aligned back to the human reference genome of size 3.2 
 Gbp by R-Candy and BWA aligners.
 Table \ref{speed-RG} shows the speed and memory usage of R-Candy and BWA on 
@@ -2539,10 +2539,10 @@ building the genome index is not included in the reported time.\\
       Genomic    & 30  & 526 &  52   &  2.22 \\ \hline
       Genomic    & 35  & 625 &  434   &  2.26 \\ \hline
  	  Genomic	 & 40  & 500 &  357   &  2.45 \\ \hline
- 	  Microbial  & 25  & 147 &  13   &  1.68 \\ \hline
-      Microbial  & 30  & 217 &  42   &  2.19 \\ \hline
- 	  Microbial  & 35  & 232 &  153   &  1.67 \\ \hline
- 	  Microbial  & 40  & 178 &  144   &  3.10 \\ \hline
+ 	  exogenous  & 25  & 147 &  13   &  1.68 \\ \hline
+      exogenous  & 30  & 217 &  42   &  2.19 \\ \hline
+ 	  exogenous  & 35  & 232 &  153   &  1.67 \\ \hline
+ 	  exogenous  & 40  & 178 &  144   &  3.10 \\ \hline
    \end{tabular}
 \caption{The alignment speed for ancient reads aligned to 
 the human reference genome.}
@@ -2573,10 +2573,10 @@ BWT ancient requires $\simeq 21$ days) R-Candy is not practical.
       Genomic    & 30  & 945 &  949  &  1182 \\ \hline
       Genomic    & 35  & 945 &  945   &  1183 \\ \hline
  	  Genomic	 & 40  & 945 &  945   &  1181 \\ \hline
- 	  Microbial  & 25  & 945 &  947   &  814 \\ \hline
-      Microbial  & 30  & 945 &  947   &  815 \\ \hline
- 	  Microbial  & 35  & 945 &  945   &  825 \\ \hline
- 	  Microbial  & 40  & 945 &  945   &  828 \\ \hline
+ 	  exogenous  & 25  & 945 &  947   &  814 \\ \hline
+      exogenous  & 30  & 945 &  947   &  815 \\ \hline
+ 	  exogenous  & 35  & 945 &  945   &  825 \\ \hline
+ 	  exogenous  & 40  & 945 &  945   &  828 \\ \hline
    \end{tabular}
 \caption{The alignment speed for ancient reads aligned to 
 the human reference genome.}
