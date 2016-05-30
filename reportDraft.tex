@@ -723,7 +723,7 @@ align globally and  references locally.
 
 In a top-down traversal of the suffix Trie  
 for every node, the minimum score of 
- match//mismatch, insertion and deletion between two 
+ match$/$mismatch, insertion and deletion between two 
 characters is chosen.
 It means trying a different branch for every INDEL, 
 which yields a very big number.
@@ -1079,7 +1079,7 @@ occurrence tables is feasible by a backward
 reconstruction.
 As an example, retrieving the S="barbara"
 using its $S^{BWT}$= "arbbr\$aa" using Figure 
-\ref {Lemma 1} is achieved as follow.Starting
+\ref{Lemma1} is achieved as follow.Starting
 with \$ symbol on the first row, knowing if 
 we go backward the character before \$ is 
 $a_1$ and also using LF-mapping. We know  
