@@ -258,7 +258,7 @@ The extracted DNA from long-dead organisms has significantly different character
     \hline
   \textbf{  Properties} & \textbf{Modern DNA } &\textbf{ ancient DNA} \\ \hline
        Length &  100 bp  & $\leq$  35 bp \\ \hline
-       Post-Morten substitutions & No  & Deamination of C$\to$T
+       Post-Morten \hspace{35pt} substitutions & No  & Deamination of C$\to$T
 (more likely near the end of a read) \\ \hline
   Contaminated & negligible & exogenous+Modern human\\ \hline
     \end{tabular}
@@ -686,7 +686,7 @@ S belong to it And $ c_{i} < c_{k}$ means $c_{i}$ appears
 before $c_{k}$ in lexicographic ordering.
 
 A genome is presented by four letters $\left\{ 'A', 'C', 
-'G' and 'T'\right\}$, which corresponds to adenine, cytosine, 
+'G' and\,'T'\right\}$, which corresponds to adenine, cytosine, 
 guanine and thymine nucleotides. The character ('N') usually 
 represents positions that are unknown in a genome.
 
@@ -707,21 +707,27 @@ Trie where each path from the root to a leaf is a suffix
 The memory consumption of a Suffix Trie at the worst case 
 for a genome of length n is  $\mathcal{O} (n^{2})$.
 \\\\
-R-Candy's alignment algorithm is Depth First Search
-(DFS) and its abstract search algorithm data structure
- is a suffix Trie.  Although its index structure is an FM-Index 
+
+R-Candy uses a suffix Trie as its abstract data structure
+and  Depth First Search (DFS) on the Trie as its alignment algorithm.
+Although its index structure is an FM-Index 
 but it is simulated as a Trie.
+
 A query gets align to a reference tree where a 
  top-down traversal of the tree's branches is a Depth
 First Search of a query alignment.
-R-Candy does a semi-global alignment, where queries 
+
+R-Candy applies a semi-global alignment, where queries 
 align globally and  references locally.
-R-Candy's BWT index is simulated as a Trie  
-and in top-traversal of the Trie's branches for every 
-character, it chooses the minimum number of the scores between
-the three options of match or mismatch, insertion and deletion.
+
+
+In a top-down traversal of the suffix Trie  
+for every node, the minimum score of 
+ match//mismatch, insertion and deletion between two 
+characters is chosen.
 It means trying a different branch for every INDEL, 
-which yields a very big number. Facing this problem 
+which yields a very big number.
+ Fixing this problem 
 R-Candy allows just one INDEL per each alignment which
 in the case of aDNA with very short reads is very practical
 and saves a lot of time and memory.
@@ -776,7 +782,9 @@ go lim score node k (pp:pps) =
 
 \end{lstlisting}
 
-But the alignment can be much faster by using seed 
+
+
+But the alignment can be much faster by using \emph{seed} 
 heuristic. 
 Many programs (e.g. BWA) reduce the amount of backtracking  
 by dedicating the first part of the read as a seed 
@@ -861,7 +869,9 @@ Figure 4 shows the construction of suffix array for string "barbara".
 \end{figure}
 
 
-
+Since nodes of the Suffix Trie corresponds to ranges in the Suffix 
+Array, therefore the Suffix Array serves as a replacement for 
+the Suffix Trie.
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \subsubsection{The Burrows-Wheeler Transform} 
@@ -1168,7 +1178,15 @@ of the main reasons of using BWT for a large
 string like a genome. On the other hand, the 
 localization time is more affected by the number 
 of occurrences of the pattern  because, for 
-each occurrence of P, a look up at SA is needed.\\
+each occurrence of P, a look up at SA is needed.
+
+
+The BWT of the reverse reference genome constructed by
+R-Candy simulates a Suffix Trie with nodes corresponding to 
+ranges in BWT.
+Therefore, the LF-mapping of  BWT applies a forward 
+search on the Suffix Trie.
+
 
 After introducing BWT and its properties and 
 emphasizing on its important job in pattern 
@@ -1698,20 +1716,10 @@ T =
 \end{figure}
 
 
-Besides specifying the transition probabilities, the probability of starting 
-state (state \emph{S} in the graph) is required. 
-Therefore, a steady-state probability for the start state is calculated.
- as in following. 
-Let P be the steady state vector and T the transition matrix.
-
-$$p . T = p$$ 
-$$ ( T - I ) p = 0 $$
-
-By solving the equation we have steady probabilities for all four bases
-(A, C, G, T). 
-And no specific probability for an end state is defined as the 
-E state because the generated sequence can end with any character, 
-in other words the \emph{Markov} model can terminate in any state. 
+A starting position (S) is weighted by steady state probabilities
+and no specific probability for an end state(E) is defined. 
+Because the generated sequence can end with any character, 
+in other words, the \emph{Markov} model can terminate in any state. 
 (Figure \ref{MC_SE}).
 
 \begin{figure}[H]
@@ -1728,29 +1736,29 @@ in other words the \emph{Markov} model can terminate in any state.
   \node[state]         (E) [draw=black, text = black]at (5 ,-1.5) {E};
   
   \path (A) edge [gray, bend left]  node {\tiny 0.26} (T)
-  			edge [gray, loop above] node {\tiny 0.33} (A)
+  			edge [gray, loop left] node {\tiny 0.33} (A)
             edge [gray, bend left]  node {\tiny 0.17} (C)
             edge [gray, bend left]  node {\tiny 0.24} (G)
             edge [bend left=80]  node {\tiny 0.00} (E)
-        (T) edge [gray, loop above] node {\tiny 0.33} (T)
+        (T) edge [gray, loop right] node {\tiny 0.33} (T)
             edge [gray, bend left]  node {\tiny 0.22} (A)
             edge [gray, bend left]  node {\tiny 0.20} (C)
             edge [gray, bend left]  node {\tiny 0.25} (G)
             edge   			  node {\tiny 0.00} (E)
         (C) edge [gray, bend left]  node {\tiny 0.34} (T)
-            edge [gray, loop below] node {\tiny 0.26} (C)
+            edge [gray, loop left] node {\tiny 0.26} (C)
             edge [gray, bend left]  node {\tiny 0.05} (G)
             edge [gray, bend left]  node {\tiny 0.35} (A)
             edge [bend right=80]  node {\tiny 0.00} (E)
-        (G) edge [gray, loop below] node {\tiny 0.25} (G)
+        (G) edge [gray, loop right] node {\tiny 0.25} (G)
        	    edge [gray, bend left]  node {\tiny 0.21} (C)
         	edge [gray, bend left]  node {\tiny 0.29} (A)
             edge [gray, bend left]  node {\tiny 0.25} (T)
             edge   			  node {\tiny 0.00} (E)
-        (S) edge   			  node {\tiny } (A)
-       	    edge   			  node {\tiny } (C)
-        	edge [bend right=80]  node {\tiny } (G)
-            edge [bend left=80]  node {\tiny } (T)
+        (S) edge   			  node {\tiny 0.30} (A)
+       	    edge   			  node {\tiny 0.20} (C)
+        	edge [bend right=80]  node {\tiny 0.20} (G)
+            edge [bend left=80]  node {\tiny 0.30} (T)
        
             ;
 ;
@@ -1871,7 +1879,7 @@ By definition \emph{\quotes{divergence is the separation
 of a population's gene pool from the gene pools of other populations 
 due to mutation, genetic drift, and selection\cite{divergence1}.}}
 
-For biological reasons\ref{}, we expect some divergence between
+For biological reasons, we expect some divergence between
 the aligned reads and reference genome when aligning an individual 
 to the genome of a closely related species.
 
@@ -1883,39 +1891,19 @@ divergence can be extrapolated from that.
  
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% 
 
-\subsubsection{Sequencing Error} \label{Sequencing Error}
+\subsubsection{Sequencing Error and Base Quality Score} 
+\label{Sequencing Error and Base Quality Score}
  
 
-A sequencing error is an incorrect identification of a nucleotide base resulting 
-from an inaccurate machine read. Due to unavoidable error in the base calling, generally 
-there is no precise DNA sequencing. 
+A quality score indicating the confidence level of correctly seeing a 
+base is assigned to each base of a read sequence, in other words, it 
+demonstrates the probability that a base is called incorrectly by a 
+sequencing machine and is encoded in logarithmic states for practical 
+reasons.
 
-A quality score indicating the confidence level of correctly seeing a base is 
-assigned to each base of a read sequence.
+Phred quality score (Q score) is the most widely used metric
+indicating quality score.
 
-Sequencing error rates are higher than divergence 
-on this model sequence and are not uniformly distributed.
-Therefore, sequencing machines report the quality 
-of the sequenced reads which is an estimation of
-error rate per base. In other words, a quality score 
-indicating the confidence level of correctly 
-seeing a base is assigned to each base of a read sequence.
-
-Different sequencing platform have different quality scores indicating variable 
-sequencing error. These errors become visible when aligning a read to a reference 
-string as substitutions or mismatches.
-
-The main sequencing error for Illumina platform is base substitution due to 
-reading out one base at a time\cite{art}. The substitution error probability is 
-calculated by the base quality score along with the called base.\\
-
-The output data of sequencing machines significantly differs in quality for 
-several reasons (for illustration, see Ewing et al. 1998).  Therefore, an effective 
-measure for the reliability of such a data is vital\cite{phred1}.\\
-
-In order to assess the accuracy of sequencing data, base calling accuracy by Phred 
-quality score (Q score) is the most widely used metric. It demonstrates the probability 
-of seeing an error in each bases, calling by a sequencer.\\
 
 Phred quality scores are defined as \cite{phred2}:
 
@@ -1923,9 +1911,37 @@ $$ Q = -10  log_{10}P   $$
 $$  or $$
 $$ P = 10 ^ { \frac{-Q}{ 10 } } $$
 
-For instance, if Phred score of a base is Q$=$40, it means the probability of an 
-incorrect base call is a 1 in 10000 which shows 99.99\% base calling accuracy 
-\cite{IlluminaPhred}. \\  
+
+A typical base quality score of Illumina platform for the majority of 
+bases is Q30 and above which provides an ideal level of accuracy for a 
+range of sequencing applications. 
+A quality score of 30 (Q30) predicts one base call in 1000 be incorrect
+and corresponds to call accuracy of 99.9%.
+
+A sequencing error is an incorrect identification of a nucleotide base 
+resulting from an inaccurate machine read. Due to an unavoidable error 
+in the base calling, generally, there is no precise DNA sequencing. 
+
+Sequencing error rates are higher than divergence and deamination
+on this model sequence and are not uniformly distributed. They tend to 
+cluster at the end of the reads lead to a lower quality score rate at 
+the end of the reads.
+
+Different sequencing platform has different quality scores indicating 
+variable sequencing error. These errors become visible when aligning a 
+read to a reference string as substitutions or mismatches.
+
+
+
+The main sequencing error for Illumina platform is base substitution due to 
+reading out one base at a time\cite{art}. The substitution error probability 
+is calculated by the base quality score along with the called base.
+
+The output data of sequencing machines significantly differs in quality for 
+several reasons (for illustration, see Ewing et al. 1998).  Therefore, an 
+effective measure for the reliability of such a data is vital\cite{phred1}.\\
+
+
 
 In order to implement sequencing error for simulated reads, There are two
 options in my simulator (readSim):
@@ -2119,10 +2135,15 @@ alignment scores cutoffs from 1 to 20.
                                &  simulated genome, aligned with default parameters. \\ \hline
        \textbf{  Scenario 2 }  &  Simulated fresh DNA sequences extracted from the \\
                                &  human genome and aligned with default parameters \\  \hline
-       \textbf{  Scenario 3 }  &  Simulated ancient DNA sequences extracted from a  \\
-                               &  simulated genome and aligned with damage parameters. \\  \hline
-       \textbf{  Scenario 4 }  &  Simulated ancient DNA sequences extracted from the  \\
-                               &  human genome and aligned with damage parameters. \\  \hline
+ 	   \textbf{  Scenario 3 }  &  Simulated fresh DNA sequences extracted from the  \\
+                               &  simulated genome and aligned with ancient parameters. \\  \hline
+       \textbf{  Scenario 4 }  &  Simulated fresh DNA sequences extracted from the  \\
+                               &  human genome and aligned with ancient parameters. \\  \hline
+       \textbf{  Scenario 5 }  &  Simulated ancient DNA sequences extracted from a  \\
+                               &  simulated genome and aligned with ancient parameters. \\  \hline
+       \textbf{  Scenario 6 }  &  Simulated ancient DNA sequences extracted from the  \\
+                               &  human genome and aligned with ancient parameters. \\  \hline
+       
        
     \end{tabular}
  %\caption{Evaluation scenarios}
@@ -2138,8 +2159,13 @@ alignment scores cutoffs from 1 to 20.
  The purpose of these tests is to see the performance of R-Candy on 
  fresh DNA sequences aligning R-Candy's default parameters. 
 
- \subsubsection {Alignment of Simulated Fresh DNA Reads to a Simulated Genome.}
- \label {Alignment of Simulated Fresh DNA Reads to a Simulated Genome.}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+ \subsubsection {Alignment of Simulated Fresh DNA Reads to a Simulated 
+ Genome with default parameters.}
+ \label {Alignment of Simulated Fresh DNA Reads to a Simulated Genome 
+ with default parameters.}
  
   \begin{itemize}
 
@@ -2162,52 +2188,17 @@ BWA version 0.5.10-evan.10 with default parameters and ancient parameters
 Here we aim to evaluate the performance of R-Candy on fresh DNA reads 
 without using the deamination parameters (R-Candy's default parameters).
 
-\begin{figure}[H]
-\centering
-\includegraphics[width=11cm]{pictures/DS3_25_21_47_emp.pdf}
-\caption{
-ROC curve for the alignment to the simulated reference genome of simulated 
-fresh sequence reads of length 25 pbs. See Section \ref{Evaluation Scenarios} 
-for more details.}
-\label{DS3_25}
-\end{figure}
-
-
 
 \begin{figure}[H]
 \centering
-\includegraphics[width=11cm]{pictures/DS3_30_21_47_emp.pdf}
+\includegraphics[width=11cm]{pictures/f_DS3_emp.pdf}
 \caption{
 ROC curve for the alignment to the simulated reference genome of simulated 
-fresh sequence reads of length 30 pbs. See Section \ref{Evaluation Scenarios}
+fresh sequence reads. See Section \ref{Evaluation Scenarios} 
 for more details.}
-\label{DS3_30}
+\label{DS3_emp}
 \end{figure}
 
-\begin{figure}[H]
-\centering
-\includegraphics[width=11cm]{pictures/DS3_35_19_emp.pdf}
-
-\caption{
-ROC curve for the alignment to the simulated reference genome of simulated 
-fresh sequence reads of length 35 pbs. See Section \ref{Evaluation Scenarios}
-for more details.}
-
-\label{DS3_35}
-\end{figure}
-
-
-\begin{figure}[H]
-\centering
-\includegraphics[width=11cm]{pictures/DS3_40_19_emp.pdf}
-
-\caption{
-ROC curve for the alignment to the simulated reference genome of simulated 
-fresh sequence reads of length 40 pbs. See Section \ref{Evaluation Scenarios}
-for more details.}
-
-\label{DS3_40}
-\end{figure}
 
 As the results show, aligning fresh DNA reads with no damage parameters, 
 R-Candy and BWA aligners with default parameters, perform equally good, 
@@ -2221,8 +2212,10 @@ of both BWA with ancient parameters and R-Candy for lower cutoff values.
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
-\subsubsection{ Alignment of Simulated Fresh DNA Reads to a the Human Reference Genome.}
-\label{ Alignment of Simulated Fresh DNA Reads to a the Human Reference Genome.}
+\subsubsection{ Alignment of Simulated Fresh DNA Reads to a the Human Reference Genome
+with default parameters.}
+\label{ Alignment of Simulated Fresh DNA Reads to a the Human Reference Genome with
+default parameters.}
 
  \begin{itemize}
  
@@ -2248,70 +2241,18 @@ aligned to the human reference genome without using the deamination parameters
 (R-Candy's default parameters).
 
 
-%\begin{figure}[H]
-%\centering
-%\includegraphics[width=12cm]{pictures/bROC_DS6_emp.pdf}
-%\caption{ 
-%ROC curve for the alignment to the human reference genome of simulated 
-%fresh sequence reads. See \ref{Evaluation Scenarios} for details.
-%}
-%\label{DS6_emp}
-%\end{figure}
-
-
 \begin{figure}[H]
 \centering
-\includegraphics[width=11cm]{pictures/DS6_25_21_5_emp.pdf}
+\includegraphics[width=11cm]{pictures/f_DS6_emp.pdf}
 \caption{ 
 ROC curve for the alignment to the human reference genome of simulated 
-fresh sequence reads of length 25. See Section \ref{Evaluation Scenarios} 
+fresh sequence reads. See Section \ref{Evaluation Scenarios} 
 for more details.
 }
-\label{DS6_25_emp}
+\label{DS6_emp}
 \end{figure}
  
 
-
-
-
-
-\begin{figure}[H]
-\centering
-\includegraphics[width=11cm]{pictures/DS6_30_21_54_emp.pdf}
-\caption{ 
-ROC curve for the alignment to the human reference genome of simulated 
-fresh sequence reads of length 30. See Section \ref{Evaluation Scenarios} 
-for more details.
-}
-\label{DS6_30_emp}
-\end{figure}
- 
- 
-
-\begin{figure}[H]
-\centering
-\includegraphics[width=11cm]{pictures/DS6_35_20_emp.pdf}
-\caption{ 
-ROC curve for the alignment to the human reference genome of simulated 
-fresh sequence reads of length 35. See Section \ref{Evaluation Scenarios} 
-for more details.
-}
-\label{DS6_35_emp}
-\end{figure}
- 
- 
-
-\begin{figure}[H]
-\centering
-\includegraphics[width=11cm]{pictures/DS6_40_20_emp.pdf}
-\caption{ 
-ROC curve for the alignment to the human reference genome of simulated 
-fresh sequence reads of length 40. See Section \ref{Evaluation Scenarios} 
-for more details.
-}
-\label{DS6_40_emp}
-\end{figure}
-  
 
 The result of aligning fresh DNA reads extracted from the human genome
 and aligned back to it confirms the result of the similar test on the
@@ -2329,9 +2270,129 @@ length 35 and 40, by both the aligners.
 The other observation on the plots, shows lower sensitivity value for R-Candy 
 and BWA by increasing the number of  mismatches (divergence rate) per read.
 
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+ \subsubsection {Alignment of Simulated Fresh DNA Reads to a Simulated Genome 
+ with ancient parameters.}
+ \label {Alignment of Simulated Fresh DNA Reads to a Simulated Genome with
+ ancient parameters.}
+ 
+  \begin{itemize}
+
+   \item \textbf{Data:} Simulated fresh DNA extracted from a simulated genome 
+   with between 0 and 6 substitutions to allow increasing sequence divergence
+   and including sequencing error generated from empirical quality distribution data.
+ 
+   
+   \item \textbf{Reference genome:} Reads were aligned to a simulated genome of 
+	length 1Gb.
+
+    \item \textbf{Aligners:}
+    R-Candy with ancient parameters 
+  	(deamination damage, -l left overhang parameter= 0.3, -r right overhang parameter= 0.3 , 
+	-d deamination rate in double stranded section = 0.02 , 
+	-s deamination rate in single stranded section = 0.9 )
+  	and cutoff for alignment score at 20. \\
+  	BWA with default parameters and ancient parameters \cite{green2010draft}
+   	(mismatch parameter -n set to 0.01 and the number of gap openings -o
+   	to 2)
+   
+   \end{itemize}
+ 
+Here we aim to evaluate the performance of R-Candy on fresh DNA reads 
+while treating it as ancient DNA reads.
+
+
+\begin{figure}[H]
+\centering
+\includegraphics[width=11cm]{pictures/f_DS8_emp.pdf}
+\caption{
+ROC curve for the alignment to the simulated reference genome of simulated 
+fresh sequence reads aligned by ancient parameters. See Section \ref{Evaluation 
+Scenarios} for more details.}
+\label{DS8_emp}
+\end{figure}
+
+
+Aligning fresh DNA reads with ancient parameters, 
+R-Candy and BWA aligners with default parameters, perform equally good, 
+While using BWA with ancient parameters just increases the 
+false positive rate as with higher AS cutoffs for R-Candy.
+
+Increasing the length of the reads reduces false positive rates (specificity)  
+where in the length of 40 bps we see the same behavior of BWA
+aligned by default and ancient parameters.
+
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
+
+\subsubsection{ Alignment of Simulated Fresh DNA Reads to a the Human Reference Genome
+with ancient parameter.}
+\label{ Alignment of Simulated Fresh DNA Reads to a the Human Reference Genome.}
+
+ \begin{itemize}
+ 
+   \item \textbf{Data:} Simulated fresh DNA extracted from a simulated genome 
+   with between 0 and 6 substitutions to allow increasing sequence divergence
+   and including sequencing error generated from empirical quality distribution
+   data.
+   
+   \item \textbf{Reference genome:} Reads were aligned to the human genome 
+   (version hg19) of length 3.2 Gb.
+
+    \item \textbf{Aligners:}
+    R-Candy with ancient parameters 
+  	(deamination damage, -l left overhang parameter= 0.3, -r right overhang parameter= 0.3 , 
+	-d deamination rate in double stranded section = 0.02 , 
+	-s deamination rate in single stranded section = 0.9 )
+  	and cutoff for alignment score at 20. \\
+  	BWA with default parameters and ancient parameters \cite{green2010draft}
+   	(mismatch parameter -n set to 0.01 and the number of gap openings -o
+   	to 2)
+   
+ \end{itemize}
+	
+	
+Here we aim to evaluate the performance of R-Candy on fresh DNA reads, 
+aligned to the human reference genome while using the ancient parameters
+(deamination damage parameters).
+
+
+\begin{figure}[H]
+\centering
+\includegraphics[width=11cm]{pictures/f_DS9_emp.pdf}
+\caption{ 
+ROC curve for the alignment to the human reference genome of simulated 
+fresh sequence reads with ancient parameters. See Section \ref{Evaluation 
+Scenarios} for more details.
+}
+\label{DS9_emp}
+\end{figure}
+ 
+
+The result of aligning fresh DNA reads extracted from the human genome
+and aligned back to the human reference genome confirms the result of 
+the similar test on thesimulated data on the teat Scenario number 3.  
+
+ 
+Results show a big difference in specificity between length 25 and 30, where 
+increasing the length decreases the rate of spurious alignments of
+exogenous reads.
+However, it shows an improvement of no false positive
+(spurious alignments of contaminant exogenous reads)
+ for reads of length
+35bps and 40 for R-Candy and BWA with both default and 
+ancient parameters compare to test Scenario 3.
+
+As is expected, increasing the number of introduced mismatches
+(due to different divergence rate) decreases the sensitivity alignment 
+of the both aligners. A huge decrease in specificity is illustrated while 
+introducing 3 number of mismatches to the reads which simulates a very 
+high divergence rate of 12\% and 10\% for lengths 25 and 30 respectively.
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \subsection{Evaluation on Simulated Ancient DNA Reads}
 
 \subsubsection{Alignment of Simulated Ancient DNA Reads to a Simulated Genome.}
@@ -2341,8 +2402,8 @@ and BWA by increasing the number of  mismatches (divergence rate) per read.
  
    
     \item \textbf{Data:} Simulated ancient DNA 
-     with the following damage parameters $ \sigma = 0.9$, 
-    $ \sigma' = 0.93 $, $\delta = 0.02 $,  and $p = 0.3 $ \cite{mapdamage2}
+     with ancient parameters (deamination damage, $ \sigma = 0.9$, 
+    $ \sigma' = 0.93 $, $\delta = 0.02 $,  and $p = 0.3 $ \cite{mapdamage2})
     and between 0 and 6 substitutions to allow increasing sequence divergence
     and on top of them sequencing error generated from empirical quality distribution data
     extracted from a simulated genome.
@@ -2353,8 +2414,8 @@ and BWA by increasing the number of  mismatches (divergence rate) per read.
 length 1 Gb.
 
 
-  \item \textbf{Aligners:} R-Candy with damage parameters 
-  (-l left overhang parameter= 0.3, -r right overhang parameter= 0.3 , 
+  \item \textbf{Aligners:} R-Candy with ancient parameters 
+  (deamination damage, -l left overhang parameter= 0.3, -r right overhang parameter= 0.3 , 
 -d deamination rate in double stranded section = 0.02 , 
 -s deamination rate in single stranded section = 0.9 )
   and cutoff for alignment score at 20. \\
@@ -2371,11 +2432,11 @@ with deamination parameters.
 
 \begin{figure}[H]
 \centering
-\includegraphics[width=12cm]{pictures/bROC_DS1_emp.pdf}
+\includegraphics[width=12cm]{pictures/f_DS1_emp.pdf}
 
 \caption{
 ROC curve for the alignment to the simulated reference genome of simulated ancient
-sequence reads. See \ref{Evaluation Scenarios} for details.}
+sequence reads. See Section \ref{Evaluation Scenarios} for more details.}
 \label{DS1_emp}
 \end{figure}
 
@@ -2422,7 +2483,7 @@ outperforms BWA in all cases.
  \begin{itemize}
  
     \item \textbf{Data:} Simulated ancient DNA 
-     with the following damage parameters $ \sigma = 0.9$, 
+     with ancient parameters (deamination damage parameters, $ \sigma = 0.9$, 
     $ \sigma' = 0.93 $, $\delta = 0.02 $,  and $p = 0.3 $ and 
     between 0 and 6 substitutions to allow increasing sequence divergence
     including sequencing error generated from empirical quality distribution data
@@ -2432,8 +2493,9 @@ outperforms BWA in all cases.
 
  
     \item \textbf{Aligners:} 
-R-Candy with damage parameters 
-(-l left overhang parameter= 0.3, -r right overhang parameter= 0.3 , 
+R-Candy with ancient parameters 
+(deamination ancient parameters as -l left overhang parameter= 0.3, -r 
+right overhang parameter= 0.3 , 
 -d deamination rate in double stranded section = 0.02 , 
 -s deamination rate in single stranded section = 0.9 )
  and alignments score cut-off of 20. \\
@@ -2450,12 +2512,11 @@ aligned to the human reference genome with the deamination parameters.
 
 \begin{figure}[H]
 \centering
-\includegraphics[width=12cm]{pictures/bROC_DS4_emp.pdf}
-
+\includegraphics[width=12cm]{pictures/f_DS4_emp.pdf}
 
 \caption{
 ROC curve for the alignment to the human reference genome of simulated ancient
-sequence reads. See \ref{Evaluation Scenarios} for details.
+sequence reads. See Section \ref{Evaluation Scenarios} for more details.
 }
 
 \label{DS4_emp}
@@ -2615,14 +2676,20 @@ R-Candy has a higher sensitivity value on aligning ancient DNA with ancient para
 compared to BWA with "ancient" parameters and better specificity compared to the 
 "default" BWA at the cutoff value of 12.
 \\\\
+The accuracy of R-Candy on aligning fresh DNA with "ancient" parameters (deamination damage model) 
+matches BWA, with either "default" or "ancient" parameters, depending  on the cutoff values.
+\\\\
 In terms of memory footprint, both aligners are equally good and memory efficient
 to load genome. But R-Candy has a very low throughput ratio (speed) compared to 
 BWA which makes it unusable in case of big-data and genome of mammalian size. 
 \\\\
 The main conclusion is that R-Candy reduces the minimum read length needed
 for aDNA alignment from 35~bp to about 25~bp, which makes it possible to
-align more rare and low-quality endogenous reads, but needs some
-modifications to increase speed to make it useable on data sets of the
+align more rare and low-quality endogenous reads, and also R-Candy can be 
+used as a part of a sensible workflow in ancient DNA studies
+working with all types of DNA (ancient and fresh).
+But some modifications are needed to increase its alignment speed 
+in order to be useable on data sets of the
 size typically generated during ancient human genome sequencing
 projects. 
 
@@ -2647,8 +2714,7 @@ out, which requires a different index structure (Bi-directional Wavelet Tree).
 This would also enable a seed strategy, where the middle part of a read
 would serve as seed.
 
-% XXX This is not a sentence
-Distribute or parallel the program and support multithreading feature.
+Make the program parallel and also support distributed computing feature. 
 
 A method that combines dynamic programming with a Full-Text index might extend
 the usefulness of R-Candy to longer reads.
@@ -2753,7 +2819,7 @@ to increasing sequence divergence and sequencing error by ART.
 \includegraphics[width=12cm]{pictures/bROC_DS1_ART.pdf}
 \caption{
 ROC curve for the alignment to the simulated reference genome of simulated ancient 
-sequence reads of lengths 25-40bp with damage parameters as explained in Data 
+sequence reads of lengths 25-40bp with ancient parameters as explained in Data 
 and between 0 and 6 substitutions due to increasing sequence divergence and
 empirical sequencing error.
 }
@@ -2767,7 +2833,7 @@ empirical sequencing error.
 \includegraphics[width=12cm]{pictures/bROC_DS4_ART.pdf}
 \caption{
 ROC curve for the alignment to the human reference genome of simulated ancient 
-sequence reads of lengths 25-40bp with damage parameters as explained in Data 
+sequence reads of lengths 25-40bp with ancient parameters as explained in Data 
 and between 0 and 6 substitutions due to increasing sequence divergence and
 empirical sequencing error.
 }
