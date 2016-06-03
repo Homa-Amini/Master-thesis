@@ -1543,16 +1543,14 @@ characters that are the equal to character b.
 
 In the case of genome as a reference string, the algorithm also works if 
 having BWT of the reverse complement S instead of BWT of the reverse string 
-and look for the complement of  pattern P.
+and look for the complement of pattern P.
 
-R-Candy does not use Bi-directional Wavelet tree as its index structure but
-it has all the requirements.
+R-Candy does not use Bi-directional Wavelet tree as its index structure 
+but it has all the requirements.
 
-It has reference genome and reverse complement of the genome and 
-in order to support Bi-directional Wavelet tree just need to concatenate 
-the two genome strings and search for the pattern P in both strands of 
-the extended genome.
-
+It has reference genome and reverse complement of the genome and in order 
+to support Bi-directional Wavelet tree just need to concatenate the two 
+genome strings and search for the pattern P in both strands of the extended genome.
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
@@ -2712,25 +2710,36 @@ projects.
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 \section{Future Work} \label{Future Work}
+
+
 We have shown that for the alignment of ancient DNA reads between 25-40 
-bp, R-Candy provides superior accuracy to BWA.  
-However, a number of points need to be addressed before R-Candy can be used 
-on big data sets of ancient genome projects. 
+bps, R-Candy provides superior accuracy to BWA. However, a number of points 
+need to be addressed before R-Candy can be used on big data sets of ancient
+genome projects. 
 
 %To increase R-Candy's speed  ...
 
 The backtracking algorithm used by R-Candy is its bottleneck if mismatches 
-appear early in the alignment.  The middle part of a read is the least
+appear early in the alignment. The middle part of a read is the least
 affected by deamination damage in ancient DNA read sequences,
-therefore, alignment of aDNA reads should start from the middle of the read 
-out, which requires a different index structure (Bi-directional Wavelet Tree).
-This would also enable a seed strategy, where the middle part of a read
+therefore, alignment of aDNA reads should start from the middle of the 
+read out, which requires a different index structure (Bi-directional Wavelet 
+Tree). This would also enable a seed strategy, where the middle part of a read
 would serve as seed.
 
-Make the program parallel and also support distributed computing feature. 
+As mentioned before /ref{Bi-directional} the requirement for new index
+structure (Bi-directional Wavelet Tree index) is already in the code just
+needs some modification to be used as a bi-directional index structure. 
+But there is a need for a different searching algorithm to start from the 
+middle part of the ancient reads and aligns in both directions to be implemented.
 
-A method that combines dynamic programming with a Full-Text index might extend
-the usefulness of R-Candy to longer reads.
+
+Make the program parallel and support distributed computing feature
+speeds up the software by dividing a computational job into many tasks 
+and solve each task by one or more computers or CPUs.
+
+A method that combines dynamic programming with a Full-Text index might 
+extend the usefulness of R-Candy to longer reads.
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
