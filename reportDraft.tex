@@ -101,36 +101,37 @@
 
 Recent technological developments, such as high-throughput sequencing,
 have enabled the sequencing of the genomes of many living organisms.  
-Recently, it has also become possible to extract and sequence DNA from extinct organisms.\\ 
-In comparison with modern DNA, the computational analysis of ancient DNA is complicated
-by the fact that the sequenced fragments tend to be short, degraded and contaminated with
-extraneous environmental sequences, such as bacteria and modern human DNA.
+Recently, it has also become possible to extract and sequence DNA from 
+extinct organisms.\\ 
+In comparison with modern DNA, the computational analysis of ancient DNA
+is complicated by the fact that the sequenced fragments tend to be short,
+degraded and contaminated with extraneous environmental sequences, such 
+as bacteria and modern human DNA.
 
-Identification of endogenous sequences from this mix of DNA is generally achieved by
-alignment to a reference genome sequence. 
-However, existing alignment software does not work well with these ultra-short, 
-chemically damaged sequences.
+Identification of endogenous sequences from this mix of DNA is generally
+achieved by alignment to a reference genome sequence. However, existing 
+alignment software does not work well with these ultra-short, chemically
+damaged sequences.
 
-In order to deal with these much older samples, a new software program has been implemented
-(R-Candy; U. Stenzel unpubl.)which aims to align these ultra-short reads and cope with the high 
-levels of chemical damage present, using self-index data structures for pattern matching
-based on a Burrows-Wheeler Transform based FM-Index.
+In order to deal with these much older samples, a new software program 
+has been implemented (R-Candy; U. Stenzel unpubl.)which aims to align 
+these ultra-short reads and cope with the high levels of chemical damage 
+present, using self-index data structures for pattern matching based on 
+a Burrows-Wheeler Transform based FM-Index.
 
-%It supports genomes of any size and requires not more than the provided genome size of memory.
+This thesis evaluates the accuracy and performance of the R-Candy aligner 
+using simulated ancient DNA sequences. 
 
-This thesis evaluates the accuracy and performance of the R-Candy aligner using 
-simulated ancient DNA sequences. 
+R-Candy is compared to BWA, which is currently the most-commonly used 
+aligner for ancient DNA.
 
-R-Candy is compared to BWA, which is currently the most-commonly used aligner for ancient DNA.
+Tests on simulated data showed that R-Candy outperforms BWA (run using 
+default and customized parameters), correctly aligning more endogenous 
+reads correctly even in the presence of extensive deamination, as well
+as incorrectly aligning fewer exogenous reads.
 
-Tests on simulated data showed that R-Candy outperforms BWA (run using default 
-and customized parameters), correctly aligning more endogenous reads correctly even
-in the presence of extensive deamination, as well as incorrectly aligning fewer
-exogenous reads.
-
-The current version of R-Candy compared to other aligners (e.g. BWA) does not have a good 
-throughput rate due to its simplistic search algorithm and missing
-support for multithreading.
+Future development of R-Candy will focus on increasing its speed by 
+improving the search algorithm and adding support for multi-threading.
 
 \newpage\null\thispagestyle{empty}\newpage
 \section*{Acknowledgements}
@@ -154,10 +155,9 @@ There have been a number of breakthroughs in the development of sequencing
 technologies that allow us to now sequence whole genomes rapidly and at a 
 reasonable cost\cite{NGS}\cite{454}\cite{NGS2}.
 \\
-These developments made it possible to get DNA from ancient organisms, 
-including humans \cite{AncientDNA}\cite{fish2human}, and to sequence 
-this DNA to learn about human history\cite{impactOFhg}\cite{ourGenome}
-\cite{SNP}.
+These developments made it possible to get DNA sequence from ancient 
+organisms, including humans \cite{AncientDNA}\cite{fish2human}, and  
+to learn about human history\cite{impactOFhg}\cite{ourGenome}\cite{SNP}.
 
 Since the primary goal of many studies is to find the genetic 
 relationships between extinct and extant species, most often sequences 
@@ -166,30 +166,29 @@ closely related extant species\cite{Neanthertal}\cite{AncientDNA}.
 
 A number of problems have to be addressed when ancient DNA is aligned.
 The continuous maintenance of a living organism by enzymatic repair stops 
-shortly after a death of a living organism. Along with the aggression of
-microbes, insects and fungi on the DNA molecule make the extraction of a 
+shortly after a death of a living organism. Along with the action of
+microbes, insects and fungi, this makes the extraction of a 
 high-quality endogenous DNA very difficult and result in very short(the 
 mean aDNA fragments vary between 36 to 150 base pairs providing by Illumina 
 platform\cite{rizzi2012ancient} \footnote{This range varies due to environment 
 and the age of the sample})and degraded DNA sequences\cite{paabo2004genetic}.
  
-In addition to \emph{post-mortem} damage which is the degradation process of
-ancient DNA over time results in deamination of cytosine to uracil and C to T 
-changes at the both ends of DNA fragments \cite{futureofaDNA}, the low amount 
-of survived endogenous DNA over a long period of time (above 38,000 years) 
-are highly contaminated \cite{paabo2004genetic}\cite{aDNA}
-by microbes, mostly bacteria of colonized dead organisms.
+In addition, the degradation process of ancient DNA over time results 
+in deamination of cytosine to uracil (and ??? are read as C to T 
+changes) at the both ends of DNA fragments \cite{futureofaDNA}, the low amount 
+of endogenous DNA that survived over a long period of time  
+are highly contaminated \cite{paabo2004genetic}\cite{aDNA}by microbes.
 
 For samples that are reasonably preserved approaches to the alignment
-of reads that are longer than 35bp have been developed. 
+of reads that are longer than 35bps have been developed. 
 These use standard alignment software (eg BWA) but modify the parameters 
 to compensate more differences.
 But for older or less well-preserved samples that have even shorter 
-sequences $(<35 bp)$ \cite{meyer2014mitochondrial},
-using standard aligners like BWA leads to spurious alignments for a 
+sequences $(<35 bps)$ \cite{meyer2014mitochondrial},
+using standard aligners like BWA leads to incorrect alignments for a 
 number of reasons.
 
-First given the mammalian genome size - random alignments of shorter 
+First given the mammalian genome size, random alignments of shorter 
 sequences become increasingly likely as the length decreases. 
 This means that an increasing number of incorrect alignments can be 
 found (and this is true for both endogenous and exogenous DNA).
@@ -202,21 +201,17 @@ Third, most aligners require an exact match of some minimum length(seed),
 that is often longer than the read length possible with ancient DNA.
 
 Therefore, due to the lack of proper tools such as an aligner that is 
-specific to ancient data and its characteristics, most of the generated 
-data get discarded. 
-This information reduction on the data sets of sparse endogenous data give 
-us the motivation for a new aligner to efficiently analyze this particular
-type of data.
+specific to ancient data and its characteristics, much of the truly 
+endogenous DNA may get discarded. A new aligner to efficiently analyze 
+very poorly preserved ancient DNA would therefore be very useful.
 \\
-This thesis evaluates the performance of R-Candy aligner and compares it 
-with BWA which is a widely used aligner for short reads.
+This thesis evaluates the performance of a new ancient DNA aligner,
+R-Candy, and compares it with BWA which is a widely used aligner for
+short reads.
 
 
 
-
-
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 \clearpage
 \section{Background } \label{Background }
@@ -235,54 +230,54 @@ The human genome sequence is made up of 3 billion DNA base pairs.
 It is CpG poor and repeat-rich, 50\% of the human genome is consists 
 of repetitive DNA sequences. The CpG sites are regions of DNA where 
 a cytosine nucleotide is followed by a guanine nucleotide which are 
-four folders under-represented in the human genome. 
-Although it is completely sequenced but is not yet fully understood. 
+four folders under-represented in the human genome. Although it is 
+completely sequenced but is not yet fully understood. 
 
 
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 
 \subsection{Ancient DNA } \label{Ancient DNA }
-The ancient DNA exploration broadly describes as the retrieval of DNA sequences 
-from fossils remains, archaeological discovery, museum specimens and other 
-exceptional sources, only become doable when the new technologies for amplification
-and sequencing of DNA sequences, called PCR got invented \cite{paabo2004genetic}.
 
-The extracted DNA from long-dead organisms has significantly different characteristics
- that differ it from modern DNA which are summarized in Table\ref{aDNAchar} .\\
+Ancient DNA reads can be broadly described the retrieval of DNA from fossils 
+remains, archaeological discovery, museum specimens and other sources.
+
+The extracted DNA from long-dead organisms has significantly different 
+characteristics that distinguish it from modern DNA which are summarized in 
+Table \ref{aDNAchar} .\\
 
 
 
 \begin{table}[H]
   \begin{tabular}{ |  p{4cm} | p{2cm} | p{5cm} |}
     \hline
-  \textbf{  Properties} & \textbf{Modern DNA } &\textbf{ ancient DNA} \\ \hline
-       Length &  100 bp  & $\leq$  35 bp \\ \hline
-       Post-Morten \hspace{35pt} substitutions & No  & Deamination of C$\to$T
-(more likely near the end of a read) \\ \hline
-  Contaminated & negligible & exogenous+Modern human\\ \hline
-    \end{tabular}
-\caption{Comparison between modern DNA and ancient DNA}
-\label{aDNAchar}
+     \textbf{  Properties} & \textbf{Modern DNA } &\textbf{ ancient DNA} \\ \hline
+     Molecule  length &  1000s of bps  & $\leq$  35 bps\\ \hline
+     Post-Morten \hspace{35pt} substitutions & Few/low\hspace{35pt}frequency
+     & Deamination of C$\to$T(more likely near the end of a read) \\ \hline
+     Contaminated & negligible & exogenous+Modern human\\ \hline
+  \end{tabular}
+  \caption{Comparison between modern DNA and ancient DNA}
+  \label{aDNAchar}
 \end{table}
 
 
 The challenges with ancient DNA was the requirement for new software to efficiently 
 align millions of ultra-short, degraded and deaminated reads to a reference genome 
-without being overwhelmed by spurious alignments of contaminant reads.
+without being overwhelmed by spurious alignments of microbial contaminant reads.
 
 
 \subsection{Alignment} \label{Alignment}
 
-That sequence alignment is a common problem in computational biology, 
+Sequence alignment is a common problem in computational biology, 
 and one that can be simplified as follows:
 
 An alignment between two strings $S_{1}$ and $S_{2}$ assumes a common origin and 
 tries to highlight their similarities by explaining one of them as a small number 
 of mutations, insertions and deletions applied to the other.\\
 
-For those characters the survived over the times, an alignment of two strings is 
-a list of indices (i,j) where $S_{1}[i]$ matches $S_{2}[j]$.\\ 
+An alignment of two strings is a list of indices (i,j) where $S_{1}[i]$ matches
+ $S_{2}[j]$.\\ 
 In its simplest form an alignment of two strings is obtained by placing two strings
 one above the other one in the way that every character in either string is above 
 a unique character in opposite string and then looking for relation between them.\\\\
@@ -405,7 +400,7 @@ The four essential steps in all dynamic programming algorithms are:
 	optimal score by a traceback on the matrix\cite{eddydynamic}.
 \end{itemize}
 
-In the following part I will describe the two more basic alignment 
+In the following part I will describe the three more basic alignment 
 algorithms that easily can be expanded to the more complex versions.
 
 
@@ -556,7 +551,6 @@ $$S_{2}:A\enskip G CACAC-A\enskip\enskip\enskip\enskip\enskip $$
 
 
 
-
 Semi-global\footnote{Reads are globally aligned (fully aligned) 
 where the reference is locally aligned (with some gaps at the 
 end of the reference string)} alignments are produced 
@@ -573,8 +567,7 @@ Full-Text index for its alignment strategy instead of dynamic
 programming. 
 
 
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% 
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% 
 
 \paragraph{Scoring for ancient DNA} \label{Scoring}
 
@@ -584,8 +577,8 @@ adaptations of the general scoring scheme.\\
 A DNA molecule read is thought of as composed of two single-stranded parts at 
 the 3' and 5' terminals (called ``overhang parts'') and a 
 double-stranded stem for non-overhang parts (the middle part of
-a read). From knowledge of the chemistry of DNA\cite{DNAchemistry}, high rates of 
-nucleotide misincorporation as a result of \emph{post-mortem} 
+a read). From knowledge of the chemistry of DNA\cite{DNAchemistry}, high rates 
+of nucleotide misincorporation as a result of \emph{post-mortem} 
 deamination damage on the overhang parts of aDNA reads are assumed, and
 the length of the overhangs is approximately 
 geometrically distributed\cite{mapdamage2}. 
@@ -640,7 +633,8 @@ per inserted or deleted base, where $G$ is another parameter.
 
 
 
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
 \subsection{Data Structures}  \label{Data Structures}
 
 Some of the main data structures used by our new aligner (R-Candy)
@@ -649,8 +643,8 @@ for better understanding of this thesis are described in this section.
 
 
 
-
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
 \subsubsection{Preliminaries} \label{Preliminaries}
 
 \begin{table}[h]
@@ -709,48 +703,39 @@ for a genome of length n is  $\mathcal{O} (n^{2})$.
 \\\\
 
 R-Candy uses a suffix Trie as its abstract data structure
-and  Depth First Search (DFS) on the Trie as its alignment algorithm.
-Although its index structure is an FM-Index 
-but it is simulated as a Trie.
+and Depth First Search (DFS) on the Trie as its alignment algorithm.
+Although its index structure is an FM-Index but it is simulated as a Trie.
 
-A query gets align to a reference tree where a 
- top-down traversal of the tree's branches is a Depth
-First Search of a query alignment.
+A query gets aligned to a reference tree where a top-down traversal
+of the tree's branches is a Depth First Search of a query alignment.
 
 R-Candy applies a semi-global alignment, where queries 
 align globally and  references locally.
 
-
-In a top-down traversal of the suffix Trie  
-for every node, the minimum score of 
- match$/$mismatch, insertion and deletion between two 
-characters is chosen.
-It means trying a different branch for every INDEL, 
-which yields a very big number.
- Fixing this problem 
-R-Candy allows just one INDEL per each alignment which
-in the case of aDNA with very short reads is very practical
-and saves a lot of time and memory.
-It tries one branch that runs down all the suffixes that are
-at least as long as the query even though it has a big 
-number of mismatches which is pointless and that's a
-bound which is the maximum score that we are willing 
-to endure and puts a filter on branching which is a cutoff 
-value based on practical reasons and gets into the program
-as an alignment score parameter. In practice, it starts with 
-the AS limit if searches for an alignment, if can not reports 
-no alignment found and if finds some alignments lowers the 
-limit and repeats the process calling it branch and bound
-algorithm.
- When the query is totally aligned, the alignment is 
-done, no matter just a small part of the reference is aligned.
+In a top-down traversal of the suffix Trie for every node, the 
+minimum score of match$/$mismatch, insertion and deletion between
+two characters is chosen.It means trying a different branch for 
+every INDEL, which yields a very big number. Fixing this problem 
+R-Candy allows just one INDEL per alignment, which in the case
+of aDNA with very short reads, is very practical and saves a lot of
+time and memory. It tries one branch that runs down all the suffixes
+that are at least as long as the query even though it has a big 
+number of mismatches which is pointless and that's a bound which is
+the maximum score that we are willing to endure and puts a filter on
+branching which is a cutoff value based on practical reasons and gets
+into the program as an alignment score parameter. In practice, it starts
+with the AS limit if searches for an alignment, if can not reports no 
+alignment found and if finds some alignments lowers the limit and repeats 
+the process calling it branch and bound algorithm. When the query is 
+totally aligned, the alignment is done, no matter just a small part of 
+the reference is aligned.
 \\\\
 Given a non-empty sequence $q\in (q_{1}..q_{n})$, we want to align it to 
 another non-empty sequence (reference)$r\in (r_{1}..r_{n})$.\\
 In the top-down traversal of tree branches for each character 
 of queries ($q_{i}$) the minimum score of three options match or mismatch, 
 insertion and deletions, of $q_{i}$  and the labeled character ($r_{i}$)
-on the tree branch calculate as is described in the following pseudocode.
+on the tree branch is calculated as described in the following pseudocode.
 For each new alignment of ($q_{i}$) and ($r_{i}$), the score will be the
 computed score so far plus match score with Match operation (M) in the 
 CIGAR field \cite{samtools} for match case. In the case of insertion (I) 
@@ -792,9 +777,9 @@ by dedicating the first part of the read as a seed
 in the first few tens of bases on a read sequence, is called
 the \emph{seed} sequence.}and allowing fewer mismatches in 
 the seed portion \cite{bwa}. By default, BWA uses the first 
-32 bp of a read sequence as a seed, allowing maximum two 
+32 bps of a read sequence as a seed, allowing maximum two 
 mismatches in order to increase the overall speed of the 
-alignment (for reads that are shorter than 32 bp, the seed 
+alignment (for reads that are shorter than 32 bps, the seed 
 is disabled)\cite{bwa}. 
 
 But the beginning part of the read can not serve as a seed
@@ -873,26 +858,20 @@ Since nodes of the Suffix Trie corresponds to ranges in the Suffix
 Array, therefore the Suffix Array serves as a replacement for 
 the Suffix Trie.
 
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
 \subsubsection{The Burrows-Wheeler Transform} 
 \label{The Burrows-Wheeler Transform}
 
-%To index a reference genome in order to accelerate the process of finding the 
-%location of each read in the reference genome while aligning a read as well as
-%using memory efficiently especially while working with a big data like human 
-%genome of ~3.2 Gbp (giga-basepairs), R-Candy uses Burrows-Wheeler Transform 
-%data structure.
 
 The Burrows-Wheeler Transform (BWT) is a text transformation data structure, 
 with fast search query times and efficient memory consumption, which makes 
-it a very special at data compression topic.
-Therefore, in this section, the construction scheme of BWT and its relation 
-with Suffix Array is described.\\
+it very efficient at data compression. In this section, the construction scheme
+of BWT and its relation with Suffix Array is described.\\
 
 
-
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 \paragraph{Construction and Properties}
 
@@ -1066,61 +1045,46 @@ the position of 'a' in the first column (F).
 
 
 
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 
 \paragraph{Reversing} \label{Reversing}
 
-We can use the LF-mapping on $S^{ BWT}$ to reconstruct
-the original string. 
-Reconstructing the original string using the 
-described features and prefix-sum and 
-occurrence tables is feasible by a backward 
-reconstruction.
-As an example, retrieving the S="barbara"
-using its $S^{BWT}$= "arbbr\$aa" using Figure 
-\ref{Lemma1} is achieved as follow.Starting
-with \$ symbol on the first row, knowing if 
-we go backward the character before \$ is 
-$a_1$ and also using LF-mapping. We know  
-$a_1$ has the same position as $a_1$ in 
-the first column of the second row. Continuing 
-backward hit $r_1$. Apply the LF-mapping principle 
-again and say this is the first occurrence of r, 
-then we go to the  $r_1$ in the first column of 
-$7^{th}$ row and continue using the LF-mapping 
-and then walk back one step and so on. We 
-reconstructed the original string in reverse. 
-The memory requirement for BWT decompression is  
-$\mathcal{O}(\lvert 1 \rvert)$ \\
+We can use the LF-mapping on $S^{ BWT}$ to reconstruct the original string. 
+Reconstructing the original string using the described features and prefix-sum
+and occurrence tables is feasible by a backward reconstruction. As an example, 
+retrieving the S="barbara" using its $S^{BWT}$= "arbbr\$aa" using Figure 
+\ref{Lemma1} is achieved as follow.Starting with \$ symbol on the first row, 
+knowing if we go backward the character before \$ is $a_1$ and also using 
+LF-mapping. We know $a_1$ has the same position as $a_1$ in the first column of
+the second row. Continuing backward hit $r_1$. Apply the LF-mapping principle 
+again and say this is the first occurrence of r, then we go to the  $r_1$ in 
+the first column of $7^{th}$ row and continue using the LF-mapping and then walk
+back one step and so on. We reconstructed the original string in reverse. 
+The memory requirement for BWT decompression is $\mathcal{O}(\lvert 1 \rvert)$ \\
 
 
-
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 \paragraph{Searching}
-Generally, the searching algorithm for a pattern using
- $S^{BWT}$ is so close to the reversing procedure 
-explained in the last Section.
-Recalling that suffixes with the same prefix are adjust
-in the SA of S, we divide the searching procedure into
-two parts, the counting and localizing.\\
+
+Generally, the searching algorithm for a pattern using $S^{BWT}$ is close to
+the reversing procedure explained in the last Section. Recalling that suffixes 
+with the same prefix are adjacent in the SA of S, we divide the searching procedure 
+into two parts, the counting and localizing.\\
+
 
 \textbf{Counting}
-The BWT matrix is constructed by sorting all the cyclic
-rotations of a string,therefore if a pattern \emph{P} 
-appears in the string it will be a prefix in $M_{T}$ 
-and if \emph {P} appears in multiple positions, they 
-will be successive.
-To search for a pattern using $S^{BWT}$, the backward 
-search starts from the end of a pattern.
-At first searches for an empty  pattern all over the 
-BWT matrix. Then looks for the last character of the 
-desired pattern. After finding the character, updates 
-indexes and search for the character before that last 
-one among the updated indexes. Continues the process 
-to find the pattern.Updating indexes is the crucial 
-part of this procedure (See Figure \ref{backwardSearch}).\\\\
+
+The BWT matrix is constructed by sorting all the cyclic rotations of a string, 
+therefore if a pattern \emph{P} appears in the string it will be a prefix in $M_{T}$ 
+and if \emph {P} appears in multiple positions, they will be successive. To search 
+for a pattern using $S^{BWT}$, the backward search starts from the end of a pattern.
+At first searches for an empty  pattern all over the BWT matrix. Then looks for the 
+last character of the desired pattern. After finding the character, updates indexes 
+and search for the character before that last one among the updated indexes.
+Continues the process to find the pattern. Updating indexes is the crucial part 
+of this procedure (See Figure \ref{backwardSearch}).\\\\
 
 
 \begin{algorithm}[H]
@@ -1156,51 +1120,38 @@ iteratively.}
 \label{backwardSearch}
 \end{figure}
 
+
 \textbf{Locating} \label{Locating}
-In the counting process, using backward search, we determine
-a range in SA of S that points to the occurrences of a pattern
-in the string S. Hence these entries in the SA reveal the 
-matching position of a pattern in the string S.\\
+
+In the counting process, using backward search, we determine a range in SA of S
+that points to the occurrences of a pattern in the string S. Hence these entries
+in the SA reveal the matching position of a pattern in the string S.\\
 
 \textbf{Time Complexity} 
-The running time of the backward search on BWT 
-depends on two factors; the length of the 
-pattern P and more importantly, the access 
-time of P in the suffix array.\\
-The search algorithm consists of two phases, 
-counting the number of occurrences of a pattern 
-and localization of their positions in the string.
-The counting time is linear to the length of 
-the P , assuming OCC table is implemented in a 
-constant time and the length of the string doesn't 
-have any impact on searching time which is one 
-of the main reasons of using BWT for a large 
-string like a genome. On the other hand, the 
-localization time is more affected by the number 
-of occurrences of the pattern  because, for 
-each occurrence of P, a look up at SA is needed.
+The running time of the backward search on BWT depends on two factors; the length 
+of the pattern P and more importantly, the access time of P in the suffix array.\\
+The search algorithm consists of two phases, counting the number of occurrences 
+of a pattern and localization of their positions in the string. The counting time 
+is linear to the length of the P , assuming OCC table is implemented in a constant
+time and the length of the string doesn't have any impact on searching time which 
+is one of the main reasons of using BWT for a large string like a genome. On the 
+other hand, the localization time is more affected by the number of occurrences of 
+the pattern  because, for each occurrence of P, a look up at SA is needed.
+
+The BWT of the reverse reference genome constructed by R-Candy simulates a Suffix 
+Trie with nodes corresponding to ranges in BWT. Therefore, the LF-mapping of BWT 
+applies a forward search on the Suffix Trie.
+
+After introducing BWT and its properties and emphasizing on its important job in 
+pattern searching, in the following section the usage of BWT in an indexing data 
+structure called FM-Index will be discussed\cite{fmindex}. 
 
 
-The BWT of the reverse reference genome constructed by
-R-Candy simulates a Suffix Trie with nodes corresponding to 
-ranges in BWT.
-Therefore, the LF-mapping of  BWT applies a forward 
-search on the Suffix Trie.
-
-
-After introducing BWT and its properties and 
-emphasizing on its important job in pattern 
-searching, in the following section the usage 
-of BWT in an indexing data structure called 
-FM-Index will be discussed\cite{fmindex}. 
-
-
-
-
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 \subsubsection{FM-Index (Full-text index)}  
 \label{FM-Index (Full-text index)}
+
 
 Paolo Ferragina and Giovanni Manzini in 2000, six years after BWT was 
 published invented a self-index data structure that combines BWT with 
@@ -1553,37 +1504,32 @@ It has reference genome and reverse complement of the genome and in order
 to support Bi-directional Wavelet tree just need to concatenate the two 
 genome strings and search for the pattern P in both strands of the extended genome.
 
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 
 \subsection{R-Candy's Index Structure} 
 \label{R-Candy's Index Structure}
 
-Aligning billions of short reads to an enormous genome 
-(human genome of size about 3,200 Mbp), calls for an 
-efficient algorithm with optimal query time and memory 
-space.\\ Since indexing the reference genome would 
-speed up the alignment process, R-Candy uses a robust 
-index structure called Wavelet Tree based FM-Index to 
-lessen the time and memory complexity of its alignment 
-process.
+Aligning billions of short reads to the human genome of size about 3,200 Mbp, 
+calls for an efficient algorithm with optimal query time and memory space.\\ 
+Since indexing the reference genome would speed up the alignment process, 
+R-Candy uses a robust index structure called Wavelet Tree based FM-Index to 
+lessen the time and memory complexity of its alignment process.
 
-An overview of R-Candy's data structure is presented 
-in Figure \ref{DSOverview}\cite{Wavthesis}.
-The whole algorithm of R-Candy is a backward search on the 
-BWT of the reference string. Specifically, R-Candy indexes the concatenation of the 
-complement of the reference genome with the reverse of the reference
-genome.  The backward search uses the LF-mapping 
-of BWT which requires a prefix-sum table and an occurence table.
-The prefix-sum table could easily be calculated and saved in memory,
-but counting a given character in a prefix of the reference string
-is time-consuming. Therefore to accelerate this process, strings are
-reduced to bitstrings using a  Wavelet Tree.
-The bit strings, with a maximum length of $\approx$ 6~billion, are stored
-in memory by the Rank9 data structure as blocks of $10 \times 64$-bit
-words, which makes the OCC table calculation very fast ($\mathcal{O}(1)$).
-And subsample of the Suffix Array is used to recover
-the position of patterns in the reference genome.
+An overview of R-Candy's data structure is presented in Figure \ref{DSOverview}
+\cite{Wavthesis}. The whole algorithm of R-Candy is a backward search on the 
+BWT of the reference string. Specifically, R-Candy indexes the concatenation of
+the complement of the reference genome with the reverse of the reference genome. 
+The backward search uses the LF-mapping of BWT which requires a prefix-sum table
+and an occurence table. The prefix-sum table could easily be calculated and saved 
+in memory, but counting a given character in a prefix of the reference string
+is time-consuming. Therefore to accelerate this process, strings are reduced to 
+bitstrings using a  Wavelet Tree. The bit strings, with a maximum length of 
+$\approx$ 6~billion, are stored in memory by the Rank9 data structure as blocks 
+of $10 \times 64$-bit words, which makes the OCC table calculation very fast 
+($\mathcal{O}(1)$). And subsample of the Suffix Array is used to recover the 
+position of patterns in the reference genome.
 
 
 \begin{figure}[H]
@@ -1595,54 +1541,43 @@ the position of patterns in the reference genome.
 
 
 
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 
 \section{Method} \label{Method}
 
-In the past few years, the development of new DNA sequencing
-technologies made it possible to get DNA from ancient organisms.  The
-analysis of such a data in evolutionary studies regularly required the
-challenging alignment to the genome of closely related modern species.
-A number of alignment software are developed to map such a dataset where 
-simulated data is essential to guide the new software development and 
-evaluating their performance.
+To test the performance of the R-Candy aligner for ancient DNA I developed a 
+genome and NGS read simulation program, named readSim to evaluate the performance 
+of R-Candy in different scenarios.
 
-Therefore, simulating data that captures the most crucial characteristics 
-of real data is the key point in the evaluation of the new software.
-
-To satisfy this, I developed a genome and NGS read simulation program, named
-readSim to evaluate the performance of R-Candy in different scenarios.
-
-R-Candy will be run on simulated reads originating from both a simulated
-genome with simple structure and the human reference genome.
+R-Candy was run on simulated reads originating from both a simulated genome and 
+the human reference genome.
  
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 \subsection{Genome Simulation} 
 \label{ Genome Simulation }
 
 
-In order to make the software evaluation more informative, we decided to
-first test the aligner with a simulated genome where we have a clear 
-expectation and knowledge of the true alignment of reads.
+In order to make the software evaluation more informative, we decided to first 
+test the aligner with a simulated genome where we have a clear expectation and
+ knowledge of the true alignment of reads.
 
-I used a probabilistic model called \emph{\nth{1} Order Markov Chain}
-model \footnote{In \nth{1} order refers to the property
-that the expected probabilities to /be/ in any state depend on 1
-previously emitted character.} to simulate a genome by generating 
-stretch of nucleotides (A, C, G, T bases) in a way that  keeps the base 
-composition and the poor CpG portion of the reference genome.
+I used a probabilistic model called \emph{\nth{1} Order Markov Chain} model 
+\footnote{In \nth{1} order refers to the property that the expected probabilities 
+to /be/ in any state depend on one previously emitted character.} to simulate 
+a genome by generating stretch of nucleotides (A, C, G, T bases) in a way that  
+keeps the base composition and the CpG content of the reference genome.
 
-A Markov chain graphically can be drawn as a collection of states, 
-each corresponds to a particular nucleotide (A, C, G, T) with arrows
-between them like the following (Figure \ref{MC}). 
+A Markov chain can be drawn as a collection of states, each corresponds to a 
+particular nucleotide (A, C, G, T) with arrows between them like the following 
+(Figure \ref{MC}). 
 
-Having a set of states,  $ S= \{ A, C,  G, T \}$  and probability
-parameter  associated with arrows in the figure which determines the
-probability of transferring from one state to the next state (transition)
-and what characters to generate (emission).
+Having a set of states,  $ S= \{ A, C,  G, T \}$  and probability parameter 
+associated with arrows in the figure which determines the probability of 
+transferring from one state to the next state (transition) and what characters 
+to generate (emission).
 
 \begin{figure}[H]
  \begin{center}
@@ -1679,12 +1614,12 @@ and what characters to generate (emission).
 
 
 As mentioned above, these probabilities are called \emph{transition}, which are 
-calculated by counting the number of state given its 
-previous state ($ A \rightarrow A, A\rightarrow C, A \rightarrow T, A \rightarrow 
-G, C \rightarrow C,$ ...) in the genome of interest; see the Table \ref{transition-table}
-(Filled with human reference genome bases consistency).And then create a 
-\emph{Transition Matrix} by calculating the frequency of seeing each transition,
-as shown in Figure \ref{transition-matrix}.\\
+calculated by counting the number of state given its previous state ($ A \rightarrow 
+A, A\rightarrow C, A \rightarrow T, A \rightarrow G, C \rightarrow C,$ ...) in 
+the genome of interest; see the Table \ref{transition-table} (Filled with human 
+reference genome bases consistency). And then create a \emph{Transition Matrix} 
+by calculating the frequency of seeing each transition, as shown in Figure 
+\ref{transition-matrix}.\\
 
 \begin{table}[h]
   \begin{tabular}{ |  p{1cm} | p{2cm} | p{2cm} | p{2cm} | p{2cm} |}
@@ -1787,19 +1722,16 @@ continuously walks between states based on their probabilities on transition mat
 till the number of visited states is reached, given the genome length. 
 
 
-
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 
 \subsection{Read Simulation} \label{Read Simulation}
 
-Simulated reads that capture different characteristics
-of DNA reads are the second part of my test data in this
-evaluation .
+Simulated reads that capture different characteristics of DNA reads are the 
+second part of my test data in this evaluation.
 
-Three types of reads simulating different properties of
-a genome used in this evaluation are
+Three types of reads simulating different properties of a genome used in this
+ evaluation are
 
 \begin{itemize}
 	\item fresh DNA reads
@@ -1827,14 +1759,8 @@ The following workflow is used by readSim to simulate fresh DNA
 
 \textbf{Ancient DNA Simulation} \\
 
-%Ancient DNA extracts consist of a low amount of endogenous 
-%DNA which used to be a big problem in evolutionary studies until 
-%the technology of polymerase chain reaction (PCR) 
-%\cite{PCR} made it possible to amplify DNA sequences and produce 
-%high coverage data for deeper studies on human origins.
-%\\
-The workflow for simulating ancient DNA reads follows the
- workflow used for simulating fresh DNA reads with one extra step
+The workflow for simulating ancient DNA reads follows the workflow used for 
+simulating fresh DNA reads with one extra step
 
 \begin{itemize}
  
