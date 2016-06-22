@@ -2137,10 +2137,11 @@ alignment scores cutoffs from 1 to 20.
 \textbf{Scenario 6} &  & \checkmark & & \checkmark & & \checkmark & &  \checkmark \\\hline
 
 \end{tabular}
-\caption{Different test scenarios for evaluation of R-Candy}
-\label{test-scenarios}
 \end{adjustbox}
+\caption{Evaluation test scenarios}
+\label{test-scenarios}
 \end{table}
+
 
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -2178,8 +2179,8 @@ default parameters.}
     \item \textbf{Aligners:} 
      R-Candy with default parameters and alignment score cutoff of 20. \\
      BWA version 0.5.10-evan.10 with default parameters and ancient parameters 
-     (the mismatch parameters set to
-     0.01 and the number of gap opens to 2)\cite{green2010draft}.
+     (-n maximum differences or missing prob under 0.02 error rate is set to 0.01 
+     and -o maximum number or fraction of gap opens is set to 2)\cite{green2010draft}.
 
   \end{itemize}
  
@@ -2192,8 +2193,8 @@ without using the deamination parameters (R-Candy's default parameters).
 \includegraphics[width=11cm]{pictures/f_DS3_emp.pdf}
 \caption{
 ROC curve for the alignment to the simulated reference genome of simulated 
-fresh sequence reads. See Section \ref{Evaluation Scenarios} 
-for more details.}
+fresh sequence reads by 'default' parameters of R-Candy. See Section 
+\ref{Evaluation Scenarios} for more details.}
 \label{DS3_emp}
 \end{figure}
 
@@ -2232,9 +2233,9 @@ default parameters.}
     \item \textbf{Aligners:} 
     R-Candy with default parameters and alignments score cut-off of 20. \\
     BWA version 0.5.10-evan.10 with default parameters and ancient parameters
-    (the mismatch parameter set to 0.01 and the number of gap  opens to 2)
-    \cite{green2010draft}.
-	
+    (-n maximum differences or missing prob under 0.02 error rate is set to 0.01 
+     and -o maximum number or fraction of gap opens is set to 2)\cite{green2010draft}.
+
  \end{itemize}
 	
 	
@@ -2248,7 +2249,8 @@ default parameters).
 \includegraphics[width=11cm]{pictures/f_DS6_emp.pdf}
 \caption{ 
 ROC curve for the alignment to the human reference genome of simulated 
-fresh sequence reads. See Section \ref{Evaluation Scenarios} 
+fresh sequence reads by R-Candy's 'default' parameters. See Section 
+\ref{Evaluation Scenarios} 
 for more details.
 }
 \label{DS6_emp}
@@ -2299,8 +2301,10 @@ to the divergence.
     parameter = 0.3, -r right overhang parameter= 0.3 , -d deamination rate 
     in double stranded section = 0.02 , -s deamination rate in single stranded 
     section = 0.9 ) and cutoff for alignment score at 20. \\
-    BWA with default parameters and ancient parameters \cite{green2010draft}
-   
+    BWA with default parameters and ancient parameters 
+    (-n maximum differences or missing prob under 0.02 error rate is set to 0.01 
+     and -o maximum number or fraction of gap opens is set to 2)\cite{green2010draft}.
+
    
    \end{itemize}
  
@@ -2313,7 +2317,7 @@ can be aligned accurately using ancient parameters.
 \centering
 \includegraphics[width=11cm]{pictures/f_DS8_emp.pdf}
 \caption{ ROC curve for the alignment to the simulated reference genome of 
-simulated fresh sequence reads aligned by ancient parameters. See Section 
+simulated fresh sequence reads aligned by R-Candy's 'ancient' parameters. See Section 
 \ref{Evaluation Scenarios} for more details.}
 \label{DS8_emp}
 \end{figure}
@@ -2355,8 +2359,8 @@ with ancient parameters.}
 	-s deamination rate in single stranded section = 0.9 )
   	and cutoff for alignment score at 20. \\
   	BWA with default parameters and ancient parameters \cite{green2010draft}
-   	(mismatch parameter -n set to 0.01 and the number of gap openings -o
-   	to 2)
+	(-n maximum differences or missing prob under 0.02 error rate is set to 0.01 
+     and -o maximum number or fraction of gap opens is set to 2)\cite{green2010draft}.
    
  \end{itemize}
 	
@@ -2371,7 +2375,8 @@ aligned to the human reference genome while using the ancient parameters
 \includegraphics[width=11cm]{pictures/f_DS9_22_20_54_emp.pdf}
 \caption{ 
 ROC curve for the alignment to the human reference genome of simulated 
-fresh sequence reads with ancient parameters. See Section \ref{Evaluation 
+fresh sequence reads with R-Candy's ancient parameters. See Section 
+\ref{Evaluation 
 Scenarios} for more details.
 }
 \label{DS9_emp}
@@ -2425,9 +2430,9 @@ high divergence rate of 12\% and 10\% for lengths 25 bp and 30 bp respectively.
    -d deamination rate in double stranded section = 0.02 , 
    -s deamination rate in single stranded section = 0.9 )
    and cutoff for alignment score at 20. \\
-   BWA with default parameters and ancient parameters \cite{green2010draft}
-   (mismatch parameter -n set to 0.01 and the number of gap openings -o
-   to 2)
+   BWA with default parameters and ancient parameters
+   (-n maximum differences or missing prob under 0.02 error rate is set to 0.01 
+   and -o maximum number or fraction of gap opens is set to 2)\cite{green2010draft}.
 
   \end{itemize}
 
@@ -2442,7 +2447,8 @@ deamination parameters.
 
 \caption{
 ROC curve for the alignment to the simulated reference genome of simulated ancient
-sequence reads. See Section \ref{Evaluation Scenarios} for more details.}
+sequence reads by R-Candy's 'ancient' parameters. See Section \ref{Evaluation Scenarios}
+for more details.}
 \label{DS1_emp}
 \end{figure}
 
@@ -2498,15 +2504,15 @@ R-Candy outperforms BWA in all cases.
 
  
     \item \textbf{Aligners:} 
-R-Candy with ancient parameters 
-(deamination ancient parameters as -l left overhang parameter= 0.3, -r 
-right overhang parameter= 0.3 , 
--d deamination rate in double stranded section = 0.02 , 
--s deamination rate in single stranded section = 0.9 )
-and alignments score cut-off of 20. \\
-BWA version 0.5.10-evan.10 with default parameters and ancient parameters 
-(the mismatch parameter set to 0.01 
-and the number of gap opens to 2)\cite{green2010draft}.
+	R-Candy with ancient parameters 
+	(deamination ancient parameters as -l left overhang parameter= 0.3, -r 
+	right overhang parameter= 0.3 , 
+	-d deamination rate in double stranded section = 0.02 , 
+	-s deamination rate in single stranded section = 0.9 )
+	and alignments score cut-off of 20. \\
+	BWA version 0.5.10-evan.10 with default parameters and ancient parameters 
+	(-n maximum differences or missing prob under 0.02 error rate is set to 0.01 
+    and -o maximum number or fraction of gap opens is set to 2)\cite{green2010draft}.
  
   \end{itemize}
  
@@ -2521,8 +2527,8 @@ aligned to the human reference genome with the deamination parameters.
 
 \caption{
 ROC curve for the alignment to the human reference genome of simulated ancient
-sequence reads. See Section \ref{Evaluation Scenarios} for more details.
-}
+sequence reads by R-Candy's 'ancient' parameters. See Section \ref{Evaluation 
+Scenarios} for more details. }
 
 \label{DS4_emp}
 \end{figure}
