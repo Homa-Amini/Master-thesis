@@ -33,13 +33,15 @@
 \usepackage[super,negative]{nth}
 \usepackage{url}
 \usepackage{dingbat}
-
+\usepackage{footnote}
+\usepackage{titlesec}
                   
 \usetikzlibrary{arrows, automata}
 
 \setcounter{secnumdepth}{5}
 \setcounter{tocdepth}{5}
 
+\newcommand{\sectionbreak}{\clearpage}
 \newcommand{\quotes}[1]{``#1''}
 \newcommand{\at}{\makeatletter @\makeatother}
 \newcommand{\HRule}{\rule{\linewidth}{0.5mm}} 
@@ -224,7 +226,7 @@ short reads.
 
 The rest of the thesis is organized as follows.
 Section 2 begins with background on the problem domain, followed by three main 
-(alignment) algorithms in the problem area  . And since this thesis does not do
+(alignment) algorithms in the problem area. And since this thesis does not do
 a blind test, I describe alignment and search algorithm of evaluated software 
 (R-Candy) with complete description of its data structure which helped me in the 
 evaluation process and coming up with suggestions for improving the performance
@@ -239,8 +241,8 @@ Trie and the connection between a Trie and a Suffix Array. In addition, the
 Burrows-Wheeler transforms (or BWT for short) will be introduced along with the
 design of FM-Index using BWT. The rest of the section focuses on explaining this 
 data structure  is stored in a compressed space using Wavelet Tree by supporting
-rank9 query. The Section \ref{ Background } ends by describing a new data structure 
-called Bi-directional Wavelet tree as a required background for my proposed 
+rank9 query. Section 2 ends by describing a new data structure called 
+Bi-directional Wavelet tree as a required background for my proposed 
 suggestion on the improvement of the software.
 
 Section 3 will describe my evaluation approach, including some implementation 
@@ -295,20 +297,20 @@ characteristics that distinguish it from modern DNA which are summarized in
 Table \ref{aDNAchar} .\\
 
 
-
-\begin{table}[H]
+\begin{savenotes}
+ \begin{table}[H]
   \begin{tabular}{ |  p{4cm} | p{2cm} | p{5cm} |}
     \hline
      \textbf{  Properties} & \textbf{Modern DNA } &\textbf{ ancient DNA} \\ \hline
      Molecule  length &  1000s of bp  & $\leq$  35 bp\\ \hline
-     Post-Morten \hspace{35pt} substitutions & No \footnote{Few/low\hspace{35pt}frequency}
+     Post-Morten \hspace{35pt} substitutions & No \footnote{Few/low frequency}
      & Deamination of C$\to$T(more likely near the end of a read) \\ \hline
      Contaminated & negligible & exogenous+Modern human\\ \hline
   \end{tabular}
   \caption{Comparison between modern DNA and ancient DNA}
   \label{aDNAchar}
-\end{table}
-
+ \end{table}
+\end{savenotes}
 
 The challenges with ancient DNA was the requirement for new software to efficiently 
 align millions of ultra-short, degraded and deaminated reads to a reference genome 
@@ -2745,7 +2747,6 @@ A method that combines dynamic programming with a Full-Text index might
 extend the usefulness of R-Candy to longer reads.
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-
 \section{Availability} \label{Availability}
 
 R-Candy's documentation and source code as a Haskell program are freely
