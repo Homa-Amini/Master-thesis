@@ -63,7 +63,7 @@ Leipzig, Germany }
 \end{frame}
 
 
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% 2 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 \section{Specification and Properties of the Data}
 
@@ -90,43 +90,52 @@ Leipzig, Germany }
 
 
 
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% 3 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 \begin{frame}{What is a DNA Sequence}
 \begin{tabular}{cl}  
          \begin{tabular}{l}
           \parbox{0.5\linewidth}{%  change the parbox width as appropiate
            
-\begin{itemize}
+			\begin{itemize}
     
-	\item Let $X$ be a sequence of $\lambda$ random variables.  
-	$ X =  \left\{ X_{1}, X_{2}, ... , X_{\lambda} \right\} $ which 
-	takes the values \hspace{45pt}
-	from the alphabet $\left\{A, C, G, T \right\}$.
-\end{itemize}
+				\item Let $X$ be a sequence of $\lambda$ random variables.  
+					  $ X =  \left\{ X_{1}, X_{2}, ... , X_{\lambda} \right\} $ which 
+					  takes the values \hspace{45pt}
+					  from the alphabet $\left\{A, C, G, T \right\}$.
+			\end{itemize}
      }
-           \end{tabular}
-           & \begin{tabular}{l}
+        \end{tabular}
+           
+         & 
+         \begin{tabular}{l}
             
                   \includegraphics[height=3.3cm, width=4.1cm]{pics/dna-structure.png} 
-			 \end{tabular}  \\
-           
+		\end{tabular}  \\
+
 \end{tabular}
 % \source{medivizor.com} 
 
 	\begin{itemize}
   		\item e.g. ACGGCTAAGTCAGATACAGCTCGCA
   	\end{itemize}	
-\begin{figure}
-	\includegraphics[width=4.5cm]{pics/seq2.png}
 
 
-	 \source{medivizor.com\\ 
-	http://www.genomenewsnetwork.org}
+	\begin{figure}
+
+	\subfloat[]{\includegraphics[width=4cm]{pics/seq2.png}}
+	\subfloat[]{\includegraphics[width=3.5cm]{pics/illumina.jpg}} 		 
+	
+	\source{medivizor.com\\ 
+		  	http://www.genomenewsnetwork.org}
  
-\end{figure}\end{frame}
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+	\end{figure}
 
+\end{frame}
+
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% 4 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 \begin{frame}[shrink=20]
 \frametitle{What is Ancient DNA}
@@ -162,51 +171,24 @@ Leipzig, Germany }
 
 \end{frame}
 
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% 5 %%%%%%%%%%%%%%%%%%%%%%%
 
-\begin{frame}{\emph{Post-Mortem} Deamination Damage}
+\begin{frame}{Sequencing Ancient DNA}
 
-\begin{figure}
-\centering
-	\includegraphics[width=10cm]{pics/substitution_pattern.png}
+	\begin{figure}
+	
+		\subfloat[]{\includegraphics[width=9cm]{pics/aDNA_characteristics_New.pdf}}
+%		\subfloat[]{\includegraphics[width=7cm]{pics/aDNA_characteristics.pdf}}
+	%	\subfloat[]{\includegraphics[width=.689in]{pics/skullss.jpg}} \hspace*{2cm}
 
-	\source{http://mitosuite.com/example/results.html}
-\end{figure}
-
-A high nucleotide misincorporation rate of thymine(T) in place of
-cytosine(C) near the ends of ancient DNA reads.
-
-\end{frame}
-
-
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-
-
-
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-
-
-
-\begin{frame}{Sequencer}
-\begin{itemize}
-	\item A sequencer is a machine used to determine the order of DNA bases.
-\end{itemize}
-\begin{figure}
-%\centering
-
-%	\subfloat[]{\includegraphics[width=1.7in]{pics/seq2.png}}
-	\subfloat[]{\includegraphics[width=6.5cm]{pics/illumina.jpg}} %\hspace*{2cm}
-
-
-	\source{http://www.illumina.com }
-%	http://www.genomenewsnetwork.org}
+	%	\source{www.sciencemag.org}
  
-\end{figure}
+	\end{figure}
 
 
 \end{frame}
 
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% 6 %%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 \section{Common Approaches to String Alignments}
 \begin{frame}{DNA Similarity}
@@ -240,7 +222,9 @@ cytosine(C) near the ends of ancient DNA reads.
 \end{itemize}
 
 \end{frame}
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% 7 %%%%%%%%%%%%%%%%%%%%%%
 
 \begin{frame}[shrink=1]
 \frametitle{DNA Sequence Alignment}
@@ -266,20 +250,28 @@ cytosine(C) near the ends of ancient DNA reads.
 
 \end{frame}
 
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% 8 %%%%%%%%%%%%%%%%%%%%%%%%
 
 
-%\begin{frame}{Three Key Questions }
 
-%\begin{itemize}
-%	\item  Q1: What do we want to align?
-%	\item  Q2: How do we "score" an alignment?.
-%	\item  Q3: How to find the "optimal" alignment?.
-%\end{itemize}
 
-%\end{frame}
+\begin{frame}{\emph{Post-Mortem} Deamination Damage}
 
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\begin{figure}
+\centering
+	\includegraphics[width=10cm]{pics/substitution_pattern.png}
+
+	\source{http://mitosuite.com/example/results.html}
+\end{figure}
+
+A high nucleotide misincorporation rate of thymine(T) in place of
+cytosine(C) near the ends of ancient DNA reads.
+
+\end{frame}
+
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% 9 %%%%%%%%%%%%%%%%%%%%%%%%
 
 %\begin{frame}{What Sort of Alignment? }
 \begin{frame}[shrink=30]
@@ -754,15 +746,27 @@ R = Real genome\\
 D = Default parameters
 \end{frame}
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
+\begin{frame}{ROC Curve}
 
+	\begin{figure}[H]
+		\centering
+		\includegraphics[width=9.5cm]{pics/DS6-25-hh1.png}
+%\caption{Number of bases in each cycle as a function of having certain quality}
+		
+	\end{figure}
+
+\end{frame}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \begin{frame}{\small{Modern DNA Simulated Genome, Default Parameters}}
 %\begin{frame}{\footnotesize Evaluation of Modern DNA Reads Aligned to the Simulated Genome 
 %by Default Parameters}
 	
 	\begin{figure}[H]
 \centering
-\includegraphics[width=7cm]{pics/f_DS3_emp.pdf}
+\includegraphics[width=7.35cm]{pics/f_DS3_emp.pdf}
 %\caption{Number of bases in each cycle as a function of having certain quality}
 %\label{hist}
 \end{figure}
@@ -775,7 +779,7 @@ D = Default parameters
 	
 	\begin{figure}[H]
 		\centering
-		\includegraphics[width=7cm]{pics/f_DS6_emp.pdf}
+		\includegraphics[width=7.35cm]{pics/f_DS6_emp.pdf}
 %\caption{Number of bases in each cycle as a function of having certain quality}
 		
 	\end{figure}
@@ -787,7 +791,7 @@ D = Default parameters
 %\begin{frame}{Evaluation of FSA}	
 	\begin{figure}[H]
 		\centering
-		\includegraphics[width=7cm]{pics/f_DS8_emp.pdf}
+		\includegraphics[width=7.35cm]{pics/f_DS8_emp.pdf}
 %\caption{Number of bases in each cycle as a function of having certain quality}
 		
 	\end{figure}
@@ -800,7 +804,7 @@ D = Default parameters
 	%Alignment of Simulated Modern DNA Reads to a the Human Reference Genome with ancient parameters.}
 	\begin{figure}[H]
 		\centering
-		\includegraphics[width=7cm]{pics/f_DS9_22_20_54_emp.pdf}
+		\includegraphics[width=7.35cm]{pics/f_DS9_22_20_54_emp.pdf}
 %\caption{Number of bases in each cycle as a function of having certain quality}
 		
 	\end{figure}
@@ -813,7 +817,7 @@ D = Default parameters
 	
 	\begin{figure}[H]
 		\centering
-		\includegraphics[width=7cm]{pics/f_DS1_emp.pdf}
+		\includegraphics[width=7.35cm]{pics/f_DS1_emp.pdf}
 %\caption{Number of bases in each cycle as a function of having certain quality}
 		
 	\end{figure}
@@ -824,7 +828,7 @@ D = Default parameters
 %\begin{frame}{Evaluation of ARA}
 	\begin{figure}[H]
 		\centering
-		\includegraphics[width=7cm]{pics/f_DS4_emp.pdf}
+		\includegraphics[width=7.35cm]{pics/f_DS4_emp.pdf}
 %\caption{Number of bases in each cycle as a function of having certain quality}
 		
 	\end{figure}
