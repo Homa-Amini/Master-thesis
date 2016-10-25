@@ -67,7 +67,7 @@ Leipzig, Germany }
 
 \section{Specification and Properties of the Data}
 
-\begin{frame}{Why Study Ancient DNA}
+\begin{frame}{Why Study Ancient DNA?}
 
 
 \begin{figure}
@@ -92,7 +92,7 @@ Leipzig, Germany }
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% 3 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
-\begin{frame}{What is a DNA Sequence}
+\begin{frame}{What is a DNA Sequence?}
 \begin{tabular}{cl}  
          \begin{tabular}{l}
           \parbox{0.5\linewidth}{%  change the parbox width as appropiate
@@ -138,7 +138,7 @@ Leipzig, Germany }
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% 4 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 \begin{frame}[shrink=20]
-\frametitle{What is Ancient DNA}
+\frametitle{What is Ancient DNA?}
 
 \begin{figure}
 	
@@ -165,7 +165,7 @@ Leipzig, Germany }
 
 	\item Hard to retrieve. 
 	\item Short molecule $\leq$ 50 bp.
-	\item \emph{Post-Mortem} damage: deamination (substitutions of C$\to$T).
+	\item \emph{Post-mortem} molecule damage: deamination (substitutions of C$\to$T).
 	\item Microbial contamination.
 \end{itemize}
 
@@ -191,7 +191,7 @@ Leipzig, Germany }
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% 6 %%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 \section{Common Approaches to String Alignments}
-\begin{frame}{DNA Similarity}
+\begin{frame}{DNA Similarities}
 
 \begin{itemize}
 
@@ -245,7 +245,7 @@ Leipzig, Germany }
 		A plausible alignment of $S_{1}$ and $S_{2}$:	
 \vskip .5cm 
 		\hspace{45pt} $S_{1}:$\hspace{25pt} \textbf{\texttt{ACGCTATAGCA\textcolor{candyapplered}{-}}}\\
-		\hspace{45pt} $S_{2}:$\hspace{25pt} \textbf{\texttt{\textbf{\textcolor{candyapplered}{-}}CG\textbf{\textcolor{candyapplered}{--}}AT\textbf{\textcolor{candyapplered}{-}}G\textcolor{candyapplered}{-}}AC} \\
+		\hspace{45pt} $S_{2}:$\hspace{25pt} \textbf{\texttt{\textcolor{candyapplered}{-}}CG\textcolor{candyapplered}{--}AT\textcolor{candyapplered}{-}G\textcolor{candyapplered}{-}AC} \\
 \end{itemize}
 
 \end{frame}
@@ -255,7 +255,7 @@ Leipzig, Germany }
 
 
 
-\begin{frame}{\emph{Post-Mortem} Deamination Damage}
+\begin{frame}{\emph{Post-mortem} Deamination Damage}
 
 \begin{figure}
 \centering
@@ -381,7 +381,7 @@ we score it by:\\
 	\vskip 0.25cm		
 	\item Dynamic programming
 		\begin{itemize}
-			\item Calculate the best alignment of all prefixes of the sequences instead of best alignment of the two sequences.
+			\item Calculate the best alignment of all prefixes of the sequences instead of the best alignment of the two sequences.
 			%\item reuse the scores already considered.
 			\item  Time complexity $\mathcal{O}(n^{2})$.
 		\end{itemize}
@@ -394,8 +394,7 @@ we score it by:\\
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \begin{frame}{ Overview of BWA Aligner}
 	\begin{itemize}
-		\item Based on FM-index.
-		(Burrows-Wheeler Transform plus auxiliary data structures)
+		\item Based on FM-index (Burrows-Wheeler Transform plus auxiliary data structures)
 		which enables fast matching. 
 		  %    It can be used to simulate a suffix tree, it allows quick access 
 		   %   (pattern match in $\mathcal{O}(|p|)$, location in $\mathcal{O}(log n)$, it is reasonably compact.
@@ -478,13 +477,13 @@ we score it by:\\
 			\begin{itemize}
 				\item Simulated modern and ancient DNA reads originated from a simulated genome.
 			\end{itemize}	
-		\item To roll out possible artifacts of genome simulation.
+		\item To rule out possible artifacts of genome simulation.
 			\begin{itemize}
 				\item Simulated modern and ancient DNA reads originated from a real genome.
 			\end{itemize}
 		\item To evaluate the rate of false positive alignments.
 			\begin{itemize}
-				\item Simulated random reads as stands for exogenous DNA.
+				\item Simulated random reads to mimic exogenous DNA.
 			\end{itemize}
 	\end{itemize}
 \end{frame}
@@ -589,7 +588,7 @@ Trained \nth{1} Order Markov-Chain based on the human reference genome with star
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
-\begin{frame}{Read Simulation (Cont.) }
+\begin{frame}{Read Simulation }
 \begin{figure}[H]
 \centering
 \includegraphics[width=10cm]{pics/readsampling2.png}
@@ -739,7 +738,7 @@ Trained \nth{1} Order Markov-Chain based on the human reference genome with star
 %\caption{Evaluation test scenarios}
 \label{test-scenarios}
 \end{table}
-\scriptsize M = Modern/Fresh DNA\\
+\scriptsize M = Modern DNA\\
 A = Ancient DNA/parameters\\
 S = Simulated genome\\
 R = Real genome\\
@@ -858,7 +857,7 @@ D = Default parameters
            \end{tabular}  \\
            
 \end{tabular}
-\source{ Meyer M, et al. Nature 2013}
+\source{ Meyer M, et al. Nature 2014}
 %Meyer, Matthias, et al. "A mitochondrial genome sequence of a hominin from Sima de los Huesos." Nature } 
 
 \begin{itemize}
@@ -877,7 +876,7 @@ D = Default parameters
 \begin{frame}{Future Work}
 	\begin{itemize}
 		\item Different search algorithm starting from the middle part of the reads.
-		\item Requires a different index structure (Bi-directional Wavelet Tree).
+		\item Require a different index structure (Bi-directional Wavelet Tree).
 
 		\item Enable a seed strategy where the middle part of a read would serve 
 			  as seed.
