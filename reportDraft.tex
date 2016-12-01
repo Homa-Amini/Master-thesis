@@ -265,7 +265,7 @@ R-Candy might be improved.
 \section{Background } \label{Background }
 
 
-\emph{Sequencing} is the process of determining the precise order of bases 
+\emph{Sequencing} is the process of determining the accurate order of bases 
 (adenine, guanine, cytosine, and thymine) that compose a DNA molecule. 
 It is typically very hard to sequence a long fragment of a DNA molecule, 
 such as a whole chromosome. However, It is easy to subdivide longer sequences
@@ -278,9 +278,7 @@ The human genome sequence is made up of 3 billion DNA base pairs.
 It is CpG poor and repeat-rich, 50\% of the human genome is consists 
 of repetitive DNA sequences. The CpG sites are regions of DNA where 
 a cytosine nucleotide is followed by a guanine nucleotide which are 
-4-fold under-represented in the human genome. Although the human genome is 
-completely sequenced but is not yet fully understood. 
-
+4-fold under-represented in the human genome. 
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
@@ -300,7 +298,7 @@ Table \ref{aDNAchar} .\\
   \begin{tabular}{ |  p{4cm} | p{2cm} | p{5cm} |}
     \hline
      \textbf{  Properties} & \textbf{Modern DNA } &\textbf{ ancient DNA} \\ \hline
-     Molecule  length &  1000s of bp  & $\leq$  35 bp\\ \hline
+     Molecule  length &  1000s of bp  & $\leq$  50 bp\\ \hline
      Post-Morten \hspace{35pt} substitutions & No \footnote{Few/low frequency}
      & Deamination of C$\to$T(more likely near the end of a read) \\ \hline
      Contaminated & negligible & Microbs+Modern human\\ \hline
@@ -434,7 +432,7 @@ sequences is a crucial part in computational sequence analysis.
 Such an algorithm is called dynamic programming, which uses an 
 additive alignment score for  weighting alignments. 
 
-For different types of alignment, there are slightly different 
+For different types of alignment, there are different 
 types of dynamic programming algorithms (alignment algorithms).\\\\
 
 
@@ -465,10 +463,10 @@ algorithms that easily can be expanded to the more complex versions.
 
 The Needleman-Wunsch algorithm, which is based on dynamic programming, 
 is an established global alignment technique in biological 
-sequence analyses to obtain the best-matching alignment of two sequences, 
+sequence analyses to obtain the best alignment of two sequences, 
 allowing  gaps.\\
-It aims to construct an optimal alignment using previous solutions for
-optimal alignments of smaller subsequences \cite{durbin}.\\
+The optimal alignment is obtained by using intermediate results of
+aligning smaller subsequences\cite{durbin}.\\
 We are going to calculate the optimal alignment score as been described 
 in \cite{durbin} by constructing a matrix $F$ indexed
 by $i$ and $j$, one index for each sequence, where the value $F(i, j)$ is the score
@@ -537,12 +535,12 @@ To find the actual local alignment:
 
 \paragraph{Semi-global alignment}
 
-Semi-global or "glocal" (short for global-local) algorithm is a combination 
+Semi-global or "glocal" algorithm is a combination 
 of global and local alignments. 
 It is a practical strategy in the case of ancient DNA.
 Aligning two sequences, one short (an ancient DNA read) and the 
-other one long (a chromosome sequence). In this case, neither global 
-nor local alignment is completely applicable. The best solution here 
+other one long (a chromosome sequence) which neither local 
+nor global alignment is completely applicable. The best solution
 is to globally align the short sequence while only a local alignment
 is appropriate for the long sequence.
 
@@ -684,7 +682,7 @@ query base in rows, both in the order A, C, G, T):
 
 Alignment scores are the sum of the natural logarithms of the
 entries in that matrix for every aligned base, plus a penalty for
-insertions and deletions.  We use linear gap costs with a cost of $G$
+insertions and deletions. We use linear gap costs with a cost of $G$
 per inserted or deleted base, where $G$ is another parameter".
 
 
@@ -850,8 +848,8 @@ middle-out mapping strategy was implemented.
 \subsubsection{Suffix Tree and Suffix Array}
 \label{Suffix Tree and Suffix Array}
 
-Coalescing each non-branching path of a Suffix Trie into 
-a single edge, labeled by the string of that path, namely 
+Coalescing each non-branching edges of a Suffix Trie into 
+a single edge, labeled by the string of that edge, namely 
 Suffix Tree reduces the memory complexity to $\mathcal{O}(n)$.
 But the big-O notation ignores a big constant overhead 
 of $\sim20$ of the best known implementation of a Suffix Tree
@@ -1081,7 +1079,7 @@ complexity of \emph{O(1}).\\
 
 	\item C[c] is a table that for each character in 
 	the alphabet contains the total number of text 
-	characters that are alphabetically smaller than
+	characters that are lexicographically smaller than
 	 \emph{c} \cite{fmindex}.
 
 	
@@ -1218,11 +1216,11 @@ for the occurrences of an arbitrary pattern P as a substring of the
 string S as well as localizing the position of each occurrence. They 
 named it FM-Index for Full-Text Index in minute space where minute 
 space emphasises on its memory efficiency of $\mathcal{O}(\lvert n 
-\rvert)$ .The FM-Index is consist of two parts. The first part keeps 
+\rvert)$. The FM-Index is consist of two parts. The first part keeps 
 the number of occurrence of a pattern in string S using the LF-mapping 
 property of the BWT ( Prefix-Sum table \emph{C}). And the second part 
 stores the location of patterns in S ( in our case we used a Suffix 
-Array)\cite{Wavthesis}.\\
+Array )\cite{Wavthesis}.\\
 
 \textbf{Prefix-Sum Table}  The sum table must be stored completely because
 the frequency of characters are independent of each other and can cause 
